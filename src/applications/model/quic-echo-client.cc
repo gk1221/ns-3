@@ -1,7 +1,5 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
- * Copyright 2007 University of Washington
- * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation;
@@ -14,7 +12,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * Authors: Davide Marcato <davide.marcato.4@studenti.unipd.it>
+ *          Stefano Ravazzolo <stefano.ravazzolo@studenti.unipd.it>
+ *          Alvise De Biasio <alvise.debiasio@studenti.unipd.it>
  */
+
 #include "ns3/log.h"
 #include "ns3/ipv4-address.h"
 #include "ns3/ipv6-address.h"
@@ -27,63 +30,63 @@
 #include "ns3/packet.h"
 #include "ns3/uinteger.h"
 #include "ns3/trace-source-accessor.h"
-#include "udp-echo-client.h"
+#include "quic-echo-client.h"
+#include "ns3/quic-header.h"
+
 
 namespace ns3 {
 
-NS_LOG_COMPONENT_DEFINE ("UdpEchoClientApplication");
+NS_LOG_COMPONENT_DEFINE ("QuicEchoClientApplication");
 
-NS_OBJECT_ENSURE_REGISTERED (UdpEchoClient);
+NS_OBJECT_ENSURE_REGISTERED (QuicEchoClient);
 
 TypeId
-UdpEchoClient::GetTypeId (void)
+QuicEchoClient::GetTypeId (void)
 {
-  static TypeId tid = TypeId ("ns3::UdpEchoClient")
+  static TypeId tid = TypeId ("ns3::QuicEchoClient")
     .SetParent<Application> ()
-    .SetGroupName("Applications")
-    .AddConstructor<UdpEchoClient> ()
-    .AddAttribute ("MaxPackets", 
+    .SetGroupName ("Applications")
+    .AddConstructor<QuicEchoClient> ()
+    .AddAttribute ("MaxPackets",
                    "The maximum number of packets the application will send",
                    UintegerValue (100),
-                   MakeUintegerAccessor (&UdpEchoClient::m_count),
+                   MakeUintegerAccessor (&QuicEchoClient::m_count),
                    MakeUintegerChecker<uint32_t> ())
-    .AddAttribute ("Interval", 
+    .AddAttribute ("Interval",
                    "The time to wait between packets",
                    TimeValue (Seconds (1.0)),
-                   MakeTimeAccessor (&UdpEchoClient::m_interval),
+                   MakeTimeAccessor (&QuicEchoClient::m_interval),
                    MakeTimeChecker ())
-    .AddAttribute ("RemoteAddress", 
+    .AddAttribute ("RemoteAddress",
                    "The destination Address of the outbound packets",
                    AddressValue (),
-                   MakeAddressAccessor (&UdpEchoClient::m_peerAddress),
+                   MakeAddressAccessor (&QuicEchoClient::m_peerAddress),
                    MakeAddressChecker ())
-    .AddAttribute ("RemotePort", 
+    .AddAttribute ("RemotePort",
                    "The destination port of the outbound packets",
                    UintegerValue (0),
-                   MakeUintegerAccessor (&UdpEchoClient::m_peerPort),
+                   MakeUintegerAccessor (&QuicEchoClient::m_peerPort),
                    MakeUintegerChecker<uint16_t> ())
     .AddAttribute ("PacketSize", "Size of echo data in outbound packets",
                    UintegerValue (100),
-                   MakeUintegerAccessor (&UdpEchoClient::SetDataSize,
-                                         &UdpEchoClient::GetDataSize),
+                   MakeUintegerAccessor (&QuicEchoClient::GetDataSize,
+                                         &QuicEchoClient::SetDataSize),
+                   MakeUintegerChecker<uint32_t> ())
+    .AddAttribute ("StreamId",
+                   "Identifier of the stream to be used in the QUIC connection",
+                   UintegerValue (2),
+                   MakeUintegerAccessor (&QuicEchoClient::GetStreamId,
+                                         &QuicEchoClient::SetStreamId),
                    MakeUintegerChecker<uint32_t> ())
     .AddTraceSource ("Tx", "A new packet is created and is sent",
-                     MakeTraceSourceAccessor (&UdpEchoClient::m_txTrace),
+                     MakeTraceSourceAccessor (&QuicEchoClient::m_txTrace),
                      "ns3::Packet::TracedCallback")
-    .AddTraceSource ("Rx", "A packet has been received",
-                     MakeTraceSourceAccessor (&UdpEchoClient::m_rxTrace),
-                     "ns3::Packet::TracedCallback")
-    .AddTraceSource ("TxWithAddresses", "A new packet is created and is sent",
-                     MakeTraceSourceAccessor (&UdpEchoClient::m_txTraceWithAddresses),
-                     "ns3::Packet::TwoAddressTracedCallback")
-    .AddTraceSource ("RxWithAddresses", "A packet has been received",
-                     MakeTraceSourceAccessor (&UdpEchoClient::m_rxTraceWithAddresses),
-                     "ns3::Packet::TwoAddressTracedCallback")
   ;
   return tid;
 }
 
-UdpEchoClient::UdpEchoClient ()
+
+QuicEchoClient::QuicEchoClient ()
 {
   NS_LOG_FUNCTION (this);
   m_sent = 0;
@@ -93,7 +96,7 @@ UdpEchoClient::UdpEchoClient ()
   m_dataSize = 0;
 }
 
-UdpEchoClient::~UdpEchoClient()
+QuicEchoClient::~QuicEchoClient ()
 {
   NS_LOG_FUNCTION (this);
   m_socket = 0;
@@ -103,52 +106,54 @@ UdpEchoClient::~UdpEchoClient()
   m_dataSize = 0;
 }
 
-void 
-UdpEchoClient::SetRemote (Address ip, uint16_t port)
+void
+QuicEchoClient::SetRemote (Address ip, uint16_t port)
 {
   NS_LOG_FUNCTION (this << ip << port);
   m_peerAddress = ip;
   m_peerPort = port;
 }
 
-void 
-UdpEchoClient::SetRemote (Address addr)
+void
+QuicEchoClient::SetRemote (Address addr)
 {
   NS_LOG_FUNCTION (this << addr);
   m_peerAddress = addr;
 }
 
 void
-UdpEchoClient::DoDispose (void)
+QuicEchoClient::DoDispose (void)
 {
   NS_LOG_FUNCTION (this);
   Application::DoDispose ();
 }
 
-void 
-UdpEchoClient::StartApplication (void)
+void
+QuicEchoClient::StartApplication (void)
 {
+  NS_LOG_INFO ("##########  QUIC Echo Client START at time " << Simulator::Now ().GetSeconds () << " ##########");
   NS_LOG_FUNCTION (this);
 
   if (m_socket == nullptr)
     {
-      TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
+      TypeId tid = TypeId::LookupByName ("ns3::QuicSocketFactory");
+
       m_socket = Socket::CreateSocket (GetNode (), tid);
-      if (Ipv4Address::IsMatchingType(m_peerAddress) == true)
+      if (Ipv4Address::IsMatchingType (m_peerAddress) == true)
         {
           if (m_socket->Bind () == -1)
             {
               NS_FATAL_ERROR ("Failed to bind socket");
             }
-          m_socket->Connect (InetSocketAddress (Ipv4Address::ConvertFrom(m_peerAddress), m_peerPort));
+          m_socket->Connect (InetSocketAddress (Ipv4Address::ConvertFrom (m_peerAddress), m_peerPort));
         }
-      else if (Ipv6Address::IsMatchingType(m_peerAddress) == true)
+      else if (Ipv6Address::IsMatchingType (m_peerAddress) == true)
         {
           if (m_socket->Bind6 () == -1)
             {
               NS_FATAL_ERROR ("Failed to bind socket");
             }
-          m_socket->Connect (Inet6SocketAddress (Ipv6Address::ConvertFrom(m_peerAddress), m_peerPort));
+          m_socket->Connect (Inet6SocketAddress (Ipv6Address::ConvertFrom (m_peerAddress), m_peerPort));
         }
       else if (InetSocketAddress::IsMatchingType (m_peerAddress) == true)
         {
@@ -172,17 +177,18 @@ UdpEchoClient::StartApplication (void)
         }
     }
 
-  m_socket->SetRecvCallback (MakeCallback (&UdpEchoClient::HandleRead, this));
+  m_socket->SetRecvCallback (MakeCallback (&QuicEchoClient::HandleRead, this));
   m_socket->SetAllowBroadcast (true);
-  ScheduleTransmit (Seconds (0.));
+  ScheduleTransmit (Seconds (0));
 }
 
-void 
-UdpEchoClient::StopApplication ()
+void
+QuicEchoClient::StopApplication ()
 {
+  NS_LOG_INFO ("##########  QUIC Echo Client STOP at time " << Simulator::Now ().GetSeconds () << " ##########");
   NS_LOG_FUNCTION (this);
 
-  if (m_socket != nullptr) 
+  if (m_socket != nullptr)
     {
       m_socket->Close ();
       m_socket->SetRecvCallback (MakeNullCallback<void, Ptr<Socket> > ());
@@ -192,14 +198,14 @@ UdpEchoClient::StopApplication ()
   Simulator::Cancel (m_sendEvent);
 }
 
-void 
-UdpEchoClient::SetDataSize (uint32_t dataSize)
+void
+QuicEchoClient::SetDataSize (uint32_t dataSize)
 {
   NS_LOG_FUNCTION (this << dataSize);
 
   //
   // If the client is setting the echo packet data size this way, we infer
-  // that she doesn't care about the contents of the packet at all, so 
+  // that she doesn't care about the contents of the packet at all, so
   // neither will we.
   //
   delete [] m_data;
@@ -208,15 +214,15 @@ UdpEchoClient::SetDataSize (uint32_t dataSize)
   m_size = dataSize;
 }
 
-uint32_t 
-UdpEchoClient::GetDataSize (void) const
+uint32_t
+QuicEchoClient::GetDataSize (void) const
 {
   NS_LOG_FUNCTION (this);
   return m_size;
 }
 
-void 
-UdpEchoClient::SetFill (std::string fill)
+void
+QuicEchoClient::SetFill (std::string fill)
 {
   NS_LOG_FUNCTION (this << fill);
 
@@ -237,8 +243,8 @@ UdpEchoClient::SetFill (std::string fill)
   m_size = dataSize;
 }
 
-void 
-UdpEchoClient::SetFill (uint8_t fill, uint32_t dataSize)
+void
+QuicEchoClient::SetFill (uint8_t fill, uint32_t dataSize)
 {
   NS_LOG_FUNCTION (this << fill << dataSize);
   if (dataSize != m_dataSize)
@@ -256,8 +262,8 @@ UdpEchoClient::SetFill (uint8_t fill, uint32_t dataSize)
   m_size = dataSize;
 }
 
-void 
-UdpEchoClient::SetFill (uint8_t *fill, uint32_t fillSize, uint32_t dataSize)
+void
+QuicEchoClient::SetFill (uint8_t *fill, uint32_t fillSize, uint32_t dataSize)
 {
   NS_LOG_FUNCTION (this << fill << fillSize << dataSize);
   if (dataSize != m_dataSize)
@@ -295,16 +301,96 @@ UdpEchoClient::SetFill (uint8_t *fill, uint32_t fillSize, uint32_t dataSize)
   m_size = dataSize;
 }
 
-void 
-UdpEchoClient::ScheduleTransmit (Time dt)
+void
+QuicEchoClient::ScheduleTransmit (Time dt)
 {
   NS_LOG_FUNCTION (this << dt);
-  m_sendEvent = Simulator::Schedule (dt, &UdpEchoClient::Send, this);
+  m_sendEvent = Simulator::Schedule (dt, &QuicEchoClient::Send, this);
 }
 
-void 
-UdpEchoClient::Send (void)
+void
+QuicEchoClient::ScheduleClosing (Time dt)
 {
+  NS_LOG_FUNCTION (this << dt);
+  m_closeEvent = Simulator::Schedule (dt, &QuicEchoClient::Close, this);
+}
+
+void
+QuicEchoClient::ScheduleRestart (Time dt)
+{
+  NS_LOG_FUNCTION (this << dt);
+  m_connectEvent = Simulator::Schedule (dt, &QuicEchoClient::Restart, this);
+}
+
+void
+QuicEchoClient::Restart (void)
+{
+  NS_LOG_INFO ("##########  QUIC Echo Client RESTART at time " << Simulator::Now ().GetSeconds () << " ##########");
+  NS_LOG_FUNCTION (this);
+  NS_ASSERT (m_connectEvent.IsExpired ());
+
+  TypeId tid = TypeId::LookupByName ("ns3::QuicSocketFactory");
+  //NS_LOG_INFO("node is "<< GetNode());
+  m_socket = Socket::CreateSocket (GetNode (), tid);
+  if (Ipv4Address::IsMatchingType (m_peerAddress) == true)
+    {
+      if (m_socket->Bind () == -1)
+        {
+          NS_FATAL_ERROR ("Failed to bind socket");
+        }
+      m_socket->Connect (InetSocketAddress (Ipv4Address::ConvertFrom (m_peerAddress), m_peerPort));
+    }
+  else if (Ipv6Address::IsMatchingType (m_peerAddress) == true)
+    {
+      if (m_socket->Bind6 () == -1)
+        {
+          NS_FATAL_ERROR ("Failed to bind socket");
+        }
+      m_socket->Connect (Inet6SocketAddress (Ipv6Address::ConvertFrom (m_peerAddress), m_peerPort));
+    }
+  else if (InetSocketAddress::IsMatchingType (m_peerAddress) == true)
+    {
+      if (m_socket->Bind () == -1)
+        {
+          NS_FATAL_ERROR ("Failed to bind socket");
+        }
+      m_socket->Connect (m_peerAddress);
+    }
+  else if (Inet6SocketAddress::IsMatchingType (m_peerAddress) == true)
+    {
+      if (m_socket->Bind6 () == -1)
+        {
+          NS_FATAL_ERROR ("Failed to bind socket");
+        }
+      m_socket->Connect (m_peerAddress);
+    }
+  else
+    {
+      NS_ASSERT_MSG (false, "Incompatible address type: " << m_peerAddress);
+    }
+
+  m_socket->SetRecvCallback (MakeCallback (&QuicEchoClient::HandleRead, this));
+  m_socket->SetAllowBroadcast (true);
+  SetFill ("Re-Hello World");
+  ScheduleTransmit (Seconds (2.));
+}
+
+
+void
+QuicEchoClient::Close (void)
+{
+  NS_LOG_INFO ("##########  QUIC Echo Client CLOSING at time " << Simulator::Now ().GetSeconds () << " ##########");
+  NS_LOG_FUNCTION (this);
+  NS_ASSERT (m_closeEvent.IsExpired ());
+
+  m_socket->Close ();
+}
+
+
+void
+QuicEchoClient::Send (void)
+{
+  NS_LOG_INFO ("##########  QUIC Echo Client SENDING at time " << Simulator::Now ().GetSeconds () << " ##########");
   NS_LOG_FUNCTION (this);
 
   NS_ASSERT (m_sendEvent.IsExpired ());
@@ -312,18 +398,18 @@ UdpEchoClient::Send (void)
   Ptr<Packet> p;
   if (m_dataSize)
     {
-      //
       // If m_dataSize is non-zero, we have a data buffer of the same size that we
       // are expected to copy and send.  This state of affairs is created if one of
       // the Fill functions is called.  In this case, m_size must have been set
       // to agree with m_dataSize
       //
-      NS_ASSERT_MSG (m_dataSize == m_size, "UdpEchoClient::Send(): m_size and m_dataSize inconsistent");
-      NS_ASSERT_MSG (m_data, "UdpEchoClient::Send(): m_dataSize but no m_data");
+      NS_ASSERT_MSG (m_dataSize == m_size, "QuicEchoClient::Send(): m_size and m_dataSize inconsistent");
+      NS_ASSERT_MSG (m_data, "QuicEchoClient::Send(): m_dataSize but no m_data");
       p = Create<Packet> (m_data, m_dataSize);
     }
   else
     {
+      NS_LOG_INFO ("no data");
       //
       // If m_dataSize is zero, the client has indicated that it doesn't care
       // about the data itself either by specifying the data size by setting
@@ -333,74 +419,96 @@ UdpEchoClient::Send (void)
       //
       p = Create<Packet> (m_size);
     }
-  Address localAddress;
-  m_socket->GetSockName (localAddress);
   // call to the trace sinks before the packet is actually sent,
   // so that tags added to the packet can be sent as well
   m_txTrace (p);
-  if (Ipv4Address::IsMatchingType (m_peerAddress))
-    {
-      m_txTraceWithAddresses (p, localAddress, InetSocketAddress (Ipv4Address::ConvertFrom (m_peerAddress), m_peerPort));
-    }
-  else if (Ipv6Address::IsMatchingType (m_peerAddress))
-    {
-      m_txTraceWithAddresses (p, localAddress, Inet6SocketAddress (Ipv6Address::ConvertFrom (m_peerAddress), m_peerPort));
-    }
-  m_socket->Send (p);
+
+  // send and use the flags param in the Send API to let the QUIC socket know
+  // about which stream should be used for data
+  int sent = m_socket->Send (p, m_streamId);
+
+  NS_ASSERT_MSG (sent - p->GetSize () == 0, "Could not send data (packet and sent size inconsistent)");
+
   ++m_sent;
 
   if (Ipv4Address::IsMatchingType (m_peerAddress))
     {
-      NS_LOG_INFO ("At time " << Simulator::Now ().As (Time::S) << " client sent " << m_size << " bytes to " <<
+      NS_LOG_INFO ("At time " << Simulator::Now ().GetSeconds () << "s client sent " << m_size << " bytes to " <<
                    Ipv4Address::ConvertFrom (m_peerAddress) << " port " << m_peerPort);
     }
   else if (Ipv6Address::IsMatchingType (m_peerAddress))
     {
-      NS_LOG_INFO ("At time " << Simulator::Now ().As (Time::S) << " client sent " << m_size << " bytes to " <<
+      NS_LOG_INFO ("At time " << Simulator::Now ().GetSeconds () << "s client sent " << m_size << " bytes to " <<
                    Ipv6Address::ConvertFrom (m_peerAddress) << " port " << m_peerPort);
     }
   else if (InetSocketAddress::IsMatchingType (m_peerAddress))
     {
-      NS_LOG_INFO ("At time " << Simulator::Now ().As (Time::S) << " client sent " << m_size << " bytes to " <<
+      NS_LOG_INFO ("At time " << Simulator::Now ().GetSeconds () << "s client sent " << m_size << " bytes to " <<
                    InetSocketAddress::ConvertFrom (m_peerAddress).GetIpv4 () << " port " << InetSocketAddress::ConvertFrom (m_peerAddress).GetPort ());
     }
   else if (Inet6SocketAddress::IsMatchingType (m_peerAddress))
     {
-      NS_LOG_INFO ("At time " << Simulator::Now ().As (Time::S) << " client sent " << m_size << " bytes to " <<
+      NS_LOG_INFO ("At time " << Simulator::Now ().GetSeconds () << "s client sent " << m_size << " bytes to " <<
                    Inet6SocketAddress::ConvertFrom (m_peerAddress).GetIpv6 () << " port " << Inet6SocketAddress::ConvertFrom (m_peerAddress).GetPort ());
     }
 
-  if (m_sent < m_count) 
+  uint8_t *buffer = new uint8_t[p->GetSize ()];
+  p->CopyData (buffer, p->GetSize ());
+  std::string s = std::string ((char*)buffer);
+  // NS_LOG_INFO ("Client sent: " << s << "");
+
+  if (m_sent < m_count)
     {
       ScheduleTransmit (m_interval);
     }
 }
 
 void
-UdpEchoClient::HandleRead (Ptr<Socket> socket)
+QuicEchoClient::HandleRead (Ptr<Socket> socket)
 {
-  NS_LOG_FUNCTION (this << socket);
+  NS_LOG_INFO ("##########  QUIC Echo Client RECEIVING at time " << Simulator::Now ().GetSeconds () << " ##########");
+  NS_LOG_FUNCTION (this);
+
   Ptr<Packet> packet;
   Address from;
-  Address localAddress;
   while ((packet = socket->RecvFrom (from)))
     {
+      packet->RemoveAllByteTags ();
+      packet->RemoveAllPacketTags ();
+
       if (InetSocketAddress::IsMatchingType (from))
         {
-          NS_LOG_INFO ("At time " << Simulator::Now ().As (Time::S) << " client received " << packet->GetSize () << " bytes from " <<
+          NS_LOG_INFO ("At time " << Simulator::Now ().GetSeconds () << "s client received " << packet->GetSize () << " bytes from " <<
                        InetSocketAddress::ConvertFrom (from).GetIpv4 () << " port " <<
                        InetSocketAddress::ConvertFrom (from).GetPort ());
         }
       else if (Inet6SocketAddress::IsMatchingType (from))
         {
-          NS_LOG_INFO ("At time " << Simulator::Now ().As (Time::S) << " client received " << packet->GetSize () << " bytes from " <<
+          NS_LOG_INFO ("At time " << Simulator::Now ().GetSeconds () << "s client received " << packet->GetSize () << " bytes from " <<
                        Inet6SocketAddress::ConvertFrom (from).GetIpv6 () << " port " <<
                        Inet6SocketAddress::ConvertFrom (from).GetPort ());
         }
-      socket->GetSockName (localAddress);
-      m_rxTrace (packet);
-      m_rxTraceWithAddresses (packet, from, localAddress);
+
+      uint8_t *buffer = new uint8_t[packet->GetSize ()];
+      packet->CopyData (buffer, packet->GetSize ());
+      std::string s = std::string ((char*)buffer);
+      NS_LOG_INFO ("Client received: " << s << "");
     }
+}
+
+void
+QuicEchoClient::SetStreamId (uint32_t streamId)
+{
+  NS_LOG_FUNCTION (this << streamId);
+  NS_ABORT_MSG_IF (streamId == 0, "Stream 0 cannot be used for application data");
+
+  m_streamId = streamId;
+}
+
+uint32_t
+QuicEchoClient::GetStreamId (void) const
+{
+  return m_streamId;
 }
 
 } // Namespace ns3

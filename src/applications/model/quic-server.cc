@@ -29,101 +29,101 @@
 #include "ns3/socket-factory.h"
 #include "ns3/packet.h"
 #include "ns3/uinteger.h"
+#include "ns3/string.h"
 #include "packet-loss-counter.h"
 
 #include "seq-ts-header.h"
-#include "udp-server.h"
+#include "quic-server.h"
 
 namespace ns3 {
 
-NS_LOG_COMPONENT_DEFINE ("UdpServer");
+NS_LOG_COMPONENT_DEFINE ("QuicServer");
 
-NS_OBJECT_ENSURE_REGISTERED (UdpServer);
+NS_OBJECT_ENSURE_REGISTERED (QuicServer);
 
 
 TypeId
-UdpServer::GetTypeId (void)
+QuicServer::GetTypeId (void)
 {
-  static TypeId tid = TypeId ("ns3::UdpServer")
+  static TypeId tid = TypeId ("ns3::QuicServer")
     .SetParent<Application> ()
-    .SetGroupName("Applications")
-    .AddConstructor<UdpServer> ()
+    .SetGroupName ("Applications")
+    .AddConstructor<QuicServer> ()
     .AddAttribute ("Port",
                    "Port on which we listen for incoming packets.",
                    UintegerValue (100),
-                   MakeUintegerAccessor (&UdpServer::m_port),
+                   MakeUintegerAccessor (&QuicServer::m_port),
                    MakeUintegerChecker<uint16_t> ())
     .AddAttribute ("PacketWindowSize",
                    "The size of the window used to compute the packet loss. This value should be a multiple of 8.",
-                   UintegerValue (32),
-                   MakeUintegerAccessor (&UdpServer::GetPacketWindowSize,
-                                         &UdpServer::SetPacketWindowSize),
+                   UintegerValue (128),
+                   MakeUintegerAccessor (&QuicServer::GetPacketWindowSize,
+                                         &QuicServer::SetPacketWindowSize),
                    MakeUintegerChecker<uint16_t> (8,256))
-    .AddTraceSource ("Rx", "A packet has been received",
-                     MakeTraceSourceAccessor (&UdpServer::m_rxTrace),
-                     "ns3::Packet::TracedCallback")
-    .AddTraceSource ("RxWithAddresses", "A packet has been received",
-                     MakeTraceSourceAccessor (&UdpServer::m_rxTraceWithAddresses),
-                     "ns3::Packet::TwoAddressTracedCallback")
+    .AddAttribute ("OutputFilename",
+                   "A string with the name of the file in which rx packets will be logged",
+                   StringValue ("QuicServerRx.txt"),
+                   MakeStringAccessor (&QuicServer::m_outFilename),
+                   MakeStringChecker ())
   ;
   return tid;
 }
 
-UdpServer::UdpServer ()
+QuicServer::QuicServer ()
   : m_lossCounter (0)
 {
   NS_LOG_FUNCTION (this);
-  m_received=0;
+  m_received = 0;
 }
 
-UdpServer::~UdpServer ()
+QuicServer::~QuicServer ()
 {
   NS_LOG_FUNCTION (this);
 }
 
 uint16_t
-UdpServer::GetPacketWindowSize () const
+QuicServer::GetPacketWindowSize () const
 {
   NS_LOG_FUNCTION (this);
   return m_lossCounter.GetBitMapSize ();
 }
 
 void
-UdpServer::SetPacketWindowSize (uint16_t size)
+QuicServer::SetPacketWindowSize (uint16_t size)
 {
   NS_LOG_FUNCTION (this << size);
   m_lossCounter.SetBitMapSize (size);
 }
 
 uint32_t
-UdpServer::GetLost (void) const
+QuicServer::GetLost (void) const
 {
   NS_LOG_FUNCTION (this);
   return m_lossCounter.GetLost ();
 }
 
 uint64_t
-UdpServer::GetReceived (void) const
+QuicServer::GetReceived (void) const
 {
   NS_LOG_FUNCTION (this);
   return m_received;
 }
 
 void
-UdpServer::DoDispose (void)
+QuicServer::DoDispose (void)
 {
   NS_LOG_FUNCTION (this);
   Application::DoDispose ();
 }
 
 void
-UdpServer::StartApplication (void)
+QuicServer::StartApplication (void)
 {
   NS_LOG_FUNCTION (this);
 
   if (m_socket == nullptr)
     {
-      TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
+      TypeId tid = TypeId::LookupByName ("ns3::QuicSocketFactory");
       m_socket = Socket::CreateSocket (GetNode (), tid);
       InetSocketAddress local = InetSocketAddress (Ipv4Address::GetAny (),
                                                    m_port);
@@ -133,26 +133,28 @@ UdpServer::StartApplication (void)
         }
     }
 
-  m_socket->SetRecvCallback (MakeCallback (&UdpServer::HandleRead, this));
+  m_socket->Listen ();
+  m_socket->SetRecvCallback (MakeCallback (&QuicServer::HandleRead, this));
 
   if (m_socket6 == nullptr)
     {
-      TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
+      TypeId tid = TypeId::LookupByName ("ns3::QuicSocketFactory");
       m_socket6 = Socket::CreateSocket (GetNode (), tid);
       Inet6SocketAddress local = Inet6SocketAddress (Ipv6Address::GetAny (),
-                                                   m_port);
+                                                     m_port);
       if (m_socket6->Bind (local) == -1)
         {
           NS_FATAL_ERROR ("Failed to bind socket");
         }
     }
 
-  m_socket6->SetRecvCallback (MakeCallback (&UdpServer::HandleRead, this));
+  m_socket->Listen ();
+  m_socket6->SetRecvCallback (MakeCallback (&QuicServer::HandleRead, this));
 
 }
 
 void
-UdpServer::StopApplication ()
+QuicServer::StopApplication ()
 {
   NS_LOG_FUNCTION (this);
 
@@ -163,44 +165,15 @@ UdpServer::StopApplication ()
 }
 
 void
-UdpServer::HandleRead (Ptr<Socket> socket)
+QuicServer::HandleRead (Ptr<Socket> socket)
 {
   NS_LOG_FUNCTION (this << socket);
   Ptr<Packet> packet;
   Address from;
-  Address localAddress;
   while ((packet = socket->RecvFrom (from)))
     {
-      socket->GetSockName (localAddress);
-      m_rxTrace (packet);
-      m_rxTraceWithAddresses (packet, from, localAddress);
       if (packet->GetSize () > 0)
         {
-          SeqTsHeader seqTs;
-          packet->RemoveHeader (seqTs);
-          uint32_t currentSequenceNumber = seqTs.GetSeq ();
-          if (InetSocketAddress::IsMatchingType (from))
-            {
-              NS_LOG_INFO ("TraceDelay: RX " << packet->GetSize () <<
-                           " bytes from "<< InetSocketAddress::ConvertFrom (from).GetIpv4 () <<
-                           " Sequence Number: " << currentSequenceNumber <<
-                           " Uid: " << packet->GetUid () <<
-                           " TXtime: " << seqTs.GetTs () <<
-                           " RXtime: " << Simulator::Now () <<
-                           " Delay: " << Simulator::Now () - seqTs.GetTs ());
-            }
-          else if (Inet6SocketAddress::IsMatchingType (from))
-            {
-              NS_LOG_INFO ("TraceDelay: RX " << packet->GetSize () <<
-                           " bytes from "<< Inet6SocketAddress::ConvertFrom (from).GetIpv6 () <<
-                           " Sequence Number: " << currentSequenceNumber <<
-                           " Uid: " << packet->GetUid () <<
-                           " TXtime: " << seqTs.GetTs () <<
-                           " RXtime: " << Simulator::Now () <<
-                           " Delay: " << Simulator::Now () - seqTs.GetTs ());
-            }
-
-          m_lossCounter.NotifyReceived (currentSequenceNumber);
           m_received++;
         }
     }

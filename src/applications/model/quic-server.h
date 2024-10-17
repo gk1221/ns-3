@@ -20,32 +20,33 @@
  *
  */
 
-#ifndef UDP_SERVER_H
-#define UDP_SERVER_H
+#ifndef QUIC_SERVER_H
+#define QUIC_SERVER_H
 
 #include "ns3/application.h"
 #include "ns3/event-id.h"
 #include "ns3/ptr.h"
 #include "ns3/address.h"
-#include "ns3/traced-callback.h"
 #include "packet-loss-counter.h"
+#include <iostream>
+#include <fstream>
 
 namespace ns3 {
 /**
  * \ingroup applications
- * \defgroup udpclientserver UdpClientServer
+ * \defgroup quicclientserver QuicClientServer
  */
 
 /**
- * \ingroup udpclientserver
+ * \ingroup quicclientserver
  *
- * \brief A UDP server, receives UDP packets from a remote host.
+ * \brief A QUIC server, receives QUIC packets from a remote host.
  *
- * UDP packets carry a 32bits sequence number followed by a 64bits time
+ * QUIC packets carry a 32bits sequence number followed by a 64bits time
  * stamp in their payloads. The application uses the sequence number
  * to determine if a packet is lost, and the time stamp to compute the delay.
  */
-class UdpServer : public Application
+class QuicServer : public Application
 {
 public:
   /**
@@ -53,8 +54,8 @@ public:
    * \return the object TypeId
    */
   static TypeId GetTypeId (void);
-  UdpServer ();
-  virtual ~UdpServer ();
+  QuicServer ();
+  virtual ~QuicServer ();
   /**
    * \brief Returns the number of lost packets
    * \return the number of lost packets
@@ -80,6 +81,7 @@ public:
    *  be a multiple of 8
    */
   void SetPacketWindowSize (uint16_t size);
+
 protected:
   virtual void DoDispose (void);
 
@@ -103,14 +105,14 @@ private:
   uint64_t m_received; //!< Number of received packets
   PacketLossCounter m_lossCounter; //!< Lost packet counter
 
-  /// Callbacks for tracing the packet Rx events
-  TracedCallback<Ptr<const Packet> > m_rxTrace;
+  Time m_txTs; //!< Time at which the last packet with header was received
+  // uint32_t m_currentSequenceNumber; //!< SN of the last packet with header
+  // uint32_t m_hSize; //!< Size of the last header received
 
-  /// Callbacks for tracing the packet Rx events, includes source and destination addresses
-  TracedCallback<Ptr<const Packet>, const Address &, const Address &> m_rxTraceWithAddresses;
-
+  std::string m_outFilename;
+  std::ofstream m_outFile;
 };
 
 } // namespace ns3
 
-#endif /* UDP_SERVER_H */
+#endif /* QUIC_SERVER_H */

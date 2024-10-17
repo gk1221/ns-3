@@ -20,8 +20,8 @@
  * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
 
-#ifndef BULK_SEND_HELPER_H
-#define BULK_SEND_HELPER_H
+#ifndef MPQUIC_BULK_SEND_HELPER_H
+#define MPQUIC_BULK_SEND_HELPER_H
 
 #include <stdint.h>
 #include <string>
@@ -39,11 +39,11 @@ namespace ns3 {
  * \brief A helper to make it easier to instantiate an ns3::BulkSendApplication
  * on a set of nodes.
  */
-class BulkSendHelper
+class MpquicBulkSendHelper
 {
 public:
   /**
-   * Create an BulkSendHelper to make it easier to work with BulkSendApplications
+   * Create an MpquicBulkSendHelper to make it easier to work with BulkSendApplications
    *
    * \param protocol the name of the protocol to use to send traffic
    *        by the applications. This string identifies the socket
@@ -52,7 +52,7 @@ public:
    * \param address the address of the remote node to send traffic
    *        to.
    */
-  BulkSendHelper (std::string protocol, Address address);
+  MpquicBulkSendHelper (std::string protocol, Address address);
 
   /**
    * Helper function used to set the underlying application attributes, 

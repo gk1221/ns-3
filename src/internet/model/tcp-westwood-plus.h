@@ -82,6 +82,16 @@ class TcpWestwoodPlus : public TcpNewReno
     ~TcpWestwoodPlus() override;
 
     /**
+     * \brief Protocol variant (Westwood or Westwood+)
+     */
+    enum ProtocolType 
+    {
+      WESTWOOD,
+      WESTWOODPLUS
+    };
+
+
+    /**
      * \brief Filter type (None or Tustin)
      */
     enum FilterType

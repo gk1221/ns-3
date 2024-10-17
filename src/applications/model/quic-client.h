@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef UDP_CLIENT_H
-#define UDP_CLIENT_H
+#ifndef QUIC_CLIENT_H
+#define QUIC_CLIENT_H
 
 #include "ns3/application.h"
 #include "ns3/event-id.h"
@@ -34,13 +34,13 @@ class Socket;
 class Packet;
 
 /**
- * \ingroup udpclientserver
+ * \ingroup quicclientserver
  *
- * \brief A Udp client. Sends UDP packet carrying sequence number and time stamp
+ * \brief A QUIC client. Sends QUIC packet carrying sequence number and time stamp
  *  in their payloads
  *
  */
-class UdpClient : public Application
+class QuicClient : public Application
 {
 public:
   /**
@@ -49,9 +49,9 @@ public:
    */
   static TypeId GetTypeId (void);
 
-  UdpClient ();
+  QuicClient ();
 
-  virtual ~UdpClient ();
+  virtual ~QuicClient ();
 
   /**
    * \brief set the remote address and port
@@ -64,11 +64,6 @@ public:
    * \param addr remote address
    */
   void SetRemote (Address addr);
-
-  /**
-   * \return the total bytes sent by this app
-   */
-  uint64_t GetTotalTx () const;
 
 protected:
   virtual void DoDispose (void);
@@ -88,14 +83,16 @@ private:
   uint32_t m_size; //!< Size of the sent packet (including the SeqTsHeader)
 
   uint32_t m_sent; //!< Counter for sent packets
-  uint64_t m_totalTx; //!< Total bytes sent
   Ptr<Socket> m_socket; //!< Socket
   Address m_peerAddress; //!< Remote peer address
   uint16_t m_peerPort; //!< Remote peer port
   EventId m_sendEvent; //!< Event to send the next packet
 
+  uint32_t m_numStreams;
+  uint32_t m_lastUsedStream;
+
 };
 
 } // namespace ns3
 
-#endif /* UDP_CLIENT_H */
+#endif /* QUIC_CLIENT_H */

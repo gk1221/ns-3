@@ -28,67 +28,72 @@
 #include "ns3/socket-factory.h"
 #include "ns3/packet.h"
 #include "ns3/uinteger.h"
-#include "udp-client.h"
+#include "quic-client.h"
 #include "seq-ts-header.h"
 #include <cstdlib>
 #include <cstdio>
 
 namespace ns3 {
 
-NS_LOG_COMPONENT_DEFINE ("UdpClient");
+NS_LOG_COMPONENT_DEFINE ("QuicClient");
 
-NS_OBJECT_ENSURE_REGISTERED (UdpClient);
+NS_OBJECT_ENSURE_REGISTERED (QuicClient);
 
 TypeId
-UdpClient::GetTypeId (void)
+QuicClient::GetTypeId (void)
 {
-  static TypeId tid = TypeId ("ns3::UdpClient")
+  static TypeId tid = TypeId ("ns3::QuicClient")
     .SetParent<Application> ()
-    .SetGroupName("Applications")
-    .AddConstructor<UdpClient> ()
+    .SetGroupName ("Applications")
+    .AddConstructor<QuicClient> ()
     .AddAttribute ("MaxPackets",
                    "The maximum number of packets the application will send",
                    UintegerValue (100),
-                   MakeUintegerAccessor (&UdpClient::m_count),
+                   MakeUintegerAccessor (&QuicClient::m_count),
                    MakeUintegerChecker<uint32_t> ())
     .AddAttribute ("Interval",
                    "The time to wait between packets", TimeValue (Seconds (1.0)),
-                   MakeTimeAccessor (&UdpClient::m_interval),
+                   MakeTimeAccessor (&QuicClient::m_interval),
                    MakeTimeChecker ())
     .AddAttribute ("RemoteAddress",
                    "The destination Address of the outbound packets",
                    AddressValue (),
-                   MakeAddressAccessor (&UdpClient::m_peerAddress),
+                   MakeAddressAccessor (&QuicClient::m_peerAddress),
                    MakeAddressChecker ())
     .AddAttribute ("RemotePort", "The destination port of the outbound packets",
                    UintegerValue (100),
-                   MakeUintegerAccessor (&UdpClient::m_peerPort),
+                   MakeUintegerAccessor (&QuicClient::m_peerPort),
                    MakeUintegerChecker<uint16_t> ())
     .AddAttribute ("PacketSize",
                    "Size of packets generated. The minimum packet size is 12 bytes which is the size of the header carrying the sequence number and the time stamp.",
                    UintegerValue (1024),
-                   MakeUintegerAccessor (&UdpClient::m_size),
-                   MakeUintegerChecker<uint32_t> (12,65507))
+                   MakeUintegerAccessor (&QuicClient::m_size),
+                   MakeUintegerChecker<uint32_t> (12,1500))
+    .AddAttribute ("NumStreams",
+                   "Number of streams to be used in the underlying QUIC socket",
+                   UintegerValue (1),
+                   MakeUintegerAccessor (&QuicClient::m_numStreams),
+                   MakeUintegerChecker<uint32_t> (1,20)) // TODO check the max value
   ;
   return tid;
 }
 
-UdpClient::UdpClient ()
+QuicClient::QuicClient ()
 {
   NS_LOG_FUNCTION (this);
   m_sent = 0;
-  m_totalTx = 0;
   m_socket = 0;
+  m_lastUsedStream = 1;
   m_sendEvent = EventId ();
 }
 
-UdpClient::~UdpClient ()
+QuicClient::~QuicClient ()
 {
   NS_LOG_FUNCTION (this);
 }
 
 void
-UdpClient::SetRemote (Address ip, uint16_t port)
+QuicClient::SetRemote (Address ip, uint16_t port)
 {
   NS_LOG_FUNCTION (this << ip << port);
   m_peerAddress = ip;
@@ -96,43 +101,43 @@ UdpClient::SetRemote (Address ip, uint16_t port)
 }
 
 void
-UdpClient::SetRemote (Address addr)
+QuicClient::SetRemote (Address addr)
 {
   NS_LOG_FUNCTION (this << addr);
   m_peerAddress = addr;
 }
 
 void
-UdpClient::DoDispose (void)
+QuicClient::DoDispose (void)
 {
   NS_LOG_FUNCTION (this);
   Application::DoDispose ();
 }
 
 void
-UdpClient::StartApplication (void)
+QuicClient::StartApplication (void)
 {
   NS_LOG_FUNCTION (this);
 
   if (m_socket == nullptr)
     {
-      TypeId tid = TypeId::LookupByName ("ns3::UdpSocketFactory");
+      TypeId tid = TypeId::LookupByName ("ns3::QuicSocketFactory");
       m_socket = Socket::CreateSocket (GetNode (), tid);
-      if (Ipv4Address::IsMatchingType(m_peerAddress) == true)
+      if (Ipv4Address::IsMatchingType (m_peerAddress) == true)
         {
           if (m_socket->Bind () == -1)
             {
               NS_FATAL_ERROR ("Failed to bind socket");
             }
-          m_socket->Connect (InetSocketAddress (Ipv4Address::ConvertFrom(m_peerAddress), m_peerPort));
+          m_socket->Connect (InetSocketAddress (Ipv4Address::ConvertFrom (m_peerAddress), m_peerPort));
         }
-      else if (Ipv6Address::IsMatchingType(m_peerAddress) == true)
+      else if (Ipv6Address::IsMatchingType (m_peerAddress) == true)
         {
           if (m_socket->Bind6 () == -1)
             {
               NS_FATAL_ERROR ("Failed to bind socket");
             }
-          m_socket->Connect (Inet6SocketAddress (Ipv6Address::ConvertFrom(m_peerAddress), m_peerPort));
+          m_socket->Connect (Inet6SocketAddress (Ipv6Address::ConvertFrom (m_peerAddress), m_peerPort));
         }
       else if (InetSocketAddress::IsMatchingType (m_peerAddress) == true)
         {
@@ -144,7 +149,7 @@ UdpClient::StartApplication (void)
         }
       else if (Inet6SocketAddress::IsMatchingType (m_peerAddress) == true)
         {
-          if (m_socket->Bind6 () == -1)
+          if (m_socket->Bind6 () == -1) \
             {
               NS_FATAL_ERROR ("Failed to bind socket");
             }
@@ -158,25 +163,30 @@ UdpClient::StartApplication (void)
 
   m_socket->SetRecvCallback (MakeNullCallback<void, Ptr<Socket> > ());
   m_socket->SetAllowBroadcast (true);
-  m_sendEvent = Simulator::Schedule (Seconds (0.0), &UdpClient::Send, this);
+  m_sendEvent = Simulator::Schedule (Seconds (0), &QuicClient::Send, this);
 }
 
 void
-UdpClient::StopApplication (void)
+QuicClient::StopApplication (void)
 {
   NS_LOG_FUNCTION (this);
   Simulator::Cancel (m_sendEvent);
+  if (m_socket != nullptr)
+    {
+      m_socket->Close ();
+      m_socket = 0;
+    }
 }
 
 void
-UdpClient::Send (void)
+QuicClient::Send (void)
 {
   NS_LOG_FUNCTION (this);
   NS_ASSERT (m_sendEvent.IsExpired ());
   SeqTsHeader seqTs;
   seqTs.SetSeq (m_sent);
-  Ptr<Packet> p = Create<Packet> (m_size-(8+4)); // 8+4 : the size of the seqTs header
-  p->AddHeader (seqTs);
+  Ptr<Packet> p = Create<Packet> (m_size); // 8+4 : the size of the seqTs header
+  // p->AddHeader (seqTs);
 
   std::stringstream peerAddressStringStream;
   if (Ipv4Address::IsMatchingType (m_peerAddress))
@@ -188,14 +198,13 @@ UdpClient::Send (void)
       peerAddressStringStream << Ipv6Address::ConvertFrom (m_peerAddress);
     }
 
-  if ((m_socket->Send (p)) >= 0)
+  if ((m_socket->Send (p, m_lastUsedStream)) >= 0)
     {
       ++m_sent;
-      m_totalTx += p->GetSize ();
       NS_LOG_INFO ("TraceDelay TX " << m_size << " bytes to "
                                     << peerAddressStringStream.str () << " Uid: "
                                     << p->GetUid () << " Time: "
-                                    << (Simulator::Now ()).As (Time::S));
+                                    << (Simulator::Now ()).GetSeconds ());
 
     }
   else
@@ -204,18 +213,17 @@ UdpClient::Send (void)
                                           << peerAddressStringStream.str ());
     }
 
+  // apply a round robin policy for the streams (i.e., one packet per stream)
+  m_lastUsedStream++;
+  if (m_lastUsedStream > m_numStreams)
+    {
+      m_lastUsedStream = 1;
+    }
+
   if (m_sent < m_count)
     {
-      m_sendEvent = Simulator::Schedule (m_interval, &UdpClient::Send, this);
+      m_sendEvent = Simulator::Schedule (m_interval, &QuicClient::Send, this);
     }
 }
-
-
-uint64_t
-UdpClient::GetTotalTx () const
-{
-  return m_totalTx;
-}
-
 
 } // Namespace ns3

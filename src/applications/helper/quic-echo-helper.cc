@@ -1,7 +1,5 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
- * Copyright (c) 2008 INRIA
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation;
@@ -15,45 +13,51 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Author: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
+ * Authors: Davide Marcato <davide.marcato.4@studenti.unipd.it>
+ *          Stefano Ravazzolo <stefano.ravazzolo@studenti.unipd.it>
+ *          Alvise De Biasio <alvise.debiasio@studenti.unipd.it>
  */
-#include "udp-echo-helper.h"
-#include "ns3/udp-echo-server.h"
-#include "ns3/udp-echo-client.h"
+
+#include "quic-echo-helper.h"
+#include "ns3/quic-echo-server.h"
+#include "ns3/quic-echo-client.h"
 #include "ns3/uinteger.h"
 #include "ns3/names.h"
+#include "ns3/log.h"
+
+NS_LOG_COMPONENT_DEFINE ("QuicEchoHelper");
 
 namespace ns3 {
 
-UdpEchoServerHelper::UdpEchoServerHelper (uint16_t port)
+QuicEchoServerHelper::QuicEchoServerHelper (uint16_t port)
 {
-  m_factory.SetTypeId (UdpEchoServer::GetTypeId ());
+  m_factory.SetTypeId (QuicEchoServer::GetTypeId ());
   SetAttribute ("Port", UintegerValue (port));
 }
 
-void 
-UdpEchoServerHelper::SetAttribute (
-  std::string name, 
+void
+QuicEchoServerHelper::SetAttribute (
+  std::string name,
   const AttributeValue &value)
 {
   m_factory.Set (name, value);
 }
 
 ApplicationContainer
-UdpEchoServerHelper::Install (Ptr<Node> node) const
+QuicEchoServerHelper::Install (Ptr<Node> node) const
 {
   return ApplicationContainer (InstallPriv (node));
 }
 
 ApplicationContainer
-UdpEchoServerHelper::Install (std::string nodeName) const
+QuicEchoServerHelper::Install (std::string nodeName) const
 {
   Ptr<Node> node = Names::Find<Node> (nodeName);
   return ApplicationContainer (InstallPriv (node));
 }
 
 ApplicationContainer
-UdpEchoServerHelper::Install (NodeContainer c) const
+QuicEchoServerHelper::Install (NodeContainer c) const
 {
   ApplicationContainer apps;
   for (NodeContainer::Iterator i = c.Begin (); i != c.End (); ++i)
@@ -65,68 +69,69 @@ UdpEchoServerHelper::Install (NodeContainer c) const
 }
 
 Ptr<Application>
-UdpEchoServerHelper::InstallPriv (Ptr<Node> node) const
+QuicEchoServerHelper::InstallPriv (Ptr<Node> node) const
 {
-  Ptr<Application> app = m_factory.Create<UdpEchoServer> ();
-  node->AddApplication (app);
 
+  Ptr<Application> app = m_factory.Create<QuicEchoServer> ();
+  node->AddApplication (app);
+  NS_LOG_INFO ("Installing app " << app << " in node " << node);
   return app;
 }
 
-UdpEchoClientHelper::UdpEchoClientHelper (Address address, uint16_t port)
+QuicEchoClientHelper::QuicEchoClientHelper (Address address, uint16_t port)
 {
-  m_factory.SetTypeId (UdpEchoClient::GetTypeId ());
+  m_factory.SetTypeId (QuicEchoClient::GetTypeId ());
   SetAttribute ("RemoteAddress", AddressValue (address));
   SetAttribute ("RemotePort", UintegerValue (port));
 }
 
-UdpEchoClientHelper::UdpEchoClientHelper (Address address)
+QuicEchoClientHelper::QuicEchoClientHelper (Address address)
 {
-  m_factory.SetTypeId (UdpEchoClient::GetTypeId ());
+  m_factory.SetTypeId (QuicEchoClient::GetTypeId ());
   SetAttribute ("RemoteAddress", AddressValue (address));
 }
 
-void 
-UdpEchoClientHelper::SetAttribute (
-  std::string name, 
+void
+QuicEchoClientHelper::SetAttribute (
+  std::string name,
   const AttributeValue &value)
 {
   m_factory.Set (name, value);
 }
 
 void
-UdpEchoClientHelper::SetFill (Ptr<Application> app, std::string fill)
+QuicEchoClientHelper::SetFill (Ptr<Application> app, std::string fill)
 {
-  app->GetObject<UdpEchoClient>()->SetFill (fill);
+  app->GetObject<QuicEchoClient>()->SetFill (fill);
 }
 
 void
-UdpEchoClientHelper::SetFill (Ptr<Application> app, uint8_t fill, uint32_t dataLength)
+QuicEchoClientHelper::SetFill (Ptr<Application> app, uint8_t fill, uint32_t dataLength)
 {
-  app->GetObject<UdpEchoClient>()->SetFill (fill, dataLength);
+  app->GetObject<QuicEchoClient>()->SetFill (fill, dataLength);
 }
 
 void
-UdpEchoClientHelper::SetFill (Ptr<Application> app, uint8_t *fill, uint32_t fillLength, uint32_t dataLength)
+QuicEchoClientHelper::SetFill (Ptr<Application> app, uint8_t *fill, uint32_t fillLength, uint32_t dataLength)
 {
-  app->GetObject<UdpEchoClient>()->SetFill (fill, fillLength, dataLength);
+  app->GetObject<QuicEchoClient>()->SetFill (fill, fillLength, dataLength);
 }
 
 ApplicationContainer
-UdpEchoClientHelper::Install (Ptr<Node> node) const
+QuicEchoClientHelper::Install (Ptr<Node> node) const
 {
   return ApplicationContainer (InstallPriv (node));
 }
 
 ApplicationContainer
-UdpEchoClientHelper::Install (std::string nodeName) const
+QuicEchoClientHelper::Install (std::string nodeName) const
 {
   Ptr<Node> node = Names::Find<Node> (nodeName);
   return ApplicationContainer (InstallPriv (node));
 }
 
 ApplicationContainer
-UdpEchoClientHelper::Install (NodeContainer c) const
+QuicEchoClientHelper::Install (NodeContainer c) const
 {
   ApplicationContainer apps;
   for (NodeContainer::Iterator i = c.Begin (); i != c.End (); ++i)
@@ -138,9 +143,9 @@ UdpEchoClientHelper::Install (NodeContainer c) const
 }
 
 Ptr<Application>
-UdpEchoClientHelper::InstallPriv (Ptr<Node> node) const
+QuicEchoClientHelper::InstallPriv (Ptr<Node> node) const
 {
-  Ptr<Application> app = m_factory.Create<UdpEchoClient> ();
+  Ptr<Application> app = m_factory.Create<QuicEchoClient> ();
   node->AddApplication (app);
 
   return app;

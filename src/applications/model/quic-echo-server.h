@@ -1,7 +1,5 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
- * Copyright 2007 University of Washington
- * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation;
@@ -14,16 +12,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * Authors: Davide Marcato <davide.marcato.4@studenti.unipd.it>
+ *          Stefano Ravazzolo <stefano.ravazzolo@studenti.unipd.it>
+ *          Alvise De Biasio <alvise.debiasio@studenti.unipd.it>
  */
 
-#ifndef UDP_ECHO_SERVER_H
-#define UDP_ECHO_SERVER_H
+#ifndef QUIC_ECHO_SERVER_H
+#define QUIC_ECHO_SERVER_H
 
 #include "ns3/application.h"
 #include "ns3/event-id.h"
 #include "ns3/ptr.h"
 #include "ns3/address.h"
-#include "ns3/traced-callback.h"
 
 namespace ns3 {
 
@@ -31,17 +32,17 @@ class Socket;
 class Packet;
 
 /**
- * \ingroup applications 
- * \defgroup udpecho UdpEcho
+ * \ingroup applications
+ * \defgroup quicecho QuicEcho
  */
 
 /**
- * \ingroup udpecho
- * \brief A Udp Echo server
+ * \ingroup quicecho
+ * \brief A Quic Echo server
  *
  * Every packet received is sent back.
  */
-class UdpEchoServer : public Application 
+class QuicEchoServer : public Application
 {
 public:
   /**
@@ -49,8 +50,24 @@ public:
    * \return the object TypeId
    */
   static TypeId GetTypeId (void);
-  UdpEchoServer ();
-  virtual ~UdpEchoServer ();
+  QuicEchoServer ();
+  virtual ~QuicEchoServer ();
+
+  Ptr<Socket> GetSocket ();
+
+  /**
+   * Set the ID of the stream to be used in the underlying QUIC socket
+   *
+   * \param streamId the ID of the stream (>0)
+   */
+  void SetStreamId (uint32_t streamId);
+
+  /**
+   * Get the stream ID to be used in the underlying QUIC socket
+   *
+   * \return the stream ID
+   */
+  uint32_t GetStreamId (void) const;
 
 protected:
   virtual void DoDispose (void);
@@ -74,14 +91,10 @@ private:
   Ptr<Socket> m_socket6; //!< IPv6 Socket
   Address m_local; //!< local multicast address
 
-  /// Callbacks for tracing the packet Rx events
-  TracedCallback<Ptr<const Packet> > m_rxTrace;
-
-  /// Callbacks for tracing the packet Rx events, includes source and destination addresses
-  TracedCallback<Ptr<const Packet>, const Address &, const Address &> m_rxTraceWithAddresses;
+  uint32_t m_streamId;
 };
 
 } // namespace ns3
 
-#endif /* UDP_ECHO_SERVER_H */
+#endif /* QUIC_ECHO_SERVER_H */
 

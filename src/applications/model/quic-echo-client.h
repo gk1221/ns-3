@@ -1,7 +1,5 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
- * Copyright 2007 University of Washington
- * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation;
@@ -14,10 +12,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * Authors: Davide Marcato <davide.marcato.4@studenti.unipd.it>
+ *          Stefano Ravazzolo <stefano.ravazzolo@studenti.unipd.it>
+ *          Alvise De Biasio <alvise.debiasio@studenti.unipd.it>
  */
 
-#ifndef UDP_ECHO_CLIENT_H
-#define UDP_ECHO_CLIENT_H
+#ifndef QUIC_ECHO_CLIENT_H
+#define QUIC_ECHO_CLIENT_H
 
 #include "ns3/application.h"
 #include "ns3/event-id.h"
@@ -31,12 +33,12 @@ class Socket;
 class Packet;
 
 /**
- * \ingroup udpecho
- * \brief A Udp Echo client
+ * \ingroup quicecho
+ * \brief A Quic Echo client
  *
  * Every packet sent should be returned by the server and received here.
  */
-class UdpEchoClient : public Application 
+class QuicEchoClient : public Application
 {
 public:
   /**
@@ -45,9 +47,9 @@ public:
    */
   static TypeId GetTypeId (void);
 
-  UdpEchoClient ();
+  QuicEchoClient ();
 
-  virtual ~UdpEchoClient ();
+  virtual ~QuicEchoClient ();
 
   /**
    * \brief set the remote address and port
@@ -76,8 +78,8 @@ public:
   /**
    * Get the number of data bytes that will be sent to the server.
    *
-   * \warning The number of bytes may be modified by calling any one of the 
-   * SetFill methods.  If you have called SetFill, then the number of 
+   * \warning The number of bytes may be modified by calling any one of the
+   * SetFill methods.  If you have called SetFill, then the number of
    * data bytes will correspond to the size of an initialized data buffer.
    * If you have not called a SetFill method, the number of data bytes will
    * correspond to the number of don't care bytes that will be sent.
@@ -87,7 +89,7 @@ public:
   uint32_t GetDataSize (void) const;
 
   /**
-   * Set the data fill of the packet (what is sent as data to the server) to 
+   * Set the data fill of the packet (what is sent as data to the server) to
    * the zero-terminated contents of the fill string string.
    *
    * \warning The size of resulting echo packets will be automatically adjusted
@@ -99,10 +101,10 @@ public:
   void SetFill (std::string fill);
 
   /**
-   * Set the data fill of the packet (what is sent as data to the server) to 
-   * the repeated contents of the fill byte.  i.e., the fill byte will be 
+   * Set the data fill of the packet (what is sent as data to the server) to
+   * the repeated contents of the fill byte.  i.e., the fill byte will be
    * used to initialize the contents of the data packet.
-   * 
+   *
    * \warning The size of resulting echo packets will be automatically adjusted
    * to reflect the dataSize parameter -- this means that the PacketSize
    * attribute may be changed as a result of this call.
@@ -116,7 +118,7 @@ public:
    * Set the data fill of the packet (what is sent as data to the server) to
    * the contents of the fill buffer, repeated as many times as is required.
    *
-   * Initializing the packet to the contents of a provided single buffer is 
+   * Initializing the packet to the contents of a provided single buffer is
    * accomplished by setting the fillSize set to your desired dataSize
    * (and providing an appropriate buffer).
    *
@@ -129,6 +131,24 @@ public:
    * \param dataSize The desired size of the final echo data.
    */
   void SetFill (uint8_t *fill, uint32_t fillSize, uint32_t dataSize);
+
+  void ScheduleClosing (Time dt);
+
+  void ScheduleRestart (Time dt);
+
+  /**
+   * Set the ID of the stream to be used in the underlying QUIC socket
+   *
+   * \param streamId the ID of the stream (>0)
+   */
+  void SetStreamId (uint32_t streamId);
+
+  /**
+   * Get the stream ID to be used in the underlying QUIC socket
+   *
+   * \return the stream ID
+   */
+  uint32_t GetStreamId (void) const;
 
 protected:
   virtual void DoDispose (void);
@@ -143,18 +163,21 @@ private:
    * \param dt time interval between packets.
    */
   void ScheduleTransmit (Time dt);
+
   /**
    * \brief Send a packet
    */
   void Send (void);
+  void Close (void);
+  void Restart (void);
 
   /**
-   * \brief Handle a packet reception.
-   *
-   * This function is called by lower layers.
-   *
-   * \param socket the socket the packet was received to.
-   */
+ * \brief Handle a packet reception.
+ *
+ * This function is called by lower layers.
+ *
+ * \param socket the socket the packet was received to.
+ */
   void HandleRead (Ptr<Socket> socket);
 
   uint32_t m_count; //!< Maximum number of packets the application will send
@@ -169,21 +192,16 @@ private:
   Address m_peerAddress; //!< Remote peer address
   uint16_t m_peerPort; //!< Remote peer port
   EventId m_sendEvent; //!< Event to send the next packet
+  EventId m_closeEvent;
+  EventId m_connectEvent;
+
 
   /// Callbacks for tracing the packet Tx events
   TracedCallback<Ptr<const Packet> > m_txTrace;
 
-  /// Callbacks for tracing the packet Rx events
-  TracedCallback<Ptr<const Packet> > m_rxTrace;
-  
-  /// Callbacks for tracing the packet Tx events, includes source and destination addresses
-  TracedCallback<Ptr<const Packet>, const Address &, const Address &> m_txTraceWithAddresses;
-  
-  /// Callbacks for tracing the packet Rx events, includes source and destination addresses
-  TracedCallback<Ptr<const Packet>, const Address &, const Address &> m_rxTraceWithAddresses;
-
+  uint32_t m_streamId;
 };
 
 } // namespace ns3
 
-#endif /* UDP_ECHO_CLIENT_H */
+#endif /* QUIC_ECHO_CLIENT_H */
