@@ -9,8 +9,8 @@ def main(argv):
     udpPacketSizeBe = 1252
     lambdaULL = 10000
     lambdaBe = 10000
-    simTime = ns.core.MilliSeconds(1000)
-    udpAppStartTime = ns.core.MilliSeconds(400)
+    simTime = ns.MilliSeconds(1000)
+    udpAppStartTime = ns.MilliSeconds(400)
 
     # NR parameters (Ref: 3GPP TR 38.901 V17.0.0 (Release 17)
     numerologyBwp1 = 4
@@ -25,7 +25,7 @@ def main(argv):
     outputDir = "./"
 
     # Parse command-line arguments (you may add more based on your needs)
-    cmd = ns.core.CommandLine()
+    cmd = ns.CommandLine()
     cmd.AddValue("gNbNum", "The number of gNbs in multiple-ue topology", gNbNum)
     cmd.AddValue("ueNumPergNb", "The number of UE per gNb in multiple-ue topology", ueNumPergNb)
     cmd.AddValue("logging", "Enable logging", logging)
@@ -48,13 +48,13 @@ def main(argv):
     cmd.Parse(argv)
 
     # Check frequency range
-    ns.core.NS_ABORT_IF(centralFrequencyBand1 < 0.5e9 or centralFrequencyBand1 > 100e9)
-    ns.core.NS_ABORT_IF(centralFrequencyBand2 < 0.5e9 or centralFrequencyBand2 > 100e9)
+    ns.NS_ABORT_IF(centralFrequencyBand1 < 0.5e9 or centralFrequencyBand1 > 100e9)
+    ns.NS_ABORT_IF(centralFrequencyBand2 < 0.5e9 or centralFrequencyBand2 > 100e9)
 
     if logging:
-        ns.core.LogComponentEnable("UdpClient", ns.core.LOG_LEVEL_INFO)
-        ns.core.LogComponentEnable("UdpServer", ns.core.LOG_LEVEL_INFO)
-        ns.core.LogComponentEnable("LtePdcp", ns.core.LOG_LEVEL_INFO)
+        ns.LogComponentEnable("UdpClient", ns.LOG_LEVEL_INFO)
+        ns.LogComponentEnable("UdpServer", ns.LOG_LEVEL_INFO)
+        ns.LogComponentEnable("LtePdcp", ns.LOG_LEVEL_INFO)
 
     # NR setup and grid scenario creation
     gridScenario = ns.nr.GridScenarioHelper()
@@ -112,9 +112,9 @@ def main(argv):
     # This includes setting attributes for antennas, installing applications,
     # traffic generation, running the simulator, and collecting statistics.
 
-    ns.core.Simulator.Stop(simTime)
-    ns.core.Simulator.Run()
-    ns.core.Simulator.Destroy()
+    ns.Simulator.Stop(simTime)
+    ns.Simulator.Run()
+    ns.Simulator.Destroy()
 
 if __name__ == '__main__':
     import sys

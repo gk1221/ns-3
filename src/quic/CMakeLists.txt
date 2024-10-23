@@ -61,7 +61,3 @@ build_lib(
     test/quic-header-test.cc
 )
 
-# 添加 Eigen 库的 include 路径
-find_package(Eigen3 REQUIRED)
-include_directories(${EIGEN3_INCLUDE_DIR})
-message(STATUS "Eigen include dir: ${EIGEN3_INCLUDE_DIR}")

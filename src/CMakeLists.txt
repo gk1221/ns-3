@@ -122,3 +122,9 @@ endif()
 if(${NS3_FETCH_OPTIONAL_COMPONENTS})
   add_dependency_to_optional_modules_dependencies()
 endif()
+
+# 添加 Eigen 库的 include 路径
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(Eigen3 REQUIRED eigen3)
+include_directories(${Eigen3_INCLUDE_DIRS})
+message(STATUS "Eigen include dir: ${Eigen3_INCLUDE_DIRS}")
