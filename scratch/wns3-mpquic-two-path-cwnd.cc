@@ -123,7 +123,7 @@ main (int argc, char *argv[])
     int bVar = 2;
     int bLambda = 100;
     int mrate = 52428800;
-    int ccType = QuicSocketBase::OLIA;
+    int ccType = QuicSocketBase::QuicNewReno;
     int mselect = 3;
     int seed = 1;
     TypeId ccTypeId = MpQuicCongestionOps::GetTypeId ();
@@ -341,11 +341,19 @@ main (int argc, char *argv[])
     AsciiTraceHelper asciiTraceHelper;
     std::ostringstream fileName;
     fileName <<  "./scheduler" << schedulerType << "-rx" << ".txt";
+    NS_LOG_INFO("\nfileName: " << fileName.str());
     Ptr<OutputStreamWrapper> stream = asciiTraceHelper.CreateFileStream (fileName.str ());
-  
+    if(stream==nullptr){
+        NS_LOG_ERROR("stream is nullptr before use");
+    }
+    //NS_ASSERT_MSG(stream==nullptr, "stream is nullptr before use");
 
     FlowMonitorHelper flowmon;
     Ptr<FlowMonitor> monitor = flowmon.InstallAll ();
+    if(monitor==nullptr){
+        NS_LOG_ERROR("monitor is nullptr before use");
+    }
+    //NS_ASSERT_MSG(monitor==nullptr, "monitor is nullptr before use");
     ThroughputMonitor(&flowmon, monitor, stream); 
     
 
@@ -359,9 +367,13 @@ main (int argc, char *argv[])
     Simulator::Stop (Seconds(simulationEndTime));
     NS_LOG_INFO("\n\n#################### STARTING RUN ####################\n\n");
     Simulator::Run ();
+    
 
     monitor->CheckForLostPackets ();
     Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowmon.GetClassifier ());
+    if(classifier==nullptr){
+        NS_LOG_ERROR("classifier is nullptr before use");
+    }
     FlowMonitor::FlowStatsContainer stats = monitor->GetFlowStats ();
 
     for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator i = stats.begin (); i != stats.end (); ++i)

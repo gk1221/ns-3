@@ -1,0 +1,3 @@
+[0/2] Re-checking globbed directories...
+ninja: no work to do.
+Command 'build/scratch/ns3.42-wns3-mpquic-one-path-default --Seed= --Size=5242800 --SchedulerType=0 --Rate0a=5.0 --Delay0a=50.0 --Rate0b=6.0 --Delay0b=55.0 --LossRate=0.000000' returned non-zero exit status 1.

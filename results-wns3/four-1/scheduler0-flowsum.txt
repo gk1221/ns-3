@@ -1,0 +1,8 @@
+wns3-mpquic-four-path:main(): Create nodes.
++0.000000000s -1 wns3-mpquic-four-path:main(): Create channels.
++0.000000000s -1 wns3-mpquic-four-path:main(): Assign IP Addresses.
++0.000000000s -1 wns3-mpquic-four-path:main(): 
+
+#################### STARTING RUN ####################
+
+

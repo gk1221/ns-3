@@ -12,15 +12,16 @@ Size=5242800
 SEED=$1
 
 
-mkdir ${DIR}
+mkdir -p ${DIR}
 for i in 0
 do
     LOG="$i"
     LOG1="scheduler${LOG}-queue.txt"
     LOG2="scheduler${LOG}-flowsum.txt"
-    ./waf --run "scratch/wns3-mpquic-four-path.cc --Seed=$SEED --Size=$Size --SchedulerType=${LOG} --Rate0=${RATE0} --Delay0=${DELAY0} --Rate1=${RATE1} --Delay1=${DELAY1} --LossRate=$LOSS" >$LOG1 2>$LOG2
+    ./ns3 run "scratch/wns3-mpquic-four-path.cc --Seed=$SEED --Size=$Size --SchedulerType=${LOG} --Rate0=${RATE0} --Delay0=${DELAY0} --Rate1=${RATE1} --Delay1=${DELAY1} --LossRate=$LOSS" >$LOG1 2>$LOG2
 
     FILE="scheduler${LOG}-rx.txt"
+    touch $FILE
     cp $FILE "${DIR}${FILE}"
     rm $FILE
 

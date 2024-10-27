@@ -18,7 +18,7 @@ Size="0"
 SEED=$2
 CWND=$1
 
-mkdir ${DIR}
+mkdir -p ${DIR}
 for i in 0
 do
     LOG="$i"

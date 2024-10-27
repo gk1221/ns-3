@@ -715,7 +715,7 @@ template <typename T>
 T*
 Ptr<T>::operator->()
 {
-    NS_ASSERT_MSG(m_ptr, "Attempted to dereference zero pointer");
+    NS_ASSERT_MSG(m_ptr, "Attempted to dereference zero pointer 1");
     return m_ptr;
 }
 
@@ -723,7 +723,7 @@ template <typename T>
 T*
 Ptr<T>::operator->() const
 {
-    NS_ASSERT_MSG(m_ptr, "Attempted to dereference zero pointer");
+    NS_ASSERT_MSG(m_ptr, "Attempted to dereference zero pointer 2");
     return m_ptr;
 }
 
@@ -731,7 +731,7 @@ template <typename T>
 T&
 Ptr<T>::operator*() const
 {
-    NS_ASSERT_MSG(m_ptr, "Attempted to dereference zero pointer");
+    NS_ASSERT_MSG(m_ptr, "Attempted to dereference zero pointer 3");
     return *m_ptr;
 }
 
@@ -739,7 +739,7 @@ template <typename T>
 T&
 Ptr<T>::operator*()
 {
-    NS_ASSERT_MSG(m_ptr, "Attempted to dereference zero pointer");
+    NS_ASSERT_MSG(m_ptr, "Attempted to dereference zero pointer 4");
     return *m_ptr;
 }
 

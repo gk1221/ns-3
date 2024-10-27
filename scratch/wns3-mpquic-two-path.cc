@@ -64,9 +64,14 @@ void ThroughputMonitor (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, P
 
 void
 ModifyLinkRate(NetDeviceContainer *ptp, DataRate lr, Time delay) {
+    if (ptp == nullptr || ptp->GetN() == 0 || ptp->Get(0) == nullptr) {
+        NS_LOG_ERROR("Null pointer encountered in ModifyLinkRate.");
+        return;
+    }NS_LOG_UNCOND("Setting DataRate to: " << lr);
     StaticCast<PointToPointNetDevice>(ptp->Get(0))->SetDataRate(lr);
+    NS_LOG_UNCOND("Setting Delay to: " << delay);
     StaticCast<PointToPointChannel>(StaticCast<PointToPointNetDevice>(ptp->Get(0))->GetChannel())->SetAttribute("Delay", TimeValue(delay));
-}
+    }
 
 int
 main (int argc, char *argv[])
@@ -220,6 +225,13 @@ main (int argc, char *argv[])
     NetDeviceContainer d6d9 = p2p.Install (n6n9);
     d6d9.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (em));
 
+    if (d1d8.GetN() == 0 || d1d8.Get(0) == nullptr) {
+        NS_LOG_ERROR("d1d8 not properly initialized.");
+    }
+    if (d6d9.GetN() == 0 || d6d9.Get(0) == nullptr) {
+        NS_LOG_ERROR("d6d9 not properly initialized.");
+    }
+
     p2p.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
     p2p.SetChannelAttribute ("Delay", StringValue ("0ms"));
     NetDeviceContainer d4d1 = p2p.Install (n4n1);
@@ -311,15 +323,17 @@ main (int argc, char *argv[])
     ThroughputMonitor(&flowmon, monitor, stream); 
     
 
-    for (double i = 1; i < simulationEndTime; i = i+0.1){
-        Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d1d8, DataRate(std::to_string(rateVal0->GetValue())+"Mbps"),  Time::FromInteger(delayVal0->GetValue(), Time::MS));
-        Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d6d9, DataRate(std::to_string(rateVal1->GetValue())+"Mbps"),Time::FromInteger(delayVal1->GetValue(), Time::MS));
+    for (double i = 1; i < simulationEndTime; i = i+2){
+        Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d1d8, DataRate(std::to_string(rateVal0->GetValue())+"Mbps"), Time::FromInteger(delayVal0->GetValue(), Time::MS));
+        Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d6d9, DataRate(std::to_string(rateVal1->GetValue())+"Mbps"), Time::FromInteger(delayVal1->GetValue(), Time::MS));
     }
 
 
     Simulator::Stop (Seconds(simulationEndTime));
     NS_LOG_INFO("\n\n#################### STARTING RUN ####################\n\n");
-    Simulator::Run ();
+    NS_LOG_UNCOND("Starting simulation...");
+    Simulator::Run();
+    NS_LOG_UNCOND("Simulation finished.");
 
     monitor->CheckForLostPackets ();
     Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowmon.GetClassifier ());
