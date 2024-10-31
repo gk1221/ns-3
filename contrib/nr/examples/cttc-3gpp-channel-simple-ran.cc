@@ -50,6 +50,9 @@ static bool g_rxRxRlcPDUCallbackCalled = false;
  * @param addr Destination address for a packet.
  * @param packetSize The packet size.
  */
+int Etag1 = 1;
+int Etag2 = 1;
+
 static void
 SendPacket(Ptr<NetDevice> device, Address& addr, uint32_t packetSize)
 {
@@ -57,8 +60,11 @@ SendPacket(Ptr<NetDevice> device, Address& addr, uint32_t packetSize)
     Ipv4Header ipv4Header;
     ipv4Header.SetProtocol(UdpL4Protocol::PROT_NUMBER);
     pkt->AddHeader(ipv4Header);
-    EpsBearerTag tag(1, 1);
+    EpsBearerTag tag(Etag1++, Etag2++);
     pkt->AddPacketTag(tag);
+    std::cout << "Packet tags before sending: ";
+    pkt->PrintPacketTags(std::cout);
+    std::cout << std::endl;
     device->Send(pkt, addr, Ipv4L3Protocol::PROT_NUMBER);
 }
 
