@@ -1,2 +1,3 @@
 Time	Entity	Frame	SF	Slot	VarTTI	nodeId	RNTI	bwpId	MsgType
 0.018	ENB MAC Txed	1	8	0	2	1	0	RAR
+0.018	ENB MAC Txed	1	8	0	2	2	0	RAR
