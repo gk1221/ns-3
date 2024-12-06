@@ -497,6 +497,9 @@ EpcPgwApplication::AddUe(uint64_t imsi)
 void
 EpcPgwApplication::SetUeAddress(uint64_t imsi, Ipv4Address ueAddr)
 {
+    NS_LOG_UNCOND("Attempting to set address for IMSI: " << imsi);
+    NS_LOG_UNCOND("Current IMSI Map size: " << m_ueInfoByImsiMap.size());
+    
     NS_LOG_FUNCTION(this << imsi << ueAddr);
     auto ueit = m_ueInfoByImsiMap.find(imsi);
     NS_ASSERT_MSG(ueit != m_ueInfoByImsiMap.end(), "unknown IMSI" << imsi);

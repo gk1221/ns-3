@@ -134,9 +134,6 @@ ConnectUlPdcpRlcTraces()
 int
 main(int argc, char* argv[])
 {
-       //LogComponentEnable("EpcPgwApplication", LOG_LEVEL_ALL);
-
-
     uint16_t numerologyBwp1 = 0;
     uint32_t udpPacketSize = 1000;
     double centralFrequencyBand1 = 28e9;
@@ -168,7 +165,7 @@ main(int argc, char* argv[])
     // must be set before BS number
     gridScenario.SetSectorization(GridScenarioHelper::SINGLE);
     gridScenario.SetBsNumber(gNbNum);
-    gridScenario.SetUtNumber(ueNumPergNb * gNbNum); //all number of UE gnb provide(1UE only to 1 gNB)
+    gridScenario.SetUtNumber(ueNumPergNb * gNbNum);
     gridScenario.SetScenarioHeight(3); // Create a 3x3 scenario where the UE will
     gridScenario.SetScenarioLength(3); // be distributed.
     randomStream += gridScenario.AssignStreams(randomStream);
@@ -245,8 +242,10 @@ main(int argc, char* argv[])
 
     InternetStackHelper internet;
     internet.Install(gridScenario.GetUserTerminals());
-    Ipv4InterfaceContainer ueIpIface;
-    ueIpIface = epcHelper->AssignUeIpv4Address(NetDeviceContainer(ueNetDev));
+    Ipv4InterfaceContainer ueIpIface = epcHelper->AssignUeIpv4Address(NetDeviceContainer(ueNetDev));
+
+    QuicEchoServerHelper echoServer (9);
+    ApplicationContainer serverApps = echoServer.Install (nodes.Get (1));
 
     if (enableUl)
     {
@@ -277,11 +276,12 @@ main(int argc, char* argv[])
     {
         std::cout << "\n Sending data in downlink." << std::endl;
         Simulator::Schedule(Seconds(0.2), &ConnectPdcpRlcTraces);
+
     }
 
     nrHelper->EnableTraces();
 
-    Simulator::Stop(Seconds(1));
+    Simulator::Stop(Seconds(2));
     Simulator::Run();
     Simulator::Destroy();
 

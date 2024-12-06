@@ -75,6 +75,7 @@ Socket::CreateSocket(Ptr<Node> node, TypeId tid)
     Ptr<Socket> s;
     NS_ASSERT_MSG(node, "CreateSocket: node is null.");
     Ptr<SocketFactory> socketFactory = node->GetObject<SocketFactory>(tid);
+    std::cout<<"node: "<<node<<std::endl;
     NS_ASSERT_MSG(socketFactory,
                   "CreateSocket: can not create a "
                       << tid.GetName() << " - perhaps the node is missing the required protocol.");
