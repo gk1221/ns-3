@@ -10,10 +10,61 @@
 #include "ns3/grid-scenario-helper.h"
 #include "ns3/antenna-module.h"
 #include "ns3/nr-point-to-point-epc-helper.h"
+#include "ns3/eps-bearer-tag.h"
 
 using namespace ns3;
 
 NS_LOG_COMPONENT_DEFINE("RANWithQUICIntegration");
+
+static bool g_rxPdcpCallbackCalled = false;
+static bool g_rxRxRlcPDUCallbackCalled = false;
+
+void
+RxPdcpPDU(std::string path, uint16_t rnti, uint8_t lcid, uint32_t bytes, uint64_t pdcpDelay)
+{
+    std::cout << "\n Packet PDCP delay:" << pdcpDelay << "\n";
+    g_rxPdcpCallbackCalled = true;
+}
+
+void
+RxRlcPDU(std::string path, uint16_t rnti, uint8_t lcid, uint32_t bytes, uint64_t rlcDelay)
+{
+    std::cout << "\n\n Data received at RLC layer at:" << Simulator::Now() << std::endl;
+    std::cout << "\n rnti:" << rnti << std::endl;
+    std::cout << "\n lcid:" << (unsigned)lcid << std::endl;
+    std::cout << "\n bytes :" << bytes << std::endl;
+    std::cout << "\n delay :" << (rlcDelay / 1e6) << "ms"<<std::endl;
+    g_rxRxRlcPDUCallbackCalled = true;
+}
+
+void
+ConnectPdcpRlcTraces()
+{
+    Config::Connect("/NodeList/*/DeviceList/*/LteUeRrc/DataRadioBearerMap/1/LtePdcp/RxPDU",
+                    MakeCallback(&RxPdcpPDU));
+
+    Config::Connect("/NodeList/*/DeviceList/*/LteUeRrc/DataRadioBearerMap/1/LteRlc/RxPDU",
+                    MakeCallback(&RxRlcPDU));
+    
+}
+
+int Etag1 = 1;
+int Etag2 = 1;
+static void
+SendPacket(Ptr<NetDevice> device, Address& addr, uint32_t packetSize)
+{
+    Ptr<Packet> pkt = Create<Packet>(packetSize);
+    Ipv4Header ipv4Header;
+    ipv4Header.SetProtocol(UdpL4Protocol::PROT_NUMBER);
+    pkt->AddHeader(ipv4Header);
+    //EpsBearerTag tag(Etag1++, Etag2++);
+    EpsBearerTag tag(1, 1);
+    pkt->AddPacketTag(tag);
+    std::cout << "Packet tags before sending: ";
+    pkt->PrintPacketTags(std::cout);
+    std::cout << std::endl;
+    device->Send(pkt, addr, Ipv4L3Protocol::PROT_NUMBER);
+}
 
 
 
@@ -24,9 +75,17 @@ int main(int argc, char *argv[])
     double centralFrequencyBand1 = 28e9;
     double bandwidthBand1 = 400e6;
 
+
+
       //LogComponentEnable("EpcPgwApplication", LOG_LEVEL_ALL);
       //LogComponentEnable("NrHelper", LOG_LEVEL_ALL);
-      LogComponentEnable ("QuicEchoClientApplication", LOG_LEVEL_ALL);
+    LogLevel log_precision = LOG_LEVEL_LOGIC;
+    LogComponentEnableAll (LOG_PREFIX_TIME);
+    LogComponentEnableAll (LOG_PREFIX_FUNC);
+    LogComponentEnableAll (LOG_PREFIX_NODE);
+    LogComponentEnable ("QuicEchoClientApplication", log_precision);
+    LogComponentEnable ("QuicSocketBase", log_precision);
+      //LogComponentEnable ("QuicEchoClientApplication", LOG_LEVEL_ALL);
 
     CommandLine cmd;
     cmd.Parse(argc, argv);
@@ -107,9 +166,6 @@ int main(int argc, char *argv[])
 
     // Internet Stack
     cout<<"InternetStackHelper create"<<endl;
-    // InternetStackHelper internet;
-    // internet.Install(gridScenario.GetUserTerminals());
-    // internet.Install(gridScenario.GetBaseStations());
     QuicHelper stack;
     stack.InstallQuic (gridScenario.GetUserTerminals());
     stack.InstallQuic (gridScenario.GetBaseStations());
@@ -125,29 +181,38 @@ int main(int argc, char *argv[])
     QuicEchoServerHelper echoServer(9);
     ApplicationContainer serverApps = echoServer.Install(gridScenario.GetBaseStations().Get(0));
     serverApps.Start(Seconds(1.0));
-    serverApps.Stop(Seconds(120.0));
+    serverApps.Stop(Seconds(15.0));
 
     // Install QUIC Client
     QuicEchoClientHelper echoClient(ueIpIface.GetAddress(0), 9);
-    echoClient.SetAttribute("MaxPackets", UintegerValue(10));
-    echoClient.SetAttribute("Interval", TimeValue(Seconds(1.0)));
+    echoClient.SetAttribute("MaxPackets", UintegerValue(5));
+    echoClient.SetAttribute("Interval", TimeValue(Seconds(2.0)));
     echoClient.SetAttribute("PacketSize", UintegerValue(1024));
-    cout<<"start trans"<<endl;
+
+    // Simulator::Schedule(Seconds(4.4),
+    //                         &SendPacket,
+    //                         enbNetDev.Get(0),
+    //                         ueNetDev.Get(0)->GetAddress(),
+    //                         1000);
+ 
     ApplicationContainer clientApps = echoClient.Install(gridScenario.GetUserTerminals().Get(0));
     echoClient.SetFill(clientApps.Get(0), "Hello World");
-    cout<<"start transfer"<<endl;
+    cout<<"##################start transfer#########"<<endl;
     cout<<"server : "<<&echoServer<<" , client: "<<&echoClient<<endl;
-    clientApps.Start(Seconds(10.0));
-    clientApps.Stop(Seconds(120.0));
+    clientApps.Start(Seconds(2.0));
+    clientApps.Stop(Seconds(20.0));
+
+    Simulator::Schedule(Seconds(0.2), &ConnectPdcpRlcTraces);
 
     // Enable Traces
     nrHelper->EnableTraces();
 
     // Run Simulation
-    cout<<"stop transfer"<<endl;
-    Simulator::Stop(Seconds(120.0));
+    
+    Simulator::Stop(Seconds(20));
     Simulator::Run();
     Simulator::Destroy();
+    cout<<"#############stop transfer##################"<<endl;
 
     return 0;
 }

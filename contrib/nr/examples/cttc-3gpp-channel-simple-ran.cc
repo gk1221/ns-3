@@ -60,7 +60,8 @@ SendPacket(Ptr<NetDevice> device, Address& addr, uint32_t packetSize)
     Ipv4Header ipv4Header;
     ipv4Header.SetProtocol(UdpL4Protocol::PROT_NUMBER);
     pkt->AddHeader(ipv4Header);
-    EpsBearerTag tag(Etag1++, Etag2++);
+    //EpsBearerTag tag(Etag1++, Etag2++);
+    EpsBearerTag tag(1, 1);
     pkt->AddPacketTag(tag);
     std::cout << "Packet tags before sending: ";
     pkt->PrintPacketTags(std::cout);
@@ -134,7 +135,7 @@ ConnectUlPdcpRlcTraces()
 int
 main(int argc, char* argv[])
 {
-       //LogComponentEnable("EpcPgwApplication", LOG_LEVEL_ALL);
+    //LogComponentEnable("LteEnbRrc", LOG_LEVEL_ALL);
 
 
     uint16_t numerologyBwp1 = 0;
@@ -245,8 +246,7 @@ main(int argc, char* argv[])
 
     InternetStackHelper internet;
     internet.Install(gridScenario.GetUserTerminals());
-    Ipv4InterfaceContainer ueIpIface;
-    ueIpIface = epcHelper->AssignUeIpv4Address(NetDeviceContainer(ueNetDev));
+
 
     if (enableUl)
     {
@@ -259,6 +259,12 @@ main(int argc, char* argv[])
     else
     {
         Simulator::Schedule(sendPacketTime,
+                            &SendPacket,
+                            enbNetDev.Get(0),
+                            ueNetDev.Get(0)->GetAddress(),
+                            udpPacketSize);
+
+                            Simulator::Schedule(Seconds(0.8),
                             &SendPacket,
                             enbNetDev.Get(0),
                             ueNetDev.Get(0)->GetAddress(),
