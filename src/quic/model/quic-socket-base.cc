@@ -3262,12 +3262,21 @@ QuicSocketBase::OnReceivedAddAddressFrame (QuicSubheader &sub)
   NS_LOG_FUNCTION (this);
   uint8_t pathId = sub.GetPathId();
 
+  cout<<"pathID: "<<static_cast<uint32_t>(pathId);
+  cout<<",address: "<<sub.GetAddress()<<endl;
+
   InetSocketAddress transport = InetSocketAddress::ConvertFrom (sub.GetAddress());
+  if (transport.GetIpv4() == Ipv4Address::GetAny() || transport.GetPort() == 0)
+  {
+      NS_LOG_ERROR("Invalid address returned from ConvertFrom");
+      // 處理無效地址，例如返回或忽略此數據
+      return;
+  }
   Ipv4Address ipv4 = transport.GetIpv4 ();
   uint16_t port = transport.GetPort ();
   Address peerAddr = InetSocketAddress(ipv4, port);
   Address localAddr = InetSocketAddress(m_node->GetObject<Ipv4>()->GetAddress(pathId+1,0).GetLocal(), port);
-
+  cout<<"transport convert done"<<endl;
   m_quicl4->AddPath(pathId, this, localAddr, peerAddr);
   m_quicl4->Allow0RTTHandshake(true);
   m_pathManager->AddSubflowWithPeerAddress(localAddr, peerAddr, pathId);

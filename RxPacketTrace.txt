@@ -1,3 +1,0 @@
-Time	direction	frame	subF	slot	1stSym	nSymbol	cellId	bwpId	rnti	tbSize	mcs	rank	rv	SINR(dB)	CQI	corrupt	TBler
-0.402143	DL	40	2	0	1	1	1	0	1	1	15970	28	1	0	28.6902	0	0	
-0.802143	DL	80	2	0	1	1	1	0	1	1	15970	28	1	0	28.6902	0	0	
