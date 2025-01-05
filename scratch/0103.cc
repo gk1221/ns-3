@@ -129,7 +129,7 @@ main (int argc, char *argv[])
     LogComponentEnableAll (LOG_PREFIX_FUNC);
     LogComponentEnableAll (LOG_PREFIX_NODE);
     LogComponentEnable ("0103", log_precision);
-    LogComponentEnable ("GlobalRouteManagerImpl", log_precision);
+   // LogComponentEnable ("GlobalRouteManagerImpl", log_precision);
     
     // LogComponentEnable("QuicSocketBase", ns3::LOG_LEVEL_DEBUG);
     // LogComponentEnable("InetSocketAddress", ns3::LOG_LEVEL_DEBUG);
@@ -258,14 +258,15 @@ main (int argc, char *argv[])
     cout<<"Given IP address to UE"<<endl;
     Ptr<EpcHelper> epcHelper = CreateObject<PointToPointEpcHelper>();
     lteHelper->SetEpcHelper(epcHelper);
-    Ipv4AddressHelper ipv_69;
-    ipv_69.SetBase("10.1.10.0", "255.255.255.0");
+    Ipv4AddressHelper ipv4;
+    ipv4.SetBase("10.1.10.0", "255.255.255.0");
     // 為 UE 6 分配 IP
-    Ipv4InterfaceContainer ue6Ip = ipv_69.Assign(NetDeviceContainer(ueDevs.Get(0)));
+    Ipv4InterfaceContainer ue6Ip = ipv4.Assign(NetDeviceContainer(ueDevs.Get(0)));
     std::cout << "UE 6 IP Address: " << ue6Ip.GetAddress(0) << std::endl;
     // 為 UE 9 分配 IP
-    Ipv4InterfaceContainer ue9Ip = ipv_69.Assign(NetDeviceContainer(ueDevs.Get(1)));
+    Ipv4InterfaceContainer ue9Ip = ipv4.Assign(NetDeviceContainer(ueDevs.Get(1)));
     std::cout << "UE 9 IP Address: " << ue9Ip.GetAddress(0) << std::endl;
+    //std::cout << "eNB IP Address: " << enbDevs.GetAddress(0) << std::endl;
 
     Ptr<Ipv4> ipv4out = ueDevs.Get(1)->GetObject<Ipv4> ();
     cout<<ipv4out<<endl; 
@@ -305,7 +306,7 @@ main (int argc, char *argv[])
     
     // Later, we add IP addresses.
     NS_LOG_INFO ("Assign IP Addresses.");
-    Ipv4AddressHelper ipv4;
+
     ipv4.SetBase ("10.1.4.0", "255.255.255.0");
     Ipv4InterfaceContainer i4i1 = ipv4.Assign (d4d1);
 
@@ -357,31 +358,16 @@ main (int argc, char *argv[])
     // Create router nodes, initialize routing database and set up the routing
     // tables in the nodes.
     NS_LOG_INFO ("Create All node's routing table");
-    GlobalRoutingHelper globalRouting;
+    Ipv4GlobalRoutingHelper globalRouting;
     globalRouting.PopulateRoutingTables();  // 填充初始的路由表
-    Ptr<Node> node = c.GetNode(6); // 例如獲取節點 6
-    Ptr<Ipv4GlobalRouting> globalRouting = node->GetObject<Ipv4>()->GetRoutingProtocol()->GetObject<Ipv4GlobalRouting>();
 
-    // 手動新增 Point-to-Point LSA
-    Ptr<Ipv4GlobalRouting> globalRouting = node->GetObject<Ipv4>()->GetRoutingProtocol()->GetObject<Ipv4GlobalRouting>();
-    GlobalRoutingLinkRecord linkRecord;
-    linkRecord.SetLinkType(GlobalRoutingLinkRecord::PointToPoint);
-    linkRecord.SetLinkId(Ipv4Address("0.0.0.4"));
-    linkRecord.SetLinkData(Ipv4Address("10.1.10.2"));
-    linkRecord.SetMetric(1);
+    Ptr<GlobalRouter> globalRouterB = c.Get(6)->GetObject<GlobalRouter>();
+    globalRouterB->InjectRoute("10.1.10.1", "255.255.255.0");
 
-    globalRouting->AddLinkRecord(linkRecord);
-    globalRouting->RecomputeRoutingTables();
 
-    GlobalRoutingLinkRecord stubRecord;
-    stubRecord.SetLinkType ( GlobalRoutingLinkRecord::StubNetwork);
-    stubRecord.SetLinkId ( Ipv4Address("10.1.10.1"));
-    stubRecord.SetLinkData( Ipv4Mask("255.255.255.0"));
-    stubRecord.SetMetric( 1);
-    globalRouting.
-    globalRouting->AddLinkRecord(stubRecord);
-    globalRouting.RecomputeRoutingTables();
-    
+    Ipv4GlobalRoutingHelper::RecomputeRoutingTables();
+
+
     NS_LOG_INFO ("Setting QUIC source ");
     uint16_t port2 = 9;  // well-known echo port number
     MpquicBulkSendHelper source ("ns3::QuicSocketFactory",

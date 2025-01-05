@@ -51,6 +51,11 @@ main(int argc, char* argv[])
     CommandLine cmd(__FILE__);
     cmd.Parse(argc, argv);
 
+    LogComponentEnable ("GlobalRouterInjectionTest", LOG_LEVEL_LOGIC);
+    LogComponentEnable ("GlobalRouteManagerImpl", LOG_LEVEL_LOGIC);
+    LogComponentEnable ("GlobalRouteManager", LOG_LEVEL_LOGIC);
+
+
     Ptr<Node> nA = CreateObject<Node>();
     Ptr<Node> nB = CreateObject<Node>();
     Ptr<Node> nC = CreateObject<Node>();
