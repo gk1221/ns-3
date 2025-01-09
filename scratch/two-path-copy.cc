@@ -59,7 +59,7 @@ void ThroughputMonitor (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, P
             *stream->GetStream () << stats->first  << "\t" << Simulator::Now().GetSeconds()/*->second.timeLastRxPacket.GetSeconds()*/ << "\t" << stats->second.rxBytes << "\t" << stats->second.rxPackets << "\t" << stats->second.lastDelay.GetMilliSeconds() << "\t" << stats->second.rxBytes*8/1024/1024/(stats->second.timeLastRxPacket.GetSeconds()-stats->second.timeFirstRxPacket.GetSeconds())  << std::endl;
         }
     }
-    //Simulator::Schedule(Seconds(0.05),&ThroughputMonitor, fmhelper, flowMon, stream);
+    Simulator::Schedule(Seconds(0.05),&ThroughputMonitor, fmhelper, flowMon, stream);
 }
 
 void
@@ -67,9 +67,9 @@ ModifyLinkRate(NetDeviceContainer *ptp, DataRate lr, Time delay) {
     if (ptp == nullptr || ptp->GetN() == 0 || ptp->Get(0) == nullptr) {
         NS_LOG_ERROR("Null pointer encountered in ModifyLinkRate.");
         return;
-    }//NS_LOG_UNCOND("Setting DataRate to: " << lr);
+    }NS_LOG_UNCOND("Setting DataRate to: " << lr);
     StaticCast<PointToPointNetDevice>(ptp->Get(0))->SetDataRate(lr);
-    //NS_LOG_UNCOND("Setting Delay to: " << delay);
+    NS_LOG_UNCOND("Setting Delay to: " << delay);
     StaticCast<PointToPointChannel>(StaticCast<PointToPointNetDevice>(ptp->Get(0))->GetChannel())->SetAttribute("Delay", TimeValue(delay));
     }
 
@@ -126,7 +126,7 @@ main (int argc, char *argv[])
     LogComponentEnableAll (LOG_PREFIX_TIME);
     LogComponentEnableAll (LOG_PREFIX_FUNC);
     LogComponentEnableAll (LOG_PREFIX_NODE);
-    LogComponentEnable ("GlobalRouteManagerImpl", log_precision);
+    //LogComponentEnable ("GlobalRouteManagerImpl", log_precision);
     // LogComponentEnable ("QuicHelper", log_precision);
     // LogComponentEnable("QuicSocketBase", ns3::LOG_LEVEL_DEBUG);
     // LogComponentEnable("InetSocketAddress", ns3::LOG_LEVEL_DEBUG);
@@ -299,6 +299,7 @@ main (int argc, char *argv[])
     // Create router nodes, initialize routing database and set up the routing
     // tables in the nodes.
     Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
+
     
     uint16_t port2 = 9;  // well-known echo port number
     
@@ -328,9 +329,12 @@ main (int argc, char *argv[])
 
     FlowMonitorHelper flowmon;
     Ptr<FlowMonitor> monitor = flowmon.InstallAll ();
-    //ThroughputMonitor(&flowmon, monitor, stream); 
+    ThroughputMonitor(&flowmon, monitor, stream); 
     
-
+    for (double i = 1; i < simulationEndTime; i = i+2){
+        Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d1d8, DataRate(std::to_string(rateVal0->GetValue())+"Mbps"), Time::FromInteger(delayVal0->GetValue(), Time::MS));
+        Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d6d9, DataRate(std::to_string(rateVal1->GetValue())+"Mbps"), Time::FromInteger(delayVal1->GetValue(), Time::MS));
+    }
 
 
     Simulator::Stop (Seconds(simulationEndTime));

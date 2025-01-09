@@ -1,0 +1,84 @@
+wns3-mpquic-two-path:main(): Create nodes.
++0.000000000s -1 wns3-mpquic-two-path:main(): Create channels.
++0.000000000s -1 wns3-mpquic-two-path:main(): Assign IP Addresses.
++0.000000000s -1 wns3-mpquic-two-path:main(): 
+
+#################### STARTING RUN ####################
+
+
+Starting simulation...
+Setting DataRate to: 5702647bps
+Setting Delay to: +5.2e+07ns
+Setting DataRate to: 5989227bps
+Setting Delay to: +5.2e+07ns
+Setting DataRate to: 5248493bps
+Setting Delay to: +5e+07ns
+Setting DataRate to: 5280037bps
+Setting Delay to: +5.4e+07ns
+Setting DataRate to: 5788893bps
+Setting Delay to: +5e+07ns
+Setting DataRate to: 5445225bps
+Setting Delay to: +5e+07ns
+Setting DataRate to: 5172030bps
+Setting Delay to: +5.4e+07ns
+Setting DataRate to: 5251264bps
+Setting Delay to: +5.2e+07ns
+Setting DataRate to: 5666063bps
+Setting Delay to: +5e+07ns
+Setting DataRate to: 5856635bps
+Setting Delay to: +5e+07ns
+Setting DataRate to: 5183456bps
+Setting Delay to: +5.2e+07ns
+Setting DataRate to: 5340044bps
+Setting Delay to: +5e+07ns
+Setting DataRate to: 5647565bps
+Setting Delay to: +5.2e+07ns
+Setting DataRate to: 5018016bps
+Setting Delay to: +5.2e+07ns
+Setting DataRate to: 5004391bps
+Setting Delay to: +5.3e+07ns
+Setting DataRate to: 5752413bps
+Setting Delay to: +5.4e+07ns
+Setting DataRate to: 5515889bps
+Setting Delay to: +5.3e+07ns
+Setting DataRate to: 5648430bps
+Setting Delay to: +5.1e+07ns
+Setting DataRate to: 5011674bps
+Setting Delay to: +5.3e+07ns
+Setting DataRate to: 5947057bps
+Setting Delay to: +5e+07ns
+Setting DataRate to: 5402408bps
+Setting Delay to: +5.2e+07ns
+Setting DataRate to: 5745920bps
+Setting Delay to: +5.2e+07ns
+Setting DataRate to: 5731801bps
+Setting Delay to: +5.2e+07ns
+Setting DataRate to: 5793024bps
+Setting Delay to: +5.2e+07ns
+Setting DataRate to: 5569184bps
+Setting Delay to: +5.2e+07ns
+Setting DataRate to: 5805103bps
+Setting Delay to: +5.3e+07ns
+Setting DataRate to: 5652609bps
+Setting Delay to: +5.3e+07ns
+Setting DataRate to: 5515462bps
+Setting Delay to: +5.2e+07ns
+Setting DataRate to: 5142616bps
+Setting Delay to: +5e+07ns
+Setting DataRate to: 5329527bps
+Setting Delay to: +5.1e+07ns
+Simulation finished.
++30.000000000s -1 wns3-mpquic-two-path:main(): Flow 1 (10.1.4.1 -> 10.1.5.2)
+ Last rx Seconds: 29.9753
+ Rx Bytes: 58342
+ DelaySum(s): 24.7629
+ rxPackets: 474
++30.000000000s -1 wns3-mpquic-two-path:main(): Flow 3 (10.1.6.1 -> 10.1.7.2)
+ Last rx Seconds: 1.42019
+ Rx Bytes: 4711
+ DelaySum(s): 0.319002
+ rxPackets: 6
++30.000000000s -1 wns3-mpquic-two-path:main(): 
+file size: 5242800Bytes, scheduler type 0
+path 0: rate 5, delay 50
+path 1: rate 5, delay 50

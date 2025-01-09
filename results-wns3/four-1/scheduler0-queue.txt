@@ -1,5 +1,3 @@
-[0/2] Re-checking globbed directories...
-ninja: no work to do.
 1.05297	0	0	0	0	
 1.15615	0	1200	1200	0	
 1.15802	0	2400	2400	0	
@@ -10,4 +8,11 @@ ninja: no work to do.
 1.16663	1	2920	2920	0	
 1.17663	1	4354	4354	0	
 1.17663	1	4380	4380	0	
-Command 'build/scratch/ns3.42-wns3-mpquic-four-path-default --Seed=1 --Size=5242800 --SchedulerType=0 --Rate0=5.0 --Delay0=50.0 --Rate1=6.0 --Delay1=55.0 --LossRate=0.000000' died with <Signals.SIGSEGV: 11>.
+pathID: 1,address: 00-07-0a:01:07:02:02:c0:00
+transport convert done
+pathID: 2,address: 00-07-0a:01:03:02:03:c0:00
+transport convert done
+pathID: 3,address: 00-07-0a:01:0c:02:04:c0:00
+transport convert done
+1.27122	1	5803	5803	0	
+1.27122	1	5840	5840	0	

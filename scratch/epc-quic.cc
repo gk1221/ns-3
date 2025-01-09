@@ -19,9 +19,9 @@ int main(int argc, char* argv[])
     LogComponentEnableAll (LOG_PREFIX_FUNC);
     LogComponentEnableAll (LOG_PREFIX_NODE);
     LogComponentEnable ("epc-quic", log_precision);
-    LogComponentEnable("ApplicationContainer", log_precision);
+    LogComponentEnable("SocketFactory", log_precision);
 
-    uint16_t numNodePairs = 2;
+    uint16_t numNodePairs = 1;
     Time simTime = MilliSeconds(1100);
     double distance = 60.0;
     Time interPacketInterval = MilliSeconds(100);
@@ -123,6 +123,7 @@ int main(int argc, char* argv[])
         QuicClientHelper quicClientHelper(ueIpIface.GetAddress(u), dlPort);
         quicClientHelper.SetAttribute("Interval", TimeValue(interPacketInterval));
         quicClientHelper.SetAttribute("MaxPackets", UintegerValue(1000000));
+        quicClientHelper.SetAttribute ("PacketSize", UintegerValue(1000));
         clientApps.Add(quicClientHelper.Install(ueNodes.Get(u)));
     }
     

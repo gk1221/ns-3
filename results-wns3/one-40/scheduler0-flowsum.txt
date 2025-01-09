@@ -1,0 +1,22 @@
+wns3-mpquic-one-path:main(): Create nodes.
++0.000000000s -1 wns3-mpquic-one-path:main(): Create channels.
++0.000000000s -1 wns3-mpquic-one-path:main(): Assign IP Addresses.
++0.000000000s -1 wns3-mpquic-one-path:main(): 
+
+#################### STARTING RUN ####################
+
+
++30.000000000s -1 wns3-mpquic-one-path:main(): Flow 1 (10.1.4.1 -> 10.1.5.2)
+ Last rx Seconds: 29.8852
+ Rx Bytes: 65090
+ DelaySum(s): 30.1005
+ rxPackets: 574
++30.000000000s -1 wns3-mpquic-one-path:main(): Flow 2 (10.1.5.2 -> 10.1.4.1)
+ Last rx Seconds: 29.9353
+ Rx Bytes: 48986
+ DelaySum(s): 30.0619
+ rxPackets: 575
++30.000000000s -1 wns3-mpquic-one-path:main(): 
+file size: 5242800Bytes, scheduler type 0
+path 0: rate 5, delay 50
+path 1: rate 10, delay 10

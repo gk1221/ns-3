@@ -129,10 +129,10 @@ main (int argc, char *argv[])
     LogComponentEnableAll (LOG_PREFIX_FUNC);
     LogComponentEnableAll (LOG_PREFIX_NODE);
     LogComponentEnable ("0103", log_precision);
-   // LogComponentEnable ("GlobalRouteManagerImpl", log_precision);
+    //LogComponentEnable ("GlobalRouteManagerImpl", log_precision);
     
     // LogComponentEnable("QuicSocketBase", ns3::LOG_LEVEL_DEBUG);
-    // LogComponentEnable("InetSocketAddress", ns3::LOG_LEVEL_DEBUG);
+    // LogComponentEnable("SocketFactory", ns3::LOG_LEVEL_DEBUG);
 
     RngSeedManager::SetSeed (seed);  
 
@@ -226,72 +226,10 @@ main (int argc, char *argv[])
     NetDeviceContainer d1d8 = p2p.Install (n1n8);
     d1d8.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (em));
 
-    //---------------set lte node ----------------
-    // ---------------設定 LTE 節點與裝置---------------
-    cout<<"start setting LTE"<<endl;
-    NodeContainer enbNodes;
-    enbNodes.Create (1); // eNodeB 節點
-
-    NodeContainer ueNodes;
-    ueNodes.Add (c.Get (6)); // 節點 6 作為 UE
-    ueNodes.Add (c.Get (9)); // 節點 9 作為 UE
-
-    // 配置移動模型
-    MobilityHelper mobility;
-    mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
-    mobility.Install (enbNodes);
-    mobility.Install (ueNodes);
-
-    // 安裝 LTE 裝置
-    Ptr<LteHelper> lteHelper = CreateObject<LteHelper> ();
-    NetDeviceContainer enbDevs = lteHelper->InstallEnbDevice (enbNodes);
-    NetDeviceContainer ueDevs = lteHelper->InstallUeDevice (ueNodes);
-    NS_ASSERT_MSG (enbDevs.GetN() > 0, "eNodeB devices not installed correctly!");
-    NS_ASSERT_MSG (ueDevs.GetN() > 0, "UE devices not installed correctly!");
-
-    // 配對 eNodeB 與 UE
-    cout<<"pair to enode and UE"<<endl;
-    lteHelper->Attach (ueDevs.Get (0), enbDevs.Get (0)); // 節點 6 連接到 eNodeB
-    lteHelper->Attach (ueDevs.Get (1), enbDevs.Get (0)); // 節點 9 連接到 eNodeB
-
-    // 分配 IP 地址給 UE
-    cout<<"Given IP address to UE"<<endl;
-    Ptr<EpcHelper> epcHelper = CreateObject<PointToPointEpcHelper>();
-    lteHelper->SetEpcHelper(epcHelper);
-    Ipv4AddressHelper ipv4;
-    ipv4.SetBase("10.1.10.0", "255.255.255.0");
-    // 為 UE 6 分配 IP
-    Ipv4InterfaceContainer ue6Ip = ipv4.Assign(NetDeviceContainer(ueDevs.Get(0)));
-    std::cout << "UE 6 IP Address: " << ue6Ip.GetAddress(0) << std::endl;
-    // 為 UE 9 分配 IP
-    Ipv4InterfaceContainer ue9Ip = ipv4.Assign(NetDeviceContainer(ueDevs.Get(1)));
-    std::cout << "UE 9 IP Address: " << ue9Ip.GetAddress(0) << std::endl;
-    //std::cout << "eNB IP Address: " << enbDevs.GetAddress(0) << std::endl;
-
-    Ptr<Ipv4> ipv4out = ueDevs.Get(1)->GetObject<Ipv4> ();
-    cout<<ipv4out<<endl; 
-
-    // 設置應用程式
-    cout<<"Setting application "<<endl;
-    uint16_t dlPort = 1234; // 資料傳輸端口
-    PacketSinkHelper sink ("ns3::QuicSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), dlPort)); 
-    ApplicationContainer sinkApp = sink.Install (c.Get (9)); // 節點 9 為接收端
-    sinkApp.Start (Seconds (0.1));
-    sinkApp.Stop (Seconds (simulationEndTime));
-    cout<<"Setting OnOFFHelper "<<endl;;
-    OnOffHelper client ("ns3::QuicSocketFactory", Address(InetSocketAddress (ue9Ip.GetAddress(0), dlPort))); // 節點 6 發送到 9
-    client.SetAttribute ("DataRate", DataRateValue (DataRate ("10Mb/s")));
-    client.SetAttribute ("PacketSize", UintegerValue (1024));
-    ApplicationContainer clientApp = client.Install (c.Get (6));
-    clientApp.Start (Seconds (0.2));
-    clientApp.Stop (Seconds (simulationEndTime));
-
-    if (d1d8.GetN() == 0 || d1d8.Get(0) == nullptr) {
-        NS_LOG_ERROR("d1d8 not properly initialized.");
-    }
-    // if (d6d9.GetN() == 0 || d6d9.Get(0) == nullptr) {
-    //     NS_LOG_ERROR("d6d9 not properly initialized.");
-    // }
+    p2p.SetDeviceAttribute ("DataRate", StringValue (std::to_string(rateVal1->GetValue())+"Mbps"));
+    p2p.SetChannelAttribute ("Delay", StringValue (std::to_string(delayVal1->GetValue())+"ms"));
+    NetDeviceContainer d6d9 = p2p.Install (NodeContainer (c.Get (6), c.Get (9)));
+    d6d9.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (em));
 
     p2p.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
     p2p.SetChannelAttribute ("Delay", StringValue ("0ms"));
@@ -306,7 +244,7 @@ main (int argc, char *argv[])
     
     // Later, we add IP addresses.
     NS_LOG_INFO ("Assign IP Addresses.");
-
+    Ipv4AddressHelper ipv4;
     ipv4.SetBase ("10.1.4.0", "255.255.255.0");
     Ipv4InterfaceContainer i4i1 = ipv4.Assign (d4d1);
 
@@ -319,8 +257,8 @@ main (int argc, char *argv[])
     ipv4.SetBase ("10.1.6.0", "255.255.255.0");
     Ipv4InterfaceContainer i4i6 = ipv4.Assign (d4d6);
 
-    //ipv4.SetBase ("10.1.10.0", "255.255.255.0");
-    //Ipv4InterfaceContainer i6i9 = ipv4.Assign (d6d9);
+    ipv4.SetBase ("10.1.10.0", "255.255.255.0");
+    Ipv4InterfaceContainer i6i9 = ipv4.Assign (d6d9);
 
     ipv4.SetBase ("10.1.7.0", "255.255.255.0");
     Ipv4InterfaceContainer i9i5 = ipv4.Assign (d9d5);
@@ -354,18 +292,113 @@ main (int argc, char *argv[])
     Ptr<Ipv4StaticRouting> staticRouting_n5 = ipv4RoutingHelper.GetStaticRouting (ipv4_n5);
     staticRouting_n5->AddHostRouteTo (Ipv4Address ("10.1.4.1"), Ipv4Address ("10.1.9.1") ,1); 
     staticRouting_n5->AddHostRouteTo (Ipv4Address ("10.1.6.1"), Ipv4Address ("10.1.10.1") ,2); 
+    
+    NS_LOG_INFO ("Show Node 6 Interface table");
+    Ptr<Ipv4> ipv4_n6 = c.Get(6)->GetObject<Ipv4> ();
+    for (uint32_t i = 0; i < ipv4_n6->GetNInterfaces(); ++i) {
+        std::cout << "Interface " << i << ": " << ipv4_n6->GetAddress(i, 0).GetLocal() << std::endl;
+    }
+    NS_LOG_INFO ("Show Node 9 Interface table");
+    Ptr<Ipv4> ipv4_n9 = c.Get(9)->GetObject<Ipv4> ();
+    for (uint32_t i = 0; i < ipv4_n9->GetNInterfaces(); ++i) {
+        std::cout << "Interface " << i << ": " << ipv4_n9->GetAddress(i, 0).GetLocal() << std::endl;
+    }
+
+    // GlobalRoutingLSA::AddLinkRecord ( GlobalRoutingLinkRecord( GlobalRoutingLinkRecord::LinkType(1), Ipv4Address("0.0.0.4"),  Ipv4Address("10.1.10.2"),  1));
+    for (uint32_t i = 0; i < c.GetN(); ++i) {
+        Ptr<Ipv4> ipv4 = c.Get(i)->GetObject<Ipv4>();
+        if (ipv4 == nullptr) {
+            std::cout << "Node " << i << " does not have an Ipv4 object!" << std::endl;
+        } else {
+            for (uint32_t j = 0; j < ipv4->GetNInterfaces(); ++j) {
+                std::cout << "Node " << i << " Interface " << j << ": " << ipv4->GetAddress(j, 0).GetLocal() << std::endl;
+            }
+        }
+    }
+
+
+    // Ptr<Ipv4StaticRouting> staticRouting_n6 = ipv4RoutingHelper.GetStaticRouting(ipv4_n6);
+    // staticRouting_n6->AddHostRouteTo(Ipv4Address("10.1.10.2"), Ipv4Address("10.1.6.2"), 1);
+
+    // Ptr<Ipv4StaticRouting> staticRouting_n9 = ipv4RoutingHelper.GetStaticRouting(ipv4_n9);
+    // staticRouting_n9->AddHostRouteTo(Ipv4Address("10.1.10.1"), Ipv4Address("10.1.7.1"), 1);
 
     // Create router nodes, initialize routing database and set up the routing
     // tables in the nodes.
     NS_LOG_INFO ("Create All node's routing table");
-    Ipv4GlobalRoutingHelper globalRouting;
-    globalRouting.PopulateRoutingTables();  // 填充初始的路由表
+    Ipv4GlobalRoutingHelper ::PopulateRoutingTables();  // 填充初始的路由表
 
-    Ptr<GlobalRouter> globalRouterB = c.Get(6)->GetObject<GlobalRouter>();
-    globalRouterB->InjectRoute("10.1.10.1", "255.255.255.0");
+    //---------------set lte node ----------------
+    // ---------------設定 LTE 節點與裝置---------------
+    NS_LOG_INFO ("start setting LTE");
+    NodeContainer enbNodes;
+    enbNodes.Create (1); // eNodeB 節點
+
+    NodeContainer ueNodes;
+    ueNodes.Add (c.Get (6)); // 節點 6 作為 UE
+    ueNodes.Add (c.Get (9)); // 節點 9 作為 UE
+
+    // 配置移動模型
+    MobilityHelper mobility;
+    mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
+    mobility.Install (enbNodes);
+    mobility.Install (ueNodes);
+
+    // 安裝 LTE 裝置
+    Ptr<LteHelper> lteHelper = CreateObject<LteHelper> ();
+    NetDeviceContainer enbDevs = lteHelper->InstallEnbDevice (enbNodes);
+    NetDeviceContainer ueDevs = lteHelper->InstallUeDevice (ueNodes);
+    NS_ASSERT_MSG (enbDevs.GetN() > 0, "eNodeB devices not installed correctly!");
+    NS_ASSERT_MSG (ueDevs.GetN() > 0, "UE devices not installed correctly!");
+
+    // 配對 eNodeB 與 UE
+    cout<<"pair to enode and UE"<<endl;
+    lteHelper->Attach (ueDevs.Get (0), enbDevs.Get (0)); // 節點 6 連接到 eNodeB
+    lteHelper->Attach (ueDevs.Get (1), enbDevs.Get (0)); // 節點 9 連接到 eNodeB
+
+    // 分配 IP 地址給 UE
+    // cout<<"Given IP address to UE"<<endl;
+    // Ptr<EpcHelper> epcHelper = CreateObject<PointToPointEpcHelper>();
+    // lteHelper->SetEpcHelper(epcHelper);
+
+    // ipv4.SetBase("10.1.10.0", "255.255.255.0");
+    // i6i9 = ipv4.Assign(ueDevs);
+    // 為 UE 6 分配 IP
+
+    std::cout << "UE 6 IP Address: " << i6i9.GetAddress(0) << std::endl;
+    // 為 UE 9 分配 IP
+
+    std::cout << "UE 9 IP Address: " << i6i9.GetAddress(1) << std::endl;
+    //std::cout << "eNB IP Address: " << enbDevs.GetAddress(0) << std::endl;
+
+    Ptr<Ipv4> ipv4out = ueDevs.Get(1)->GetObject<Ipv4>();
+    cout<<ipv4out<<endl; 
+
+    // 設置應用程式
+    cout<<"Setting application "<<endl;
+    uint16_t dlPort = 1234; // 資料傳輸端口
+    PacketSinkHelper sink ("ns3::UdpSocketFactory", InetSocketAddress (Ipv4Address::GetAny (), dlPort)); 
+    ApplicationContainer sinkApp = sink.Install (c.Get (9)); // 節點 9 為接收端
+    sinkApp.Start (Seconds (0.1));
+    sinkApp.Stop (Seconds (simulationEndTime));
+    cout<<"Setting OnOFFHelper "<<endl;;
+    OnOffHelper client ("ns3::UdpSocketFactory", Address(InetSocketAddress (i6i9.GetAddress(1), dlPort))); // 節點 6 發送到 9
+    client.SetAttribute ("DataRate", DataRateValue (DataRate ("10Mb/s")));
+    client.SetAttribute ("PacketSize", UintegerValue (1024));
+    ApplicationContainer clientApp = client.Install (c.Get (6));
+    clientApp.Start (Seconds (0.2));
+    clientApp.Stop (Seconds (simulationEndTime));
+
+    if (d1d8.GetN() == 0 || d1d8.Get(0) == nullptr) {
+        NS_LOG_ERROR("d1d8 not properly initialized.");
+    }
+    // if (d6d9.GetN() == 0 || d6d9.Get(0) == nullptr) {
+    //     NS_LOG_ERROR("d6d9 not properly initialized.");
+    // }
+
+    
 
 
-    Ipv4GlobalRoutingHelper::RecomputeRoutingTables();
 
 
     NS_LOG_INFO ("Setting QUIC source ");
@@ -381,7 +414,7 @@ main (int argc, char *argv[])
     PacketSinkHelper sink2 ("ns3::QuicSocketFactory",
                             InetSocketAddress (Ipv4Address::GetAny (), port2));
     ApplicationContainer sinkApps2 = sink2.Install (c.Get (5));
-    sinkApps2.Start (Seconds (0.5));
+    sinkApps2.Start (Seconds (0.0));
     sinkApps2.Stop (Seconds(simulationEndTime));
 
 
@@ -390,7 +423,7 @@ main (int argc, char *argv[])
 
     AsciiTraceHelper asciiTraceHelper;
     std::ostringstream fileName;
-    fileName <<  "./scheduler" << schedulerType << "-rx-mpquic2" << ".txt";
+    fileName <<  "./scheduler" << schedulerType << "-rx-0103" << ".txt";
     Ptr<OutputStreamWrapper> stream = asciiTraceHelper.CreateFileStream (fileName.str ());
   
 
@@ -409,7 +442,7 @@ main (int argc, char *argv[])
     NS_LOG_UNCOND("Starting simulation...");
     cout<<"\n\n#################### STARTING RUN ####################\n\n"<<endl;
     Simulator::Run();
-    NS_LOG_UNCOND("Simulation finished.");
+    NS_LOG_UNCOND("#################### Simulation finished. ####################");
 
     monitor->CheckForLostPackets ();
     Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowmon.GetClassifier ());

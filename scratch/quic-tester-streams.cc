@@ -129,7 +129,7 @@ main (int argc, char *argv[])
   // LogComponentEnable ("Application", log_precision);
   // LogComponentEnable ("Node", log_precision);
   //LogComponentEnable ("InternetStackHelper", log_precision);
-  //LogComponentEnable ("QuicSocketFactory", log_precision);
+  LogComponentEnable ("QuicSocketFactory", log_precision);
   //LogComponentEnable ("ObjectFactory", log_precision);
   //LogComponentEnable ("TypeId", log_precision);
   //LogComponentEnable ("QuicL4Protocol", log_precision);

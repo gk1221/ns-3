@@ -1,0 +1,32 @@
+wns3-mpquic-four-path:main(): Create nodes.
++0.000000000s -1 wns3-mpquic-four-path:main(): Create channels.
++0.000000000s -1 wns3-mpquic-four-path:main(): Assign IP Addresses.
++0.000000000s -1 wns3-mpquic-four-path:main(): 
+
+#################### STARTING RUN ####################
+
+
++20.000000000s -1 wns3-mpquic-four-path:main(): Flow 1 (10.1.4.1 -> 10.1.5.2)
+ Last rx Seconds: 19.9897
+ Rx Bytes: 49234
+ DelaySum(s): 17.8132
+ rxPackets: 339
++20.000000000s -1 wns3-mpquic-four-path:main(): Flow 3 (10.1.6.1 -> 10.1.7.2)
+ Last rx Seconds: 1.41254
+ Rx Bytes: 4711
+ DelaySum(s): 0.307338
+ rxPackets: 6
++20.000000000s -1 wns3-mpquic-four-path:main(): Flow 4 (10.1.1.1 -> 10.1.3.2)
+ Last rx Seconds: 1.41762
+ Rx Bytes: 4711
+ DelaySum(s): 0.317738
+ rxPackets: 6
++20.000000000s -1 wns3-mpquic-four-path:main(): Flow 5 (10.1.8.1 -> 10.1.12.2)
+ Last rx Seconds: 1.41571
+ Rx Bytes: 4710
+ DelaySum(s): 0.316682
+ rxPackets: 6
++20.000000000s -1 wns3-mpquic-four-path:main(): 
+file size: 5242800Bytes, scheduler type 0
+path 0: rate 5, delay 50
+path 1: rate 6, delay 55
