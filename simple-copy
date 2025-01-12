@@ -1,0 +1,688 @@
+Script started on Sun Jan  5 23:00:08 2025
+[1m[7m%[27m[1m[0m                                                                                                                                          [0m[27m[24m[J(base) chiyune@ChideMacBook-Air-4 ns-3 % [K[?2004h./ns3 run scratch/two-path-copy.cc [17D0103.cc         [9Dtwo-path-copy.cc [35D                                  [34D../ns3 run scratch[1m/[0m[0m/simple-error-model-copy.cc[1m [0m[0m [?2004l
+Create nodes.
+Create channels.
+Assign IP Addresses.
+Use global routing.
+GlobalRouteManagerImpl:GlobalRouteManagerImpl(0x11d6d7190)
+GlobalRouteManagerImpl:GlobalRouteManagerLSDB(0x11d6d7200)
+GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(0x11d6d7190)
+Found 1 LSAs
+
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.0 (Router ID)
+m_advertisingRtr = 0.0.0.0 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.2
+m_linkData = 10.1.1.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.1.2 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
+GlobalRouteManagerImpl:Insert(0x11d6d7200, 0.0.0.0, 0x11d6d7380)
+Found 1 LSAs
+
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.1 (Router ID)
+m_advertisingRtr = 0.0.0.1 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.2
+m_linkData = 10.1.2.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.2.2 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
+GlobalRouteManagerImpl:Insert(0x11d6d7200, 0.0.0.1, 0x11d6d7590)
+Found 1 LSAs
+
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.2 (Router ID)
+m_advertisingRtr = 0.0.0.2 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.0
+m_linkData = 10.1.1.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.1.1 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.1
+m_linkData = 10.1.2.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.2.1 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.3
+m_linkData = 10.1.3.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.3.1 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
+GlobalRouteManagerImpl:Insert(0x11d6d7200, 0.0.0.2, 0x11d6d78a0)
+Found 1 LSAs
+
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.3 (Router ID)
+m_advertisingRtr = 0.0.0.3 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.2
+m_linkData = 10.1.3.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.3.2 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
+GlobalRouteManagerImpl:Insert(0x11d6d7200, 0.0.0.3, 0x11d6d7bb0)
+GlobalRouteManagerImpl:InitializeRoutes(0x11d6d7190)
+About to start SPF calculation
+GlobalRouteManagerImpl:SPFCalculate(0x11d6d7190, 0.0.0.0)
+GlobalRouteManagerImpl:Initialize(0x11d6d7200)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.0)
+GlobalRouteManagerImpl:SPFVertex(0x11d6d7cc0, 0x11d6d7380)
+Setting m_vertexType to VertexRouter
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x11d6d7cc0, 0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Starting SPFCalculate for node 0.0.0.0
+GlobalRouteManagerImpl:CheckForStubNode(0x11d6d7190, 0.0.0.0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.2)
+GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x11d6d7190, 10.1.1.1, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Inserting default route for node 0.0.0.0 to next hop 10.1.1.2 via interface GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x11d6d7190, 10.1.1.1, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+1
+SPFCalculate truncated for stub node 0.0.0.0
+GlobalRouteManagerImpl:~SPFVertex(0x11d6d7cc0)
+Children vertices - {}
+Parent vertices - {}
+Vertex-0.0.0.0 completed deleted
+GlobalRouteManagerImpl:SPFCalculate(0x11d6d7190, 0.0.0.1)
+GlobalRouteManagerImpl:Initialize(0x11d6d7200)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.1)
+GlobalRouteManagerImpl:SPFVertex(0x11d6d7cc0, 0x11d6d7590)
+Setting m_vertexType to VertexRouter
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x11d6d7cc0, 0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Starting SPFCalculate for node 0.0.0.1
+GlobalRouteManagerImpl:CheckForStubNode(0x11d6d7190, 0.0.0.1)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.1)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.2)
+GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x11d6d7190, 10.1.2.1, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Inserting default route for node 0.0.0.1 to next hop 10.1.2.2 via interface GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x11d6d7190, 10.1.2.1, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+1
+SPFCalculate truncated for stub node 0.0.0.1
+GlobalRouteManagerImpl:~SPFVertex(0x11d6d7cc0)
+Children vertices - {}
+Parent vertices - {}
+Vertex-0.0.0.1 completed deleted
+GlobalRouteManagerImpl:SPFCalculate(0x11d6d7190, 0.0.0.2)
+GlobalRouteManagerImpl:Initialize(0x11d6d7200)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.2)
+GlobalRouteManagerImpl:SPFVertex(0x11d6d7cc0, 0x11d6d78a0)
+Setting m_vertexType to VertexRouter
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x11d6d7cc0, 0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Starting SPFCalculate for node 0.0.0.2
+GlobalRouteManagerImpl:CheckForStubNode(0x11d6d7190, 0.0.0.2)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.2)
+GlobalRouteManagerImpl:SPFNext(0x11d6d7190, 0x11d6d7cc0, 0x16da76508)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7cc0)
+Examining link 0 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2's GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+6 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.0)
+Found a P2P record from GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2 to 0.0.0.0
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7cc0)
+Considering w_lsa 0.0.0.0
+GlobalRouteManagerImpl:SPFVertex(0x11d6d7d40, 0x11d6d7380)
+Setting m_vertexType to VertexRouter
+GlobalRouteManagerImpl:SPFNexthopCalculation(0x11d6d7190, 0x11d6d7cc0, 0x11d6d7d40, 0x11d6d7900, 1)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7d40)
+GlobalRouteManagerImpl:SPFGetNextLink(0x11d6d7190, 0x11d6d7d40, 0x11d6d7cc0, 0x0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Found matching link l:  linkId = 0.0.0.2 linkData = 10.1.1.1
+Returning the found link
+GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x11d6d7190, 10.1.1.2, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+GlobalRouteManagerImpl:SetRootExitDirection(0x11d6d7d40, 10.1.1.1, 1)
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x11d6d7d40, 1)
+GlobalRouteManagerImpl:SetParent(0x11d6d7d40, 0x11d6d7cc0)
+Next hop from GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2 to GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+0.0.0.0 goes through next hop 10.1.1.1 via outgoing interface 1 with distance 1
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x11d6d7d40, 1)
+GlobalRouteManagerImpl:SetParent(0x11d6d7d40, 0x11d6d7cc0)
+Pushing GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+0.0.0.0, parent vertexId: GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2, distance: GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7d40)
+1
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7cc0)
+Examining link 1 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2's GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+6 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Found a Stub record to 10.1.1.1
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7cc0)
+Examining link 2 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2's GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+6 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.1)
+Found a P2P record from GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2 to 0.0.0.1
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7cc0)
+Considering w_lsa 0.0.0.1
+GlobalRouteManagerImpl:SPFVertex(0x11d6d7de0, 0x11d6d7590)
+Setting m_vertexType to VertexRouter
+GlobalRouteManagerImpl:SPFNexthopCalculation(0x11d6d7190, 0x11d6d7cc0, 0x11d6d7de0, 0x11d6d7980, 1)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7de0)
+GlobalRouteManagerImpl:SPFGetNextLink(0x11d6d7190, 0x11d6d7de0, 0x11d6d7cc0, 0x0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Found matching link l:  linkId = 0.0.0.2 linkData = 10.1.2.1
+Returning the found link
+GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x11d6d7190, 10.1.2.2, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+GlobalRouteManagerImpl:SetRootExitDirection(0x11d6d7de0, 10.1.2.1, 2)
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x11d6d7de0, 1)
+GlobalRouteManagerImpl:SetParent(0x11d6d7de0, 0x11d6d7cc0)
+Next hop from GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2 to GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1 goes through next hop 10.1.2.1 via outgoing interface 2 with distance 1
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x11d6d7de0, 1)
+GlobalRouteManagerImpl:SetParent(0x11d6d7de0, 0x11d6d7cc0)
+GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7de0)
+GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7d40)
+GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7de0)
+GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7d40)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7de0)
+Pushing GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1, parent vertexId: GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2, distance: GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7de0)
+1
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7cc0)
+Examining link 3 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2's GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+6 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Found a Stub record to 10.1.2.1
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7cc0)
+Examining link 4 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2's GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+6 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.3)
+Found a P2P record from GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2 to 0.0.0.3
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7cc0)
+Considering w_lsa 0.0.0.3
+GlobalRouteManagerImpl:SPFVertex(0x11d6d7ec0, 0x11d6d7bb0)
+Setting m_vertexType to VertexRouter
+GlobalRouteManagerImpl:SPFNexthopCalculation(0x11d6d7190, 0x11d6d7cc0, 0x11d6d7ec0, 0x11d6d7a00, 1)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7ec0)
+GlobalRouteManagerImpl:SPFGetNextLink(0x11d6d7190, 0x11d6d7ec0, 0x11d6d7cc0, 0x0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Found matching link l:  linkId = 0.0.0.2 linkData = 10.1.3.1
+Returning the found link
+GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x11d6d7190, 10.1.3.2, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+GlobalRouteManagerImpl:SetRootExitDirection(0x11d6d7ec0, 10.1.3.1, 3)
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x11d6d7ec0, 1)
+GlobalRouteManagerImpl:SetParent(0x11d6d7ec0, 0x11d6d7cc0)
+Next hop from GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2 to GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3 goes through next hop 10.1.3.1 via outgoing interface 3 with distance 1
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x11d6d7ec0, 1)
+GlobalRouteManagerImpl:SetParent(0x11d6d7ec0, 0x11d6d7cc0)
+GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7de0)
+GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7de0)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7ec0)
+Pushing GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3, parent vertexId: GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2, distance: GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7ec0)
+1
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7cc0)
+Examining link 5 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2's GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+6 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Found a Stub record to 10.1.3.1
+*** CandidateQueue Begin (<id, distance, LSA-type>) ***
+<GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+0.0.0.0, GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7d40)
+1, GlobalRouteManagerImpl:GetVertexType(0x11d6d7d40)
+router>
+<GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1, GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7de0)
+1, GlobalRouteManagerImpl:GetVertexType(0x11d6d7de0)
+router>
+<GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3, GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7ec0)
+1, GlobalRouteManagerImpl:GetVertexType(0x11d6d7ec0)
+router>
+*** CandidateQueue End ***
+Popped vertex GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+0.0.0.0
+GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+GlobalRouteManagerImpl:SPFVertexAddParent(0x11d6d7190, 0x11d6d7d40)
+GlobalRouteManagerImpl:GetParent(0x11d6d7d40, 0)
+GlobalRouteManagerImpl:AddChild(0x11d6d7cc0, 0x11d6d7d40)
+GlobalRouteManagerImpl:GetParent(0x11d6d7d40, 1)
+Index to SPFVertex's parent is out-of-range.
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7d40)
+GlobalRouteManagerImpl:SPFIntraAddRouter(0x11d6d7190, 0x11d6d7d40)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Vertex ID = 0.0.0.2
+Considering router 0.0.0.0
+Considering router 0.0.0.1
+Considering router 0.0.0.2
+Setting routes for node 2
+GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+ Node 2 found 2 link records in LSA 0x11d6d7380with LinkStateId 0.0.0.0
+GlobalRouteManagerImpl:GetNRootExitDirections(0x11d6d7d40)
+GlobalRouteManagerImpl:GetRootExitDirection(0x11d6d7d40, 0)
+(Route 0) Node 2 adding host route to 10.1.1.1 using next hop 10.1.1.1 and outgoing interface 1
+GlobalRouteManagerImpl:GetNRootExitDirections(0x11d6d7d40)
+GlobalRouteManagerImpl:SPFNext(0x11d6d7190, 0x11d6d7d40, 0x16da76508)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7d40)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7d40)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7d40)
+Examining link 0 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+0.0.0.0's GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+2 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.2)
+Found a P2P record from GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+0.0.0.0 to 0.0.0.2
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7d40)
+Skipping ->  LSA 0.0.0.2 already in SPF tree
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7d40)
+Examining link 1 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+0.0.0.0's GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+2 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+Found a Stub record to 10.1.1.2
+*** CandidateQueue Begin (<id, distance, LSA-type>) ***
+<GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1, GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7de0)
+1, GlobalRouteManagerImpl:GetVertexType(0x11d6d7de0)
+router>
+<GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3, GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7ec0)
+1, GlobalRouteManagerImpl:GetVertexType(0x11d6d7ec0)
+router>
+*** CandidateQueue End ***
+Popped vertex GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1
+GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+GlobalRouteManagerImpl:SPFVertexAddParent(0x11d6d7190, 0x11d6d7de0)
+GlobalRouteManagerImpl:GetParent(0x11d6d7de0, 0)
+GlobalRouteManagerImpl:AddChild(0x11d6d7cc0, 0x11d6d7de0)
+GlobalRouteManagerImpl:GetParent(0x11d6d7de0, 1)
+Index to SPFVertex's parent is out-of-range.
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7de0)
+GlobalRouteManagerImpl:SPFIntraAddRouter(0x11d6d7190, 0x11d6d7de0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Vertex ID = 0.0.0.2
+Considering router 0.0.0.0
+Considering router 0.0.0.1
+Considering router 0.0.0.2
+Setting routes for node 2
+GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+ Node 2 found 2 link records in LSA 0x11d6d7590with LinkStateId 0.0.0.1
+GlobalRouteManagerImpl:GetNRootExitDirections(0x11d6d7de0)
+GlobalRouteManagerImpl:GetRootExitDirection(0x11d6d7de0, 0)
+(Route 0) Node 2 adding host route to 10.1.2.1 using next hop 10.1.2.1 and outgoing interface 2
+GlobalRouteManagerImpl:GetNRootExitDirections(0x11d6d7de0)
+GlobalRouteManagerImpl:SPFNext(0x11d6d7190, 0x11d6d7de0, 0x16da76508)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7de0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7de0)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7de0)
+Examining link 0 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1's GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+2 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.2)
+Found a P2P record from GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1 to 0.0.0.2
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7de0)
+Skipping ->  LSA 0.0.0.2 already in SPF tree
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7de0)
+Examining link 1 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1's GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+2 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+Found a Stub record to 10.1.2.2
+*** CandidateQueue Begin (<id, distance, LSA-type>) ***
+<GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3, GlobalRouteManagerImpl:GetDistanceFromRoot(0x11d6d7ec0)
+1, GlobalRouteManagerImpl:GetVertexType(0x11d6d7ec0)
+router>
+*** CandidateQueue End ***
+Popped vertex GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3
+GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+GlobalRouteManagerImpl:SPFVertexAddParent(0x11d6d7190, 0x11d6d7ec0)
+GlobalRouteManagerImpl:GetParent(0x11d6d7ec0, 0)
+GlobalRouteManagerImpl:AddChild(0x11d6d7cc0, 0x11d6d7ec0)
+GlobalRouteManagerImpl:GetParent(0x11d6d7ec0, 1)
+Index to SPFVertex's parent is out-of-range.
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7ec0)
+GlobalRouteManagerImpl:SPFIntraAddRouter(0x11d6d7190, 0x11d6d7ec0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Vertex ID = 0.0.0.2
+Considering router 0.0.0.0
+Considering router 0.0.0.1
+Considering router 0.0.0.2
+Setting routes for node 2
+GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+ Node 2 found 2 link records in LSA 0x11d6d7bb0with LinkStateId 0.0.0.3
+GlobalRouteManagerImpl:GetNRootExitDirections(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetRootExitDirection(0x11d6d7ec0, 0)
+(Route 0) Node 2 adding host route to 10.1.3.1 using next hop 10.1.3.1 and outgoing interface 3
+GlobalRouteManagerImpl:GetNRootExitDirections(0x11d6d7ec0)
+GlobalRouteManagerImpl:SPFNext(0x11d6d7190, 0x11d6d7ec0, 0x16da76508)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7ec0)
+Examining link 0 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3's GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+2 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.2)
+Found a P2P record from GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3 to 0.0.0.2
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7ec0)
+Skipping ->  LSA 0.0.0.2 already in SPF tree
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7ec0)
+Examining link 1 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3's GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+2 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+Found a Stub record to 10.1.3.2
+GlobalRouteManagerImpl:SPFProcessStubs(0x11d6d7190, 0x11d6d7cc0)
+Processing stubs for GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Processing router LSA with id 0.0.0.2
+Examining link 0 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2's GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+6 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Examining link 1 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2's GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+6 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Found a Stub record to 10.1.1.1
+GlobalRouteManagerImpl:SPFIntraAddStub(0x11d6d7190, 0x11d6d7940, 0x11d6d7cc0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Stub is on local host: GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2; returning
+Examining link 2 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2's GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+6 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Examining link 3 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2's GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+6 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Found a Stub record to 10.1.2.1
+GlobalRouteManagerImpl:SPFIntraAddStub(0x11d6d7190, 0x11d6d79c0, 0x11d6d7cc0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Stub is on local host: GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2; returning
+Examining link 4 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2's GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+6 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Examining link 5 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2's GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+6 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7cc0)
+Found a Stub record to 10.1.3.1
+GlobalRouteManagerImpl:SPFIntraAddStub(0x11d6d7190, 0x11d6d7a40, 0x11d6d7cc0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Stub is on local host: GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+0.0.0.2; returning
+GlobalRouteManagerImpl:GetNChildren(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetChild(0x11d6d7cc0, 0)
+GlobalRouteManagerImpl:IsVertexProcessed(0x11d6d7d40)
+GlobalRouteManagerImpl:GetChild(0x11d6d7cc0, 0)
+GlobalRouteManagerImpl:SPFProcessStubs(0x11d6d7190, 0x11d6d7d40)
+Processing stubs for GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+0.0.0.0
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7d40)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+Processing router LSA with id 0.0.0.0
+Examining link 0 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+0.0.0.0's GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+2 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+Examining link 1 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+0.0.0.0's GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+2 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+Found a Stub record to 10.1.1.2
+GlobalRouteManagerImpl:SPFIntraAddStub(0x11d6d7190, 0x11d6d7420, 0x11d6d7d40)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Stub is on remote host: GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+0.0.0.0; installing
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Vertex ID = 0.0.0.2
+Considering router 0.0.0.0
+Considering router 0.0.0.1
+Considering router 0.0.0.2
+Setting routes for node 2
+GlobalRouteManagerImpl:GetLSA(0x11d6d7d40)
+GlobalRouteManagerImpl:GetNRootExitDirections(0x11d6d7d40)
+GlobalRouteManagerImpl:GetRootExitDirection(0x11d6d7d40, 0)
+(Route 0) Node 2 add network route to 10.1.1.0 using next hop 10.1.1.1 via interface 1
+GlobalRouteManagerImpl:GetNRootExitDirections(0x11d6d7d40)
+GlobalRouteManagerImpl:GetNChildren(0x11d6d7d40)
+GlobalRouteManagerImpl:GetChild(0x11d6d7cc0, 0)
+GlobalRouteManagerImpl:SetVertexProcessed(0x11d6d7d40, 1)
+GlobalRouteManagerImpl:GetNChildren(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetChild(0x11d6d7cc0, 1)
+GlobalRouteManagerImpl:IsVertexProcessed(0x11d6d7de0)
+GlobalRouteManagerImpl:GetChild(0x11d6d7cc0, 1)
+GlobalRouteManagerImpl:SPFProcessStubs(0x11d6d7190, 0x11d6d7de0)
+Processing stubs for GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7de0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+Processing router LSA with id 0.0.0.1
+Examining link 0 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1's GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+2 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+Examining link 1 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1's GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+2 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+Found a Stub record to 10.1.2.2
+GlobalRouteManagerImpl:SPFIntraAddStub(0x11d6d7190, 0x11d6d7630, 0x11d6d7de0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Stub is on remote host: GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1; installing
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Vertex ID = 0.0.0.2
+Considering router 0.0.0.0
+Considering router 0.0.0.1
+Considering router 0.0.0.2
+Setting routes for node 2
+GlobalRouteManagerImpl:GetLSA(0x11d6d7de0)
+GlobalRouteManagerImpl:GetNRootExitDirections(0x11d6d7de0)
+GlobalRouteManagerImpl:GetRootExitDirection(0x11d6d7de0, 0)
+(Route 0) Node 2 add network route to 10.1.2.0 using next hop 10.1.2.1 via interface 2
+GlobalRouteManagerImpl:GetNRootExitDirections(0x11d6d7de0)
+GlobalRouteManagerImpl:GetNChildren(0x11d6d7de0)
+GlobalRouteManagerImpl:GetChild(0x11d6d7cc0, 1)
+GlobalRouteManagerImpl:SetVertexProcessed(0x11d6d7de0, 1)
+GlobalRouteManagerImpl:GetNChildren(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetChild(0x11d6d7cc0, 2)
+GlobalRouteManagerImpl:IsVertexProcessed(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetChild(0x11d6d7cc0, 2)
+GlobalRouteManagerImpl:SPFProcessStubs(0x11d6d7190, 0x11d6d7ec0)
+Processing stubs for GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3
+GlobalRouteManagerImpl:GetVertexType(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+Processing router LSA with id 0.0.0.3
+Examining link 0 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3's GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+2 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+Examining link 1 of GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3's GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+2 link records
+GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+Found a Stub record to 10.1.3.2
+GlobalRouteManagerImpl:SPFIntraAddStub(0x11d6d7190, 0x11d6d7c50, 0x11d6d7ec0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Stub is on remote host: GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3; installing
+GlobalRouteManagerImpl:GetVertexId(0x11d6d7cc0)
+Vertex ID = 0.0.0.2
+Considering router 0.0.0.0
+Considering router 0.0.0.1
+Considering router 0.0.0.2
+Setting routes for node 2
+GlobalRouteManagerImpl:GetLSA(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetNRootExitDirections(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetRootExitDirection(0x11d6d7ec0, 0)
+(Route 0) Node 2 add network route to 10.1.3.0 using next hop 10.1.3.1 via interface 3
+GlobalRouteManagerImpl:GetNRootExitDirections(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetNChildren(0x11d6d7ec0)
+GlobalRouteManagerImpl:GetChild(0x11d6d7cc0, 2)
+GlobalRouteManagerImpl:SetVertexProcessed(0x11d6d7ec0, 1)
+GlobalRouteManagerImpl:GetNChildren(0x11d6d7cc0)
+GlobalRouteManagerImpl:GetNumExtLSAs(0x11d6d7200)
+GlobalRouteManagerImpl:~SPFVertex(0x11d6d7cc0)
+Children vertices - {0.0.0.0, 0.0.0.1, 0.0.0.3}
+Parent vertices - {}
+Parent vertex-0.0.0.2 deleting its child vertex-GlobalRouteManagerImpl:GetVertexId(0x11d6d7d40)
+0.0.0.0
+GlobalRouteManagerImpl:~SPFVertex(0x11d6d7d40)
+Children vertices - {}
+Parent vertices - {0.0.0.2}
+Vertex-0.0.0.0 completed deleted
+Parent vertex-0.0.0.2 deleting its child vertex-GlobalRouteManagerImpl:GetVertexId(0x11d6d7de0)
+0.0.0.1
+GlobalRouteManagerImpl:~SPFVertex(0x11d6d7de0)
+Children vertices - {}
+Parent vertices - {0.0.0.2}
+Vertex-0.0.0.1 completed deleted
+Parent vertex-0.0.0.2 deleting its child vertex-GlobalRouteManagerImpl:GetVertexId(0x11d6d7ec0)
+0.0.0.3
+GlobalRouteManagerImpl:~SPFVertex(0x11d6d7ec0)
+Children vertices - {}
+Parent vertices - {0.0.0.2}
+Vertex-0.0.0.3 completed deleted
+Vertex-0.0.0.2 completed deleted
+GlobalRouteManagerImpl:SPFCalculate(0x11d6d7190, 0.0.0.3)
+GlobalRouteManagerImpl:Initialize(0x11d6d7200)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.3)
+GlobalRouteManagerImpl:SPFVertex(0x10d61e310, 0x11d6d7bb0)
+Setting m_vertexType to VertexRouter
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x10d61e310, 0)
+GlobalRouteManagerImpl:GetLSA(0x10d61e310)
+Starting SPFCalculate for node 0.0.0.3
+GlobalRouteManagerImpl:CheckForStubNode(0x11d6d7190, 0.0.0.3)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.3)
+GlobalRouteManagerImpl:GetLSA(0x11d6d7200, 0.0.0.2)
+GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x11d6d7190, 10.1.3.1, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x10d61e310)
+Inserting default route for node 0.0.0.3 to next hop 10.1.3.2 via interface GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x11d6d7190, 10.1.3.1, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x10d61e310)
+1
+SPFCalculate truncated for stub node 0.0.0.3
+GlobalRouteManagerImpl:~SPFVertex(0x10d61e310)
+Children vertices - {}
+Parent vertices - {}
+Vertex-0.0.0.3 completed deleted
+Finished SPF calculation
+Create Applications.
+Run Simulation.
+GlobalRouteManagerImpl:~GlobalRouteManagerImpl(0x11d6d7190)
+GlobalRouteManagerImpl:~GlobalRouteManagerLSDB(0x11d6d7200)
+free LSA
+free LSA
+free LSA
+free LSA
+clear map
+Done.
+[1m[7m%[27m[1m[0m                                                                                                                                          [0m[27m[24m[J(base) chiyune@ChideMacBook-Air-4 ns-3 % [K[?2004h[?2004l
+
+Script done on Sun Jan  5 23:00:24 2025

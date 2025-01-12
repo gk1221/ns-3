@@ -52,5 +52,5 @@ vcpkg/
 .cache/
 default
 /*.txt
-results-wns/
+results-wns3/
 wns3-draw-figures/

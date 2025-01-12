@@ -1,0 +1,854 @@
+Script started on Sun Jan  5 23:06:47 2025
+[1m[7m%[27m[1m[0m                                                                                                                                          [0m[27m[24m[J(base) chiyune@ChideMacBook-Air-4 ns-3 % [K[?2004h./ns3 run examples/routing/global-injection-slash32.cc[?2004l
+[  0%] [32mBuilding CXX object examples/routing/CMakeFiles/global-injection-slash32.dir/global-injection-slash32.cc.o[0m
+[  0%] [32m[1mLinking CXX executable /Users/chiyune/Desktop/project/ns-3/build/examples/routing/ns3.42-global-injection-slash32-default[0m
+Logging component "Ipv4GlobalRoutingHelper" not found.
+Address=0
+AddressUtils=0
+Application=0
+ApplicationContainer=0
+ApplicationPacketProbe=0
+ArpCache=0
+ArpHeader=0
+ArpL3Protocol=0
+ArpQueueDiscItem=0
+AttributeConstructionList=0
+AttributeValue=0
+Backoff=0
+BitDeserializer=0
+BitSerializer=0
+Boolean=0
+BooleanProbe=0
+Breakpoint=0
+BridgeChannel=0
+BridgeHelper=0
+BridgeNetDevice=0
+Buffer=0
+BulkSendApplication=0
+ByteTagList=0
+CalendarScheduler=0
+Callback=0
+CandidateQueue=0
+Channel=0
+ChannelList=0
+CoDelQueueDisc=0
+CobaltQueueDisc=0
+CommandLine=0
+Config=0
+CsmaChannel=0
+CsmaHelper=0
+CsmaNetDevice=0
+CsvReader=0
+DataCalculator=0
+DataCollectionObject=0
+DataCollector=0
+DataOutputInterface=0
+DataRate=0
+DefaultSimulatorImpl=0
+Double=0
+DoubleProbe=0
+DropTailQueue=0
+DynamicQueueLimits=0
+ErrorChannel=0
+ErrorModel=0
+EthernetHeader=0
+EthernetTrailer=0
+EventId=0
+EventImpl=0
+ExampleAsTestCase=0
+FatalImpl=0
+FdReader=0
+FifoQueueDisc=0
+FileAggregator=0
+FileHelper=0
+FlowIdTag=0
+FqCoDelQueueDisc=0
+FqCobaltQueueDisc=0
+FqPieQueueDisc=0
+GlobalRouteManager=0
+GlobalRouteManagerImpl=all
+GlobalRouter=0
+GlobalRouterInjectionTest=all
+GlobalRoutingHelper=0
+GlobalValue=0
+GnuplotAggregator=0
+GnuplotHelper=0
+Hash=0
+Hash-Fnv=0
+Hash-Murmur3=0
+HashFunction=0
+Header=0
+HeapScheduler=0
+Histogram=0
+Icmpv4Header=0
+Icmpv4L4Protocol=0
+Icmpv6Header=0
+Icmpv6L4Protocol=0
+Inet6SocketAddress=0
+InetSocketAddress=0
+Integer=0
+InternetStackHelper=0
+InternetTraceHelper=0
+IpL4Protocol=0
+Ipv4=0
+Ipv4Address=0
+Ipv4AddressGenerator=0
+Ipv4AddressHelper=0
+Ipv4EndPoint=0
+Ipv4EndPointDemux=0
+Ipv4GlobalRouting=0
+Ipv4Header=0
+Ipv4Interface=0
+Ipv4InterfaceAddress=0
+Ipv4L3Protocol=0
+Ipv4ListRouting=0
+Ipv4PacketFilter=0
+Ipv4PacketInfoTag=0
+Ipv4PacketProbe=0
+Ipv4QueueDiscItem=0
+Ipv4RawSocketFactory=0
+Ipv4RawSocketFactoryImpl=0
+Ipv4RawSocketImpl=0
+Ipv4Route=0
+Ipv4RoutingProtocol=0
+Ipv4RoutingTableEntry=0
+Ipv4StaticRouting=0
+Ipv4StaticRoutingHelper=0
+Ipv6Address=0
+Ipv6AddressGenerator=0
+Ipv6AddressHelper=0
+Ipv6AutoconfiguredPrefix=0
+Ipv6EndPoint=0
+Ipv6EndPointDemux=0
+Ipv6Extension=0
+Ipv6ExtensionHeader=0
+Ipv6Header=0
+Ipv6Interface=0
+Ipv6InterfaceAddress=0
+Ipv6L3Protocol=0
+Ipv6ListRouting=0
+Ipv6Option=0
+Ipv6OptionHeader=0
+Ipv6PacketFilter=0
+Ipv6PacketProbe=0
+Ipv6PmtuCache=0
+Ipv6QueueDiscItem=0
+Ipv6RawSocketImpl=0
+Ipv6StaticRouting=0
+Ipv6StaticRoutingHelper=0
+Length=0
+ListScheduler=0
+LlcSnalHeader=0
+LoopbackNetDevice=0
+Mac16Address=0
+Mac48Address=0
+Mac64Address=0
+Mac8Address=0
+MapScheduler=0
+MpquicBulkSendApplication=0
+MqQueueDisc=0
+Names=0
+NdiscCache=0
+NeighborCacheHelper=0
+NetDevice=0
+NetDeviceQueueInterface=0
+NixVector=0
+Node=0
+NodeList=0
+NodePrinter=0
+Object=0
+ObjectBase=0
+ObjectFactory=0
+ObjectPtrContainer=0
+OmnetDataOutput=0
+OnOffApplication=0
+OutputStreamWrapper=0
+Packet=0
+PacketBB=0
+PacketBurst=0
+PacketDataCalculators=0
+PacketFilter=0
+PacketLossCounter=0
+PacketMetadata=0
+PacketProbe=0
+PacketSink=0
+PacketSocket=0
+PacketSocketAddress=0
+PacketSocketClient=0
+PacketSocketFactory=0
+PacketSocketServer=0
+PacketTagList=0
+PcapFile=0
+PcapFileWrapper=0
+PfifoFastQueueDisc=0
+PieQueueDisc=0
+PointToPointChannel=0
+PointToPointHelper=0
+PointToPointNetDevice=0
+Pointer=0
+PppHeader=0
+PrioQueueDisc=0
+PriorityQueueScheduler=0
+Probe=0
+Queue=0
+QueueDisc=0
+QueueItem=0
+QueueLimits=0
+QueueSize=0
+QuicClient=0
+QuicEchoClientApplication=0
+QuicEchoHelper=0
+QuicEchoServerApplication=0
+QuicServer=0
+RadiotapHeader=0
+RandomVariableStream=0
+RandomVariableStreamHelper=0
+RealtimeSimulatorImpl=0
+RedQueueDisc=0
+Rip=0
+RipHeader=0
+RipNg=0
+RipNgHeader=0
+RngSeedManager=0
+RngStream=0
+RttEstimator=0
+SQLiteOutput=0
+Scheduler=0
+SeqTsEchoHeader=0
+SeqTsHeader=0
+SeqTsSizeHeader=0
+ShowProgress=0
+SimpleChannel=0
+SimpleNetDevice=0
+SimpleNetDeviceHelper=0
+Simulator=0
+SimulatorImpl=0
+SllHeader=0
+Socket=0
+SocketFactory=0
+SqliteDataOutput=0
+Synchronizer=0
+SystemPath=0
+SystemWallClockMs=0
+TagBuffer=0
+TbfQueueDisc=0
+TcpBbr=0
+TcpBic=0
+TcpCongestionOps=0
+TcpCubic=0
+TcpDctcp=0
+TcpHeader=0
+TcpHighSpeed=0
+TcpHtcp=0
+TcpHybla=0
+TcpIllinois=0
+TcpL4Protocol=0
+TcpLedbat=0
+TcpLinuxReno=0
+TcpLp=0
+TcpOption=0
+TcpOptionRfc793=0
+TcpOptionSack=0
+TcpOptionSackPermitted=0
+TcpOptionTS=0
+TcpOptionWinScale=0
+TcpPrrRecovery=0
+TcpRateOps=0
+TcpRecoveryOps=0
+TcpRxBuffer=0
+TcpScalable=0
+TcpSocket=0
+TcpSocketBase=0
+TcpTxBuffer=0
+TcpVegas=0
+TcpVeno=0
+TcpWestwoodPlus=0
+TcpYeah=0
+Test=0
+ThreeGppHttpClient=0
+ThreeGppHttpHeader=0
+ThreeGppHttpServer=0
+ThreeGppHttpVariables=0
+Time=0
+TimeDataCalculators=0
+TimePrinter=0
+TimeProbe=0
+TimeSeriesAdaptor=0
+Timer=0
+TraceHelper=0
+TraceSourceAccessor=0
+TrafficControlHelper=0
+TrafficControlLayer=0
+Trailer=0
+TrickleTimer=0
+TypeId=0
+UdpClient=0
+UdpEchoClientApplication=0
+UdpEchoServerApplication=0
+UdpL4Protocol=0
+UdpServer=0
+UdpSocket=0
+UdpSocketImpl=0
+UdpTraceClient=0
+Uinteger=0
+Uinteger16Probe=0
+Uinteger32Probe=0
+Uinteger8Probe=0
+Vector=0
+WallClockSynchronizer=0
+Watchdog=0
+int64x64=0
+int64x64-128=0
+msg="Logging component "Ipv4GlobalRoutingHelper" not found. See above for a list of available log components", file=/Users/chiyune/Desktop/project/ns-3/src/core/model/log.cc, line=313
+NS_FATAL, terminating
+libc++abi: terminating
+Command 'build/examples/routing/ns3.42-global-injection-slash32-default' died with <Signals.SIGABRT: 6>.
+[1m[7m%[27m[1m[0m                                                                                                                                          [0m[27m[24m[J(base) chiyune@ChideMacBook-Air-4 ns-3 % [K[?2004h./ns3 run examples/routing/global-injection-slash32.cc[54D                                                      [54D./ns3 run examples/routing/global-injection-slash32.cc[?2004l
+[  0%] [32mBuilding CXX object examples/routing/CMakeFiles/global-injection-slash32.dir/global-injection-slash32.cc.o[0m
+[  0%] [32m[1mLinking CXX executable /Users/chiyune/Desktop/project/ns-3/build/examples/routing/ns3.42-global-injection-slash32-default[0m
+Logging component "Ipv4RoutingHelper" not found.
+Address=0
+AddressUtils=0
+Application=0
+ApplicationContainer=0
+ApplicationPacketProbe=0
+ArpCache=0
+ArpHeader=0
+ArpL3Protocol=0
+ArpQueueDiscItem=0
+AttributeConstructionList=0
+AttributeValue=0
+Backoff=0
+BitDeserializer=0
+BitSerializer=0
+Boolean=0
+BooleanProbe=0
+Breakpoint=0
+BridgeChannel=0
+BridgeHelper=0
+BridgeNetDevice=0
+Buffer=0
+BulkSendApplication=0
+ByteTagList=0
+CalendarScheduler=0
+Callback=0
+CandidateQueue=0
+Channel=0
+ChannelList=0
+CoDelQueueDisc=0
+CobaltQueueDisc=0
+CommandLine=0
+Config=0
+CsmaChannel=0
+CsmaHelper=0
+CsmaNetDevice=0
+CsvReader=0
+DataCalculator=0
+DataCollectionObject=0
+DataCollector=0
+DataOutputInterface=0
+DataRate=0
+DefaultSimulatorImpl=0
+Double=0
+DoubleProbe=0
+DropTailQueue=0
+DynamicQueueLimits=0
+ErrorChannel=0
+ErrorModel=0
+EthernetHeader=0
+EthernetTrailer=0
+EventId=0
+EventImpl=0
+ExampleAsTestCase=0
+FatalImpl=0
+FdReader=0
+FifoQueueDisc=0
+FileAggregator=0
+FileHelper=0
+FlowIdTag=0
+FqCoDelQueueDisc=0
+FqCobaltQueueDisc=0
+FqPieQueueDisc=0
+GlobalRouteManager=0
+GlobalRouteManagerImpl=all
+GlobalRouter=0
+GlobalRouterInjectionTest=all
+GlobalRoutingHelper=0
+GlobalValue=0
+GnuplotAggregator=0
+GnuplotHelper=0
+Hash=0
+Hash-Fnv=0
+Hash-Murmur3=0
+HashFunction=0
+Header=0
+HeapScheduler=0
+Histogram=0
+Icmpv4Header=0
+Icmpv4L4Protocol=0
+Icmpv6Header=0
+Icmpv6L4Protocol=0
+Inet6SocketAddress=0
+InetSocketAddress=0
+Integer=0
+InternetStackHelper=0
+InternetTraceHelper=0
+IpL4Protocol=0
+Ipv4=0
+Ipv4Address=0
+Ipv4AddressGenerator=0
+Ipv4AddressHelper=0
+Ipv4EndPoint=0
+Ipv4EndPointDemux=0
+Ipv4GlobalRouting=0
+Ipv4Header=0
+Ipv4Interface=0
+Ipv4InterfaceAddress=0
+Ipv4L3Protocol=0
+Ipv4ListRouting=0
+Ipv4PacketFilter=0
+Ipv4PacketInfoTag=0
+Ipv4PacketProbe=0
+Ipv4QueueDiscItem=0
+Ipv4RawSocketFactory=0
+Ipv4RawSocketFactoryImpl=0
+Ipv4RawSocketImpl=0
+Ipv4Route=0
+Ipv4RoutingProtocol=0
+Ipv4RoutingTableEntry=0
+Ipv4StaticRouting=0
+Ipv4StaticRoutingHelper=0
+Ipv6Address=0
+Ipv6AddressGenerator=0
+Ipv6AddressHelper=0
+Ipv6AutoconfiguredPrefix=0
+Ipv6EndPoint=0
+Ipv6EndPointDemux=0
+Ipv6Extension=0
+Ipv6ExtensionHeader=0
+Ipv6Header=0
+Ipv6Interface=0
+Ipv6InterfaceAddress=0
+Ipv6L3Protocol=0
+Ipv6ListRouting=0
+Ipv6Option=0
+Ipv6OptionHeader=0
+Ipv6PacketFilter=0
+Ipv6PacketProbe=0
+Ipv6PmtuCache=0
+Ipv6QueueDiscItem=0
+Ipv6RawSocketImpl=0
+Ipv6StaticRouting=0
+Ipv6StaticRoutingHelper=0
+Length=0
+ListScheduler=0
+LlcSnalHeader=0
+LoopbackNetDevice=0
+Mac16Address=0
+Mac48Address=0
+Mac64Address=0
+Mac8Address=0
+MapScheduler=0
+MpquicBulkSendApplication=0
+MqQueueDisc=0
+Names=0
+NdiscCache=0
+NeighborCacheHelper=0
+NetDevice=0
+NetDeviceQueueInterface=0
+NixVector=0
+Node=0
+NodeList=0
+NodePrinter=0
+Object=0
+ObjectBase=0
+ObjectFactory=0
+ObjectPtrContainer=0
+OmnetDataOutput=0
+OnOffApplication=0
+OutputStreamWrapper=0
+Packet=0
+PacketBB=0
+PacketBurst=0
+PacketDataCalculators=0
+PacketFilter=0
+PacketLossCounter=0
+PacketMetadata=0
+PacketProbe=0
+PacketSink=0
+PacketSocket=0
+PacketSocketAddress=0
+PacketSocketClient=0
+PacketSocketFactory=0
+PacketSocketServer=0
+PacketTagList=0
+PcapFile=0
+PcapFileWrapper=0
+PfifoFastQueueDisc=0
+PieQueueDisc=0
+PointToPointChannel=0
+PointToPointHelper=0
+PointToPointNetDevice=0
+Pointer=0
+PppHeader=0
+PrioQueueDisc=0
+PriorityQueueScheduler=0
+Probe=0
+Queue=0
+QueueDisc=0
+QueueItem=0
+QueueLimits=0
+QueueSize=0
+QuicClient=0
+QuicEchoClientApplication=0
+QuicEchoHelper=0
+QuicEchoServerApplication=0
+QuicServer=0
+RadiotapHeader=0
+RandomVariableStream=0
+RandomVariableStreamHelper=0
+RealtimeSimulatorImpl=0
+RedQueueDisc=0
+Rip=0
+RipHeader=0
+RipNg=0
+RipNgHeader=0
+RngSeedManager=0
+RngStream=0
+RttEstimator=0
+SQLiteOutput=0
+Scheduler=0
+SeqTsEchoHeader=0
+SeqTsHeader=0
+SeqTsSizeHeader=0
+ShowProgress=0
+SimpleChannel=0
+SimpleNetDevice=0
+SimpleNetDeviceHelper=0
+Simulator=0
+SimulatorImpl=0
+SllHeader=0
+Socket=0
+SocketFactory=0
+SqliteDataOutput=0
+Synchronizer=0
+SystemPath=0
+SystemWallClockMs=0
+TagBuffer=0
+TbfQueueDisc=0
+TcpBbr=0
+TcpBic=0
+TcpCongestionOps=0
+TcpCubic=0
+TcpDctcp=0
+TcpHeader=0
+TcpHighSpeed=0
+TcpHtcp=0
+TcpHybla=0
+TcpIllinois=0
+TcpL4Protocol=0
+TcpLedbat=0
+TcpLinuxReno=0
+TcpLp=0
+TcpOption=0
+TcpOptionRfc793=0
+TcpOptionSack=0
+TcpOptionSackPermitted=0
+TcpOptionTS=0
+TcpOptionWinScale=0
+TcpPrrRecovery=0
+TcpRateOps=0
+TcpRecoveryOps=0
+TcpRxBuffer=0
+TcpScalable=0
+TcpSocket=0
+TcpSocketBase=0
+TcpTxBuffer=0
+TcpVegas=0
+TcpVeno=0
+TcpWestwoodPlus=0
+TcpYeah=0
+Test=0
+ThreeGppHttpClient=0
+ThreeGppHttpHeader=0
+ThreeGppHttpServer=0
+ThreeGppHttpVariables=0
+Time=0
+TimeDataCalculators=0
+TimePrinter=0
+TimeProbe=0
+TimeSeriesAdaptor=0
+Timer=0
+TraceHelper=0
+TraceSourceAccessor=0
+TrafficControlHelper=0
+TrafficControlLayer=0
+Trailer=0
+TrickleTimer=0
+TypeId=0
+UdpClient=0
+UdpEchoClientApplication=0
+UdpEchoServerApplication=0
+UdpL4Protocol=0
+UdpServer=0
+UdpSocket=0
+UdpSocketImpl=0
+UdpTraceClient=0
+Uinteger=0
+Uinteger16Probe=0
+Uinteger32Probe=0
+Uinteger8Probe=0
+Vector=0
+WallClockSynchronizer=0
+Watchdog=0
+int64x64=0
+int64x64-128=0
+msg="Logging component "Ipv4RoutingHelper" not found. See above for a list of available log components", file=/Users/chiyune/Desktop/project/ns-3/src/core/model/log.cc, line=313
+NS_FATAL, terminating
+libc++abi: terminating
+Command 'build/examples/routing/ns3.42-global-injection-slash32-default' died with <Signals.SIGABRT: 6>.
+[1m[7m%[27m[1m[0m                                                                                                                                          [0m[27m[24m[J(base) chiyune@ChideMacBook-Air-4 ns-3 % [K[?2004h./ns3 run examples/routing/global-injection-slash32.cc[?2004l
+[  0%] [32mBuilding CXX object examples/routing/CMakeFiles/global-injection-slash32.dir/global-injection-slash32.cc.o[0m
+[  0%] [32m[1mLinking CXX executable /Users/chiyune/Desktop/project/ns-3/build/examples/routing/ns3.42-global-injection-slash32-default[0m
+GlobalRouteManager:AllocateRouterId()
+GlobalRouteManager:AllocateRouterId()
+GlobalRouteManager:BuildGlobalRoutingDatabase()
+GlobalRouteManagerImpl:GlobalRouteManagerImpl(0x136722440)
+GlobalRouteManagerImpl:GlobalRouteManagerLSDB(0x136722460)
+GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(0x136722440)
+Found 1 LSAs
+
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.0 (Router ID)
+m_advertisingRtr = 0.0.0.0 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.1
+m_linkData = 10.1.1.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.1.2 (Network number of attached network)
+m_linkData = 255.255.255.252 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 172.16.1.1 (Network number of attached network)
+m_linkData = 255.255.255.255 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
+GlobalRouteManagerImpl:Insert(0x136722460, 0.0.0.0, 0x13661b8c0)
+Found 1 LSAs
+
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.1 (Router ID)
+m_advertisingRtr = 0.0.0.1 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.0
+m_linkData = 10.1.1.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.1.1 (Network number of attached network)
+m_linkData = 255.255.255.252 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
+GlobalRouteManagerImpl:Insert(0x136722460, 0.0.0.1, 0x136722670)
+GlobalRouteManager:InitializeRoutes()
+GlobalRouteManagerImpl:InitializeRoutes(0x136722440)
+About to start SPF calculation
+GlobalRouteManagerImpl:SPFCalculate(0x136722440, 0.0.0.0)
+GlobalRouteManagerImpl:Initialize(0x136722460)
+GlobalRouteManagerImpl:GetLSA(0x136722460, 0.0.0.0)
+GlobalRouteManagerImpl:SPFVertex(0x136722780, 0x13661b8c0)
+Setting m_vertexType to VertexRouter
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x136722780, 0)
+GlobalRouteManagerImpl:GetLSA(0x136722780)
+Starting SPFCalculate for node 0.0.0.0
+GlobalRouteManagerImpl:CheckForStubNode(0x136722440, 0.0.0.0)
+GlobalRouteManagerImpl:GetLSA(0x136722460, 0.0.0.0)
+GlobalRouteManagerImpl:GetLSA(0x136722460, 0.0.0.1)
+GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x136722440, 10.1.1.1, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x136722780)
+Inserting default route for node 0.0.0.0 to next hop 10.1.1.2 via interface GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x136722440, 10.1.1.1, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x136722780)
+1
+SPFCalculate truncated for stub node 0.0.0.0
+GlobalRouteManagerImpl:~SPFVertex(0x136722780)
+Children vertices - {}
+Parent vertices - {}
+Vertex-0.0.0.0 completed deleted
+GlobalRouteManagerImpl:SPFCalculate(0x136722440, 0.0.0.1)
+GlobalRouteManagerImpl:Initialize(0x136722460)
+GlobalRouteManagerImpl:GetLSA(0x136722460, 0.0.0.1)
+GlobalRouteManagerImpl:SPFVertex(0x13661bcb0, 0x136722670)
+Setting m_vertexType to VertexRouter
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x13661bcb0, 0)
+GlobalRouteManagerImpl:GetLSA(0x13661bcb0)
+Starting SPFCalculate for node 0.0.0.1
+GlobalRouteManagerImpl:CheckForStubNode(0x136722440, 0.0.0.1)
+GlobalRouteManagerImpl:GetLSA(0x136722460, 0.0.0.1)
+GlobalRouteManagerImpl:GetLSA(0x136722460, 0.0.0.0)
+GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x136722440, 10.1.1.2, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x13661bcb0)
+Inserting default route for node 0.0.0.1 to next hop 10.1.1.1 via interface GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x136722440, 10.1.1.2, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x13661bcb0)
+1
+SPFCalculate truncated for stub node 0.0.0.1
+GlobalRouteManagerImpl:~SPFVertex(0x13661bcb0)
+Children vertices - {}
+Parent vertices - {}
+Vertex-0.0.0.1 completed deleted
+Finished SPF calculation
+GlobalRouteManager:DeleteGlobalRoutes()
+GlobalRouteManagerImpl:DeleteGlobalRoutes(0x136722440)
+Deleting 1 routes from node 0
+Deleting global route 0 from node 0
+Deleted 1 global routes from node 0
+Deleting 1 routes from node 1
+Deleting global route 0 from node 1
+Deleted 1 global routes from node 1
+Deleting LSDB, creating new one
+GlobalRouteManagerImpl:~GlobalRouteManagerLSDB(0x136722460)
+free LSA
+free LSA
+clear map
+GlobalRouteManagerImpl:GlobalRouteManagerLSDB(0x13661b7f0)
+GlobalRouteManager:BuildGlobalRoutingDatabase()
+GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(0x136722440)
+Found 1 LSAs
+
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.0 (Router ID)
+m_advertisingRtr = 0.0.0.0 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.1
+m_linkData = 10.1.1.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.1.2 (Network number of attached network)
+m_linkData = 255.255.255.252 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 172.16.1.1 (Network number of attached network)
+m_linkData = 255.255.255.255 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
+GlobalRouteManagerImpl:Insert(0x13661b7f0, 0.0.0.0, 0x13661bcf0)
+Found 3 LSAs
+
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.1 (Router ID)
+m_advertisingRtr = 0.0.0.1 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.0
+m_linkData = 10.1.1.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.1.1 (Network number of attached network)
+m_linkData = 255.255.255.252 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
+GlobalRouteManagerImpl:Insert(0x13661b7f0, 0.0.0.1, 0x13661bfd0)
+
+========== Global Routing LSA ==========
+m_lsType = 5 (GlobalRoutingLSA::ASExternalLSA)
+m_linkStateId = 10.1.1.4 (Router ID)
+m_advertisingRtr = 0.0.0.1 (Router ID)
+---------- ASExternalLSA Link Record --------
+m_linkStateId = 10.1.1.4
+m_networkLSANetworkMask = 255.255.255.252
+========== End Global Routing LSA ==========
+
+GlobalRouteManagerImpl:Insert(0x13661b7f0, 10.1.1.4, 0x13661c0e0)
+
+========== Global Routing LSA ==========
+m_lsType = 5 (GlobalRoutingLSA::ASExternalLSA)
+m_linkStateId = 192.168.1.1 (Router ID)
+m_advertisingRtr = 0.0.0.1 (Router ID)
+---------- ASExternalLSA Link Record --------
+m_linkStateId = 192.168.1.1
+m_networkLSANetworkMask = 255.255.255.255
+========== End Global Routing LSA ==========
+
+GlobalRouteManagerImpl:Insert(0x13661b7f0, 192.168.1.1, 0x13661c140)
+GlobalRouteManager:InitializeRoutes()
+GlobalRouteManagerImpl:InitializeRoutes(0x136722440)
+About to start SPF calculation
+GlobalRouteManagerImpl:SPFCalculate(0x136722440, 0.0.0.0)
+GlobalRouteManagerImpl:Initialize(0x13661b7f0)
+GlobalRouteManagerImpl:GetLSA(0x13661b7f0, 0.0.0.0)
+GlobalRouteManagerImpl:SPFVertex(0x13661c1a0, 0x13661bcf0)
+Setting m_vertexType to VertexRouter
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x13661c1a0, 0)
+GlobalRouteManagerImpl:GetLSA(0x13661c1a0)
+Starting SPFCalculate for node 0.0.0.0
+GlobalRouteManagerImpl:CheckForStubNode(0x136722440, 0.0.0.0)
+GlobalRouteManagerImpl:GetLSA(0x13661b7f0, 0.0.0.0)
+GlobalRouteManagerImpl:GetLSA(0x13661b7f0, 0.0.0.1)
+GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x136722440, 10.1.1.1, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x13661c1a0)
+Inserting default route for node 0.0.0.0 to next hop 10.1.1.2 via interface GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x136722440, 10.1.1.1, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x13661c1a0)
+1
+SPFCalculate truncated for stub node 0.0.0.0
+GlobalRouteManagerImpl:~SPFVertex(0x13661c1a0)
+Children vertices - {}
+Parent vertices - {}
+Vertex-0.0.0.0 completed deleted
+GlobalRouteManagerImpl:SPFCalculate(0x136722440, 0.0.0.1)
+GlobalRouteManagerImpl:Initialize(0x13661b7f0)
+GlobalRouteManagerImpl:GetLSA(0x13661b7f0, 0.0.0.1)
+GlobalRouteManagerImpl:SPFVertex(0x1367224e0, 0x13661bfd0)
+Setting m_vertexType to VertexRouter
+GlobalRouteManagerImpl:SetDistanceFromRoot(0x1367224e0, 0)
+GlobalRouteManagerImpl:GetLSA(0x1367224e0)
+Starting SPFCalculate for node 0.0.0.1
+GlobalRouteManagerImpl:CheckForStubNode(0x136722440, 0.0.0.1)
+GlobalRouteManagerImpl:GetLSA(0x13661b7f0, 0.0.0.1)
+GlobalRouteManagerImpl:GetLSA(0x13661b7f0, 0.0.0.0)
+GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x136722440, 10.1.1.2, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x1367224e0)
+Inserting default route for node 0.0.0.1 to next hop 10.1.1.1 via interface GlobalRouteManagerImpl:FindOutgoingInterfaceId(0x136722440, 10.1.1.2, 255.255.255.255)
+GlobalRouteManagerImpl:GetVertexId(0x1367224e0)
+1
+SPFCalculate truncated for stub node 0.0.0.1
+GlobalRouteManagerImpl:~SPFVertex(0x1367224e0)
+Children vertices - {}
+Parent vertices - {}
+Vertex-0.0.0.1 completed deleted
+Finished SPF calculation
+GlobalRouteManagerImpl:~GlobalRouteManagerImpl(0x136722440)
+GlobalRouteManagerImpl:~GlobalRouteManagerLSDB(0x13661b7f0)
+free LSA
+free LSA
+free ASexternalLSA
+free ASexternalLSA
+clear map
+[1m[7m%[27m[1m[0m                                                                                                                                          [0m[27m[24m[J(base) chiyune@ChideMacBook-Air-4 ns-3 % [K[?2004h[?2004l
+
+Script done on Sun Jan  5 23:08:18 2025

@@ -1,0 +1,349 @@
+Script started on Sun Jan  5 11:35:12 2025
+[1m[7m%[27m[1m[0m                                                                                                                                          [0m[27m[24m[J(base) chiyune@ChideMacBook-Air-4 ns-3 % [K[?2004hipconfig[8Dif[6C[8D./ns3 run scratch/0102.cc -- -SchedulerType=0[45Difconfig                                     [37D[8Dip[6C[8D        [8D../ns3 run script      scrq atch[1m/[0m[0m/919   0103.cc[1m [0m[0m [?2004l
+0103:main(): Create nodes.
++0.000000000s -1 0103:main(): Create channels.
+start setting LTE
+pair to enode and UE
+Given IP address to UE
+UE 6 IP Address: 10.1.10.1
+UE 9 IP Address: 10.1.10.2
+Setting application 
+Setting OnOFFHelper 
++0.000000000s -1 0103:main(): Assign IP Addresses.
++0.000000000s -1 0103:main(): Assign Node 4 routing table
+Interface 0: 127.0.0.1
+Interface 1: 10.1.4.1
+Interface 2: 10.1.6.1
++0.000000000s -1 0103:main(): Assign Node 5 routing table
+Interface 0: 127.0.0.1
+Interface 1: 10.1.5.2
+Interface 2: 10.1.7.2
++0.000000000s -1 0103:main(): Create All node's routing table
++0.000000000s -1 GlobalRouteManagerImpl:GlobalRouteManagerImpl(0x126ebba40)
++0.000000000s -1 GlobalRouteManagerImpl:GlobalRouteManagerLSDB(0x127885ec0)
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(0x126ebba40)
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): Found 1 LSAs
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): 
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.0 (Router ID)
+m_advertisingRtr = 0.0.0.0 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.1
+m_linkData = 10.1.1.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.1.2 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
++0.000000000s -1 GlobalRouteManagerImpl:Insert(0x127885ec0, 0.0.0.0, 0x126ebbbb0)
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): Found 1 LSAs
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): 
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.1 (Router ID)
+m_advertisingRtr = 0.0.0.1 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.6
+m_linkData = 10.1.9.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.9.2 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.8
+m_linkData = 10.1.4.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.4.1 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.0
+m_linkData = 10.1.1.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.1.1 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
++0.000000000s -1 GlobalRouteManagerImpl:Insert(0x127885ec0, 0.0.0.1, 0x126ebbec0)
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): Found 1 LSAs
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): 
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.2 (Router ID)
+m_advertisingRtr = 0.0.0.2 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.6
+m_linkData = 10.1.2.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.2.1 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
++0.000000000s -1 GlobalRouteManagerImpl:Insert(0x127885ec0, 0.0.0.2, 0x1278863f0)
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): Found 1 LSAs
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): 
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.3 (Router ID)
+m_advertisingRtr = 0.0.0.3 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.4
+m_linkData = 10.1.3.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.3.2 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
++0.000000000s -1 GlobalRouteManagerImpl:Insert(0x127885ec0, 0.0.0.3, 0x127886600)
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): Found 1 LSAs
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): 
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.8 (Router ID)
+m_advertisingRtr = 0.0.0.8 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.1
+m_linkData = 10.1.4.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.4.2 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.4
+m_linkData = 10.1.6.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.6.2 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
++0.000000000s -1 GlobalRouteManagerImpl:Insert(0x127885ec0, 0.0.0.8, 0x127886890)
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): Found 1 LSAs
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): 
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.9 (Router ID)
+m_advertisingRtr = 0.0.0.9 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.6
+m_linkData = 10.1.5.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.5.1 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.7
+m_linkData = 10.1.7.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.7.1 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
++0.000000000s -1 GlobalRouteManagerImpl:Insert(0x127885ec0, 0.0.0.9, 0x126f141e0)
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): Found 1 LSAs
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): 
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.4 (Router ID)
+m_advertisingRtr = 0.0.0.4 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.10.0 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.8
+m_linkData = 10.1.6.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.6.1 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.3
+m_linkData = 10.1.3.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.3.1 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
++0.000000000s -1 GlobalRouteManagerImpl:Insert(0x127885ec0, 0.0.0.4, 0x126f14510)
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): Found 1 LSAs
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): 
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.5 (Router ID)
+m_advertisingRtr = 0.0.0.5 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.7
+m_linkData = 10.1.8.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.8.1 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
++0.000000000s -1 GlobalRouteManagerImpl:Insert(0x127885ec0, 0.0.0.5, 0x126f147e0)
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): Found 1 LSAs
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): 
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.6 (Router ID)
+m_advertisingRtr = 0.0.0.6 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.1
+m_linkData = 10.1.9.2
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.9.1 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.9
+m_linkData = 10.1.5.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.5.2 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.2
+m_linkData = 10.1.2.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.2.2 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
++0.000000000s -1 GlobalRouteManagerImpl:Insert(0x127885ec0, 0.0.0.6, 0x126f14af0)
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): Found 1 LSAs
++0.000000000s -1 GlobalRouteManagerImpl:BuildGlobalRoutingDatabase(): 
+========== Global Routing LSA ==========
+m_lsType = 1 (GlobalRoutingLSA::RouterLSA)
+m_linkStateId = 0.0.0.7 (Router ID)
+m_advertisingRtr = 0.0.0.7 (Router ID)
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.10.0 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.9
+m_linkData = 10.1.7.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.7.2 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 1 (GlobalRoutingLinkRecord::PointToPoint)
+m_linkId = 0.0.0.5
+m_linkData = 10.1.8.1
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+---------- RouterLSA Link Record ----------
+m_linkType = 3 (GlobalRoutingLinkRecord::StubNetwork)
+m_linkId = 10.1.8.2 (Network number of attached network)
+m_linkData = 255.255.255.0 (Network mask of attached network)
+m_metric = 1
+---------- End RouterLSA Link Record ----------
+========== End Global Routing LSA ==========
+
++0.000000000s -1 GlobalRouteManagerImpl:Insert(0x127885ec0, 0.0.0.7, 0x126f14ec0)
+NS_ASSERT failed, cond="m_ptr", msg="Attempted to dereference zero pointer 1", +0.000000000s -1 file=/Users/chiyune/Desktop/project/ns-3/src/core/model/ptr.h, line=718
+NS_FATAL, terminating
+libc++abi: terminating
+Command 'build/scratch/ns3.42-0103-default' died with <Signals.SIGABRT: 6>.
+[1m[7m%[27m[1m[0m                                                                                                                                          [0m[27m[24m[J(base) chiyune@ChideMacBook-Air-4 ns-3 % [K[?2004h[?2004l
+
+Script done on Sun Jan  5 11:35:43 2025

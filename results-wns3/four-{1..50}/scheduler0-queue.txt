@@ -1,2 +1,0 @@
-Consolidate compiler generated dependencies of target scratch_wns3-mpquic-four-path
-Command 'build/scratch/ns3.42-wns3-mpquic-four-path-default --Seed={1..50} --Size=5242800 --SchedulerType=0 --Rate0=5.0 --Delay0=50.0 --Rate1=6.0 --Delay1=55.0 --LossRate=0.000000' returned non-zero exit status 1.

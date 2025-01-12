@@ -44,10 +44,12 @@
 #include <iostream>
 #include "ns3/flow-monitor-module.h"
 #include "ns3/gnuplot.h"
+#include "ns3/lte-module.h"
+#include "ns3/mobility-module.h"
 
 using namespace ns3;
 
-NS_LOG_COMPONENT_DEFINE("wns3-mpquic-two-path");
+NS_LOG_COMPONENT_DEFINE("0103");
 
 void ThroughputMonitor (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, Ptr<OutputStreamWrapper> stream)
 {
@@ -64,9 +66,14 @@ void ThroughputMonitor (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, P
 
 void
 ModifyLinkRate(NetDeviceContainer *ptp, DataRate lr, Time delay) {
+    if (ptp == nullptr || ptp->GetN() == 0 || ptp->Get(0) == nullptr) {
+        NS_LOG_ERROR("Null pointer encountered in ModifyLinkRate.");
+        return;
+    }NS_LOG_UNCOND("Setting DataRate to: " << lr);
     StaticCast<PointToPointNetDevice>(ptp->Get(0))->SetDataRate(lr);
+    NS_LOG_UNCOND("Setting Delay to: " << delay);
     StaticCast<PointToPointChannel>(StaticCast<PointToPointNetDevice>(ptp->Get(0))->GetChannel())->SetAttribute("Delay", TimeValue(delay));
-}
+    }
 
 int
 main (int argc, char *argv[])
@@ -121,7 +128,11 @@ main (int argc, char *argv[])
     LogComponentEnableAll (LOG_PREFIX_TIME);
     LogComponentEnableAll (LOG_PREFIX_FUNC);
     LogComponentEnableAll (LOG_PREFIX_NODE);
-    LogComponentEnable ("wns3-mpquic-two-path", log_precision);
+    LogComponentEnable ("0103", log_precision);
+    //LogComponentEnable ("GlobalRouteManagerImpl", log_precision);
+    
+    // LogComponentEnable("QuicSocketBase", ns3::LOG_LEVEL_DEBUG);
+    // LogComponentEnable("SocketFactory", ns3::LOG_LEVEL_DEBUG);
 
     RngSeedManager::SetSeed (seed);  
 
@@ -182,7 +193,7 @@ main (int argc, char *argv[])
     NodeContainer n8n2 = NodeContainer (c.Get (8), c.Get (2));
     
     NodeContainer n3n6 = NodeContainer (c.Get (3), c.Get (6));
-    NodeContainer n6n9 = NodeContainer (c.Get (6), c.Get (9));
+    //NodeContainer n6n9 = NodeContainer (c.Get (6), c.Get (9));
     NodeContainer n9n7 = NodeContainer (c.Get (9), c.Get (7));
 
     NodeContainer n4n1 = NodeContainer (c.Get (4), c.Get (1));
@@ -217,7 +228,7 @@ main (int argc, char *argv[])
 
     p2p.SetDeviceAttribute ("DataRate", StringValue (std::to_string(rateVal1->GetValue())+"Mbps"));
     p2p.SetChannelAttribute ("Delay", StringValue (std::to_string(delayVal1->GetValue())+"ms"));
-    NetDeviceContainer d6d9 = p2p.Install (n6n9);
+    NetDeviceContainer d6d9 = p2p.Install (NodeContainer (c.Get (6), c.Get (9)));
     d6d9.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (em));
 
     p2p.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
@@ -264,24 +275,104 @@ main (int argc, char *argv[])
     ipv4.SetBase ("10.1.8.0", "255.255.255.0");
     Ipv4InterfaceContainer i6i7 = ipv4.Assign (d9d7);
 
-
+    NS_LOG_INFO ("Assign Node 4 routing table");
     Ptr<Ipv4> ipv4_n4 = c.Get(4)->GetObject<Ipv4> ();
+    for (uint32_t i = 0; i < ipv4_n4->GetNInterfaces(); ++i) {
+        std::cout << "Interface " << i << ": " << ipv4_n4->GetAddress(i, 0).GetLocal() << std::endl;
+    }
     Ipv4StaticRoutingHelper ipv4RoutingHelper; 
     Ptr<Ipv4StaticRouting> staticRouting_n4 = ipv4RoutingHelper.GetStaticRouting (ipv4_n4); 
     staticRouting_n4->AddHostRouteTo (Ipv4Address ("10.1.5.2"), Ipv4Address ("10.1.9.2") ,1); 
     staticRouting_n4->AddHostRouteTo (Ipv4Address ("10.1.7.2"), Ipv4Address ("10.1.10.2") ,2); 
-
-    Ptr<Ipv4> ipv4_n5 = c.Get(5)->GetObject<Ipv4> ();
-    Ptr<Ipv4StaticRouting> staticRouting_n5 = ipv4RoutingHelper.GetStaticRouting (ipv4_n5); 
+    NS_LOG_INFO ("Assign Node 5 routing table");
+    Ptr<Ipv4> ipv4_n5 = c.Get(5)->GetObject<Ipv4>();
+    for (uint32_t i = 0; i < ipv4_n5->GetNInterfaces(); ++i) {
+        std::cout << "Interface " << i << ": " << ipv4_n5->GetAddress(i, 0).GetLocal() << std::endl;
+    }
+    Ptr<Ipv4StaticRouting> staticRouting_n5 = ipv4RoutingHelper.GetStaticRouting (ipv4_n5);
     staticRouting_n5->AddHostRouteTo (Ipv4Address ("10.1.4.1"), Ipv4Address ("10.1.9.1") ,1); 
     staticRouting_n5->AddHostRouteTo (Ipv4Address ("10.1.6.1"), Ipv4Address ("10.1.10.1") ,2); 
+    
+    NS_LOG_INFO ("Show Node 6 Interface table");
+    Ptr<Ipv4> ipv4_n6 = c.Get(6)->GetObject<Ipv4> ();
+    for (uint32_t i = 0; i < ipv4_n6->GetNInterfaces(); ++i) {
+        std::cout << "Interface " << i << ": " << ipv4_n6->GetAddress(i, 0).GetLocal() << std::endl;
+    }
+    NS_LOG_INFO ("Show Node 9 Interface table");
+    Ptr<Ipv4> ipv4_n9 = c.Get(9)->GetObject<Ipv4> ();
+    for (uint32_t i = 0; i < ipv4_n9->GetNInterfaces(); ++i) {
+        std::cout << "Interface " << i << ": " << ipv4_n9->GetAddress(i, 0).GetLocal() << std::endl;
+    }
+
+    // GlobalRoutingLSA::AddLinkRecord ( GlobalRoutingLinkRecord( GlobalRoutingLinkRecord::LinkType(1), Ipv4Address("0.0.0.4"),  Ipv4Address("10.1.10.2"),  1));
+    for (uint32_t i = 0; i < c.GetN(); ++i) {
+        Ptr<Ipv4> ipv4 = c.Get(i)->GetObject<Ipv4>();
+        if (ipv4 == nullptr) {
+            std::cout << "Node " << i << " does not have an Ipv4 object!" << std::endl;
+        } else {
+            for (uint32_t j = 0; j < ipv4->GetNInterfaces(); ++j) {
+                std::cout << "Node " << i << " Interface " << j << ": " << ipv4->GetAddress(j, 0).GetLocal() << std::endl;
+            }
+        }
+    }
+
+
+    // Ptr<Ipv4StaticRouting> staticRouting_n6 = ipv4RoutingHelper.GetStaticRouting(ipv4_n6);
+    // staticRouting_n6->AddHostRouteTo(Ipv4Address("10.1.10.2"), Ipv4Address("10.1.6.2"), 1);
+
+    // Ptr<Ipv4StaticRouting> staticRouting_n9 = ipv4RoutingHelper.GetStaticRouting(ipv4_n9);
+    // staticRouting_n9->AddHostRouteTo(Ipv4Address("10.1.10.1"), Ipv4Address("10.1.7.1"), 1);
 
     // Create router nodes, initialize routing database and set up the routing
     // tables in the nodes.
-    Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
+    NS_LOG_INFO ("Create All node's routing table");
+    Ipv4GlobalRoutingHelper ::PopulateRoutingTables();  // 填充初始的路由表
+
+    //---------------set lte node ----------------
+    // ---------------設定 LTE 節點與裝置---------------
+    NS_LOG_INFO("start setting LTE");
+    NodeContainer enbNodes;
+    enbNodes.Create(1); // eNodeB 節點
+
+    NodeContainer ueNodes;
+    ueNodes.Add(c.Get(6)); // 節點 6 作為 UE
+    ueNodes.Add(c.Get(9)); // 節點 9 作為 UE
+
+    // 配置移動模型
+    MobilityHelper mobility;
+    Ptr<ListPositionAllocator> positionAlloc = CreateObject<ListPositionAllocator>();
+    positionAlloc->Add(Vector(0.0, 0.0, 0.0));  // eNodeB 位置
+    positionAlloc->Add(Vector(10.0, 0.0, 0.0)); // UE 6 位置
+    positionAlloc->Add(Vector(20.0, 0.0, 0.0)); // UE 9 位置
+    mobility.SetPositionAllocator(positionAlloc);
+    mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
+    mobility.Install(enbNodes);
+    mobility.Install(ueNodes);
+
+    // 安裝 LTE 裝置
+    Ptr<EpcHelper> epcHelper = CreateObject<PointToPointEpcHelper>();
+    Ptr<LteHelper> lteHelper = CreateObject<LteHelper>();
+    lteHelper->SetEpcHelper(epcHelper);
+
+    NetDeviceContainer enbDevs = lteHelper->InstallEnbDevice(enbNodes);
+    NetDeviceContainer ueDevs = lteHelper->InstallUeDevice(ueNodes);
+
+    // 分配 IP 地址給 UE
+    Ipv4InterfaceContainer ueIpIface = epcHelper->AssignUeIpv4Address(NetDeviceContainer(ueDevs));
+
+    // 設置默認路由
     
+    for (uint32_t u = 0; u < ueNodes.GetN(); ++u) {
+        Ptr<Node> ueNode = ueNodes.Get(u);
+        Ptr<Ipv4StaticRouting> ueStaticRouting = ipv4RoutingHelper.GetStaticRouting(ueNode->GetObject<Ipv4>());
+        ueStaticRouting->SetDefaultRoute(epcHelper->GetUeDefaultGatewayAddress(), 1);
+    }
+
+    // ---------------整合 QUIC 與 LTE---------------
+    NS_LOG_INFO("Integrating QUIC with LTE");
+
+    // 確保 Source 和 Sink2 的配置保持不變，因為 QUIC 已經處理了底層邏輯
     uint16_t port2 = 9;  // well-known echo port number
-    
     MpquicBulkSendHelper source ("ns3::QuicSocketFactory",
                             InetSocketAddress (i8i5.GetAddress (1), port2));
     // Set the amount of data to send in bytes.  Zero is unlimited.
@@ -302,7 +393,7 @@ main (int argc, char *argv[])
 
     AsciiTraceHelper asciiTraceHelper;
     std::ostringstream fileName;
-    fileName <<  "./scheduler" << schedulerType << "-rx" << ".txt";
+    fileName <<  "./scheduler" << schedulerType << "-rx-0111" << ".txt";
     Ptr<OutputStreamWrapper> stream = asciiTraceHelper.CreateFileStream (fileName.str ());
   
 
@@ -311,15 +402,17 @@ main (int argc, char *argv[])
     ThroughputMonitor(&flowmon, monitor, stream); 
     
 
-    for (double i = 1; i < simulationEndTime; i = i+0.1){
-        Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d1d8, DataRate(std::to_string(rateVal0->GetValue())+"Mbps"),  Time::FromInteger(delayVal0->GetValue(), Time::MS));
-        Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d6d9, DataRate(std::to_string(rateVal1->GetValue())+"Mbps"),Time::FromInteger(delayVal1->GetValue(), Time::MS));
+    for (double i = 1; i < simulationEndTime; i = i+2){
+        Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d1d8, DataRate(std::to_string(rateVal0->GetValue())+"Mbps"), Time::FromInteger(delayVal0->GetValue(), Time::MS));
+        //Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d6d9, DataRate(std::to_string(rateVal1->GetValue())+"Mbps"), Time::FromInteger(delayVal1->GetValue(), Time::MS));
     }
 
 
     Simulator::Stop (Seconds(simulationEndTime));
-    NS_LOG_INFO("\n\n#################### STARTING RUN ####################\n\n");
-    Simulator::Run ();
+    NS_LOG_UNCOND("Starting simulation...");
+    cout<<"\n\n#################### STARTING RUN ####################\n\n"<<endl;
+    Simulator::Run();
+    NS_LOG_UNCOND("#################### Simulation finished. ####################");
 
     monitor->CheckForLostPackets ();
     Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowmon.GetClassifier ());
