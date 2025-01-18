@@ -76,11 +76,11 @@ def help0103(num,i):
     dataTotal = pd.DataFrame (goodput, columns = ['Time', 'goodput', 'scheduler'])        
     return dataTotal
 
-def help0103_2(num,i):
-    dir = topDir+'two-0103-2-'+str(num)
+def help0111(num,i):
+    dir = topDir+'two-0111-'+str(num)
     file = open(dir+'/scheduler'+str(i)+'-queue.txt', 'r')
     finish_time = float(file.readlines()[-1].split('\t')[0])
-    file = open(dir+'/scheduler'+str(i)+'-rx-0103-2.txt', 'r')
+    file = open(dir+'/scheduler'+str(i)+'-rx-0111.txt', 'r')
     lines = file.readlines()
     goodput = []
     c_time = []
@@ -99,11 +99,11 @@ def help0103_2(num,i):
     dataTotal = pd.DataFrame (goodput, columns = ['Time', 'goodput', 'scheduler'])        
     return dataTotal
 
-def help0111(num,i):
-    dir = topDir+'two-0111-'+str(num)
+def help0116(num,i):
+    dir = topDir+'two-0116-'+str(num)
     file = open(dir+'/scheduler'+str(i)+'-queue.txt', 'r')
     finish_time = float(file.readlines()[-1].split('\t')[0])
-    file = open(dir+'/scheduler'+str(i)+'-rx-0111.txt', 'r')
+    file = open(dir+'/scheduler'+str(i)+'-rx-0116.txt', 'r')
     lines = file.readlines()
     goodput = []
     c_time = []
@@ -153,11 +153,11 @@ def helpfour(num,i):
 
 
 ## take seed=39 as the example figure
-j = 42
+j = 39
 one = helpone(j,0)
 two = helptwo(j,0)
 two_0103 = help0103(j,0)
-two_0103_2 = help0103_2(j,0)
+two_0116 = help0116(j,0)
 two_0111 = help0111(j,0)
 four = helpfour(j,0)  
 print(two_0111)
@@ -169,7 +169,7 @@ ax = plt.gca()
 plt.plot(one['Time'], one['goodput'], color="green", label="one path", linewidth=4)
 plt.plot(two['Time'], two['goodput'], color="red", label="two paths", linewidth=4)
 plt.plot(two_0103['Time'], two_0103['goodput'], color="yellow", label="two_0103 paths", linewidth=4)
-plt.plot(two_0103_2['Time'], two_0103_2['goodput'], color="#44dd22", label="two_0103_2 paths", linewidth=4)
+plt.plot(two_0116['Time'], two_0116['goodput'], color="#44dd22", label="two_0116 paths", linewidth=4)
 plt.plot(two_0111['Time'], two_0111['goodput'], color="black", label="two_0111 paths", linewidth=4)
 plt.plot(four['Time'], four['goodput'], color="blue", label="four paths", linewidth=4)
 
@@ -184,5 +184,5 @@ leg = plt.gca().get_legend()
 ltext = leg.get_texts()
 plt.setp(ltext, fontsize=26, fontweight='bold')
 
-plt.savefig('../results-wns3/ins_throughput_scalable_0103.png', format='png')
+plt.savefig('../results-wns3/ins_throughput_scalable_0116.png', format='png')
 plt.close()

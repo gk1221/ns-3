@@ -53,16 +53,16 @@ for j in range(1,50):
     c_time.append(thp5)
     
     # 0103-2
-    dir = 'two-0103-2-'+str(j)
+    dir = 'two-0116-'+str(j)
     file = open(topDir+dir+'/scheduler0-queue.txt', 'r')
     lines = file.readlines()
     last_line = lines[-1] 
-    thp6 = float(last_line.split('\t')[0])
-    c_time.append(thp6)
+    thp7 = float(last_line.split('\t')[0])
+    c_time.append(thp7)
     
     comTime.append(c_time)
 
-dataTotal = pd.DataFrame (comTime, columns = ['one', 'two', 'four', '0103', '0111', '0103-2'])
+dataTotal = pd.DataFrame (comTime, columns = ['one', 'two', 'four', '0103', '0111', '0116'])
 
 print(dataTotal)
 
@@ -71,8 +71,8 @@ ct1 = [dataTotal['two']]
 ct2 = [dataTotal['four']]
 ct3 = [dataTotal['0103']]
 ct4 = [dataTotal['0111']]
-ct5 = [dataTotal['0103-2']]
-ticks = ['one', 'two', 'four', '0103', '0111', '0103-2']
+ct5 = [dataTotal['0116']]
+ticks = ['one', 'two', 'four', '0103', '0111', '0116']
 
 bar_width = 0.9
 
@@ -99,7 +99,7 @@ for box in ct_plot4['boxes']:
     box.set(hatch = '\\', fill=False) 
 ct_plot5 = plt.boxplot(ct5,positions=np.array(np.arange(len(ct5)))+bar_width*5+0.1*5,widths=bar_width, patch_artist=True, boxprops=boxprops, whiskerprops=whiskerprops, capprops=capprops, medianprops = medianprops)
 for box in ct_plot5['boxes']:
-    box.set(hatch = '\\', fill=False) 
+    box.set(hatch = '\\', fill=False)
  
 
 
@@ -116,14 +116,15 @@ define_box_properties(ct_plot1, 'red', 'two')
 define_box_properties(ct_plot2, 'blue', 'four')
 define_box_properties(ct_plot3, 'yellow', '0103')
 define_box_properties(ct_plot4, 'black', '0111')
-define_box_properties(ct_plot5, '#44dd22', '0103-2')
+define_box_properties(ct_plot5, '#44dd22', '0116')
 
-ticks = ['one', 'two', 'four', '0103', '0111', '0103-2']
+ticks = ['one', 'two', 'four', '0103', '0111', '0116']
 plt.xticks([0,1,2, 3,4,5], ticks)
 plt.xticks(fontsize=24, fontweight='bold')
 plt.yticks(fontsize=24, fontweight='bold')
 plt.ylabel("Completion Time (Seconds)", fontsize=28, fontweight='bold')
 plt.xlabel("Path(s)", fontsize=28, fontweight='bold')
 plt.xlim(-1, len(ticks))
-plt.savefig('../results-wns3/scalable_comtime_0103.png', format='png')
+plt.ylim(1, 3)
+plt.savefig('../results-wns3/scalable_comtime_0116.png', format='png')
 plt.close()

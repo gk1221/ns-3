@@ -12,14 +12,15 @@ schedulerTypes = [0,1,2,3,4]
 
 comTime = []
 
-for j in range(1,101):
+for j in range(1,11):
     if (j==97 or j==188):
         continue
     c_time = []
     for i in schedulerTypes:
-        dir = topDir+'scheduler-0103-'+str(j)
+        dir = topDir+'scheduler-0116-'+str(j)
         file = open(dir+'/scheduler'+str(i)+'-queue.txt', 'r')
         last_line = file.readlines()[-1]
+        print(last_line)
         if (int(last_line.split('\t')[3]) > 5000000):
             c_time.append(float(last_line.split('\t')[0]))
         else:
@@ -95,5 +96,5 @@ plt.ylabel("Complete Time (seconds)", fontsize=20, fontweight='bold')
 plt.xlim(-1, len(ticks))
 plt.ylim(10, 30)
 
-plt.savefig('../results-wns3/comTime_scheduler-0103.png', format='png')
+plt.savefig('../results-wns3/comTime_scheduler-0116.png', format='png')
 plt.close()
