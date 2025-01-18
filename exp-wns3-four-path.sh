@@ -22,6 +22,7 @@ do
 
     FILE="scheduler${LOG}-rx.txt"
     touch $FILE
+    echo "cping ${DIR}${FILE}"
     cp $FILE "${DIR}${FILE}"
     rm $FILE
 
