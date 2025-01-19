@@ -18,6 +18,7 @@ LOG2="scheduler0-flowsum.txt"
 ./ns3 run "scratch/wns3-mpquic-one-path.cc --Seed=$SEED --Size=$Size --SchedulerType=0 --Rate0a=${RATE0a} --Delay0a=${DELAY0a} --Rate0b=${RATE0b} --Delay0b=${DELAY0b}  --LossRate=$LOSS" >$LOG1 2>$LOG2
 
 FILE="scheduler0-rx.txt"
+touch $FILE
 echo "cping ${DIR}${FILE}"
 cp $FILE "${DIR}${FILE}"
 rm $FILE

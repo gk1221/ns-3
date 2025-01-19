@@ -86,7 +86,6 @@ j = 39
 one = helpone(j,0)
 two = helptwo(j,0)
 four = helpfour(j,0)  
-print(four)
 
 plt.figure(figsize=(10, 8))
 plt.grid(linestyle="--")  
