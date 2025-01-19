@@ -12,7 +12,7 @@ schedulerTypes = [0,1,2,3,4]
 
 comTime = []
 
-for j in range(1,11):
+for j in range(9,20):
     if (j==97 or j==188):
         continue
     c_time = []
@@ -94,7 +94,7 @@ plt.yticks(fontsize=14, fontweight='bold')
 plt.ylabel("Complete Time (seconds)", fontsize=20, fontweight='bold')
 
 plt.xlim(-1, len(ticks))
-plt.ylim(10, 30)
+
 
 plt.savefig('../results-wns3/comTime_scheduler-0116.png', format='png')
 plt.close()

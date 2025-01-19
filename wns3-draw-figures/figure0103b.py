@@ -76,11 +76,11 @@ def help0103(num,i):
     dataTotal = pd.DataFrame (goodput, columns = ['Time', 'goodput', 'scheduler'])        
     return dataTotal
 
-def help0111(num,i):
-    dir = topDir+'two-0111-'+str(num)
+def help0116_2(num,i):
+    dir = topDir+'two-0116-2-'+str(num)
     file = open(dir+'/scheduler'+str(i)+'-queue.txt', 'r')
     finish_time = float(file.readlines()[-1].split('\t')[0])
-    file = open(dir+'/scheduler'+str(i)+'-rx-0111.txt', 'r')
+    file = open(dir+'/scheduler'+str(i)+'-rx-0116-2.txt', 'r')
     lines = file.readlines()
     goodput = []
     c_time = []
@@ -97,6 +97,7 @@ def help0111(num,i):
                 break
             c_time = []
     dataTotal = pd.DataFrame (goodput, columns = ['Time', 'goodput', 'scheduler'])        
+    print(dataTotal)
     return dataTotal
 
 def help0116(num,i):
@@ -158,9 +159,8 @@ one = helpone(j,0)
 two = helptwo(j,0)
 two_0103 = help0103(j,0)
 two_0116 = help0116(j,0)
-two_0111 = help0111(j,0)
+two_0116_2 = help0116_2(j,0)
 four = helpfour(j,0)  
-print(two_0111)
 
 plt.figure(figsize=(10, 8))
 plt.grid(linestyle="--")  
@@ -170,7 +170,7 @@ plt.plot(one['Time'], one['goodput'], color="green", label="one path", linewidth
 plt.plot(two['Time'], two['goodput'], color="red", label="two paths", linewidth=4)
 plt.plot(two_0103['Time'], two_0103['goodput'], color="yellow", label="two_0103 paths", linewidth=4)
 plt.plot(two_0116['Time'], two_0116['goodput'], color="#44dd22", label="two_0116 paths", linewidth=4)
-plt.plot(two_0111['Time'], two_0111['goodput'], color="black", label="two_0111 paths", linewidth=4)
+plt.plot(two_0116_2['Time'], two_0116_2['goodput'], color="black", label="two_0116_2 paths", linewidth=4)
 plt.plot(four['Time'], four['goodput'], color="blue", label="four paths", linewidth=4)
 
 plt.xticks(fontsize=24, fontweight='bold')  

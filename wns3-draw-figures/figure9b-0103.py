@@ -7,9 +7,9 @@ plt.rcParams["font.serif"] = "Times New Roman"
 topDir = '../results-wns3/'
 
 def help(i):
-    file = open(topDir+'scheduler-0103-83'+'/scheduler'+str(i)+'-queue.txt', 'r')
+    file = open(topDir+'scheduler-0116-2-13'+'/scheduler'+str(i)+'-queue.txt', 'r')
     finish_time = float(file.readlines()[-1].split('\t')[0])
-    file = open(topDir+'scheduler-0103-83'+'/scheduler'+str(i)+'-rx-0103.txt', 'r')
+    file = open(topDir+'scheduler-0116-2-13'+'/scheduler'+str(i)+'-rx-0116-2.txt', 'r')
     lines = file.readlines()
     goodput = []
     c_time = []
@@ -41,7 +41,7 @@ plt.grid(linestyle="--")
 ax = plt.gca()
 
 plt.plot(rr['Time'], rr['goodput'], color="green", label="RR", linewidth=2)
-plt.plot(minrtt['Time'], minrtt['goodput'], color="red", label="MRTT", linewidth=4)
+plt.plot(minrtt['Time'], minrtt['goodput'], color="red", label="MRTT", linewidth=5)
 plt.plot(blest['Time'], blest['goodput'], color="blue", label="BLEST", linewidth=2)
 plt.plot(ecf['Time'], ecf['goodput'], color="c", label="ECF", linewidth=2)
 plt.plot(peek['Time'], peek['goodput'], color="orange", label="Peekaboo", linewidth=2)
@@ -50,12 +50,12 @@ plt.xticks(fontsize=20, fontweight='bold')
 plt.yticks(fontsize=20, fontweight='bold')
 plt.ylabel("Instantaneous Throughput (Mbps)", fontsize=20, fontweight='bold')
 plt.xlabel("Time (s)", fontsize=20, fontweight='bold')
-plt.ylim(2, 12)
+plt.ylim(2, 8)
 
 plt.legend(loc=0, numpoints=1)
 leg = plt.gca().get_legend()
 ltext = leg.get_texts()
 plt.setp(ltext, fontsize=20, fontweight='bold') 
 
-plt.savefig('../results-wns3/ins_throughput_scheduler-0103.png', format='png') 
+plt.savefig('../results-wns3/ins_throughput_scheduler-0116-2.png', format='png') 
 plt.close()

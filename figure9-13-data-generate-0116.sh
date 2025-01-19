@@ -1,7 +1,7 @@
 
 ## generate data for figure 9 - 13
 echo "...generating data for figure 9-13"
-for i in {1..50}
+for i in {7,15,32,33,39}
 do
     echo "Doing in ${i}"
     ./exp-wns3-two-path-scheduler-0116.sh $i

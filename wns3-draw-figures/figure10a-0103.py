@@ -11,12 +11,12 @@ topDir = '../results-wns3/'
 schedulerTypes = [0,1,2,3,4]
 comTime = []
 
-for j in range(1,81):
+for j in range(11,21):
     if (j==97 or j==188):
         continue
     c_time = []
     for i in schedulerTypes:
-        dir = topDir+'schedulerU-0103-'+str(j)
+        dir = topDir+'schedulerU-0116-2-'+str(j)
         file = open(dir+'/scheduler'+str(i)+'-queue.txt', 'r')
         last_line = file.readlines()[-1]
         print(last_line)
@@ -99,5 +99,5 @@ plt.ylabel("Completion Time (Seconds)", fontsize=20, fontweight='bold')
 plt.xlim(-1, len(ticks))
 plt.ylim(4, 12.5)
 
-plt.savefig('../results-wns3/comTime_scheduler_unstable-0103.png', format='png')
+plt.savefig('../results-wns3/comTime_scheduler_unstable-0116.png', format='png')
 plt.close()

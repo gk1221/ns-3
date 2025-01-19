@@ -58,13 +58,28 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
     {
         Ipv4FlowClassifier::FiveTuple t = classing->FindFlow(stats->first);
 
-        // 僅記錄 4-5 的流量
-        if (t.sourceAddress == "10.1.4.1" && t.destinationAddress == "10.1.5.2") {
+        // 檢查是否來自目標節點 4-5 或 6-7 的流量
+        //Flow ID=1,3 ==> 4->5的流量
+        if (stats->first == 1 || stats->first == 3){
+        {
+            // *stream->GetStream () 
+            // << "FlowId: " << stats->first  
+            // << "\tSource: " << t.sourceAddress 
+            // << "\tDestination: " << t.destinationAddress 
+            // << "\tTime: " << Simulator::Now().GetSeconds()
+            // << "\tRxBytes: " << stats->second.rxBytes
+            // << "\tRxPackets: " << stats->second.rxPackets 
+            // << "\tLastDelay(ms): " << stats->second.lastDelay.GetMilliSeconds()
+            // << "\tThroughput(Mbps): " 
+            // << stats->second.rxBytes * 8 / 1024 / 1024 / (stats->second.timeLastRxPacket.GetSeconds() - stats->second.timeFirstRxPacket.GetSeconds())
+            // << std::endl;
             *stream->GetStream () << stats->first  << "\t" << Simulator::Now().GetSeconds()
-            << "\t" << stats->second.rxBytes << "\t" << stats->second.rxPackets 
-            << "\t" << stats->second.lastDelay.GetMilliSeconds()
-            << "\t" << stats->second.rxBytes * 8 / 1024 / 1024 / (stats->second.timeLastRxPacket.GetSeconds() - stats->second.timeFirstRxPacket.GetSeconds())
+            << "\t" << stats->second.rxBytes << "\t" << stats->second.rxPackets << "\t"
+            << stats->second.lastDelay.GetMilliSeconds() << "\t" 
+            << stats->second.rxBytes*8/1024/1024/(stats->second.timeLastRxPacket.GetSeconds()-stats->second.timeFirstRxPacket.GetSeconds())
             << std::endl;
+   
+        }
         }
     }
     Simulator::Schedule(Seconds(0.05), &ThroughputMonitor2, fmhelper, flowMon, stream);
@@ -86,8 +101,8 @@ main (int argc, char *argv[])
 
     double rate0a = 5.0;
     double rate1a = 10.0;
-    double delay0a = 50.0;
-    double delay1a = 10.0;
+    double delay0a = 10.0;
+    double delay1a = 50.0;
     double rate0b = 5.0;
     double rate1b = 10.0;
     double delay0b = 50.0;
@@ -161,12 +176,12 @@ main (int argc, char *argv[])
     "ErrorRate", DoubleValue (stod(lossrate)));
 
     Ptr<UniformRandomVariable> rateVal0 = CreateObject<UniformRandomVariable> ();
-    rateVal0->SetAttribute ("Min", DoubleValue (rate0b));
-    rateVal0->SetAttribute ("Max", DoubleValue (rate0b));
+    rateVal0->SetAttribute ("Min", DoubleValue (rate0a));
+    rateVal0->SetAttribute ("Max", DoubleValue (rate0a));
 
     Ptr<UniformRandomVariable> rateVal1 = CreateObject<UniformRandomVariable> ();
-    rateVal1->SetAttribute ("Min", DoubleValue (rate1b));
-    rateVal1->SetAttribute ("Max", DoubleValue (rate1b));
+    rateVal1->SetAttribute ("Min", DoubleValue (rate1a));
+    rateVal1->SetAttribute ("Max", DoubleValue (rate1a));
 
     Ptr<UniformRandomVariable> delayVal0 = CreateObject<UniformRandomVariable> ();
     delayVal0->SetAttribute ("Min", DoubleValue (delay0a));
@@ -307,18 +322,18 @@ main (int argc, char *argv[])
     MpquicBulkSendHelper sender3("ns3::QuicSocketFactory", InetSocketAddress(i8i5.GetAddress (1), port3));
     sender3.SetAttribute("MaxBytes", UintegerValue(maxBytes)); // 10 MB
     ApplicationContainer appSender3 = sender3.Install(c.Get(4));
-    appSender3.Start(Seconds(3.0));
-    appSender3.Stop(Seconds(30.0));
+    appSender3.Start(Seconds(start_time));
+    appSender3.Stop(Seconds(simulationEndTime));
 
     PacketSinkHelper receiver3("ns3::QuicSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port3));
     ApplicationContainer appReceiver3 = receiver3.Install(c.Get(5));
-    appReceiver3.Start(Seconds(2.0));
-    appReceiver3.Stop(Seconds(30.0));
+    appReceiver3.Start(Seconds(0.0));
+    appReceiver3.Stop(Seconds(simulationEndTime));
         
     // 設置應用程序 (n0 -> n2)
     uint16_t port1 = 9; // 通訊埠
     MpquicBulkSendHelper sender1("ns3::QuicSocketFactory", InetSocketAddress(i8i2.GetAddress (1), port1));
-    sender1.SetAttribute("MaxBytes", UintegerValue(maxBytes)); // 10 MB
+    sender1.SetAttribute("MaxBytes", UintegerValue(maxBytes/2)); // 10 MB
     ApplicationContainer appSender1 = sender1.Install(c.Get(0));
     appSender1.Start(Seconds(2.0));
     appSender1.Stop(Seconds(20.0));
@@ -331,14 +346,14 @@ main (int argc, char *argv[])
     // 設置應用程序 (n3 -> n7)
     uint16_t port2 = 10; // 通訊埠
     MpquicBulkSendHelper sender2("ns3::QuicSocketFactory", InetSocketAddress(i9i7.GetAddress (1), port2));
-    sender2.SetAttribute("MaxBytes", UintegerValue(maxBytes)); // 10 MB
+    sender2.SetAttribute("MaxBytes", UintegerValue(maxBytes/2)); // 10 MB
     ApplicationContainer appSender2 = sender2.Install(c.Get(3));
-    appSender2.Start(Seconds(1));
+    appSender2.Start(Seconds(2));
     appSender2.Stop(Seconds(25.0));
 
     PacketSinkHelper receiver2("ns3::QuicSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port2));
     ApplicationContainer appReceiver2 = receiver2.Install(c.Get(7));
-    appReceiver2.Start(Seconds(0.0));
+    appReceiver2.Start(Seconds(1.0));
     appReceiver2.Stop(Seconds(25.0));
 
    
