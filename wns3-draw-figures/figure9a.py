@@ -12,7 +12,7 @@ schedulerTypes = [0,1,2,3,4]
 
 comTime = []
 
-for j in range(1,201):
+for j in range(1,175):
     if (j==97 or j==188):
         continue
     c_time = []
@@ -20,6 +20,7 @@ for j in range(1,201):
         dir = topDir+'scheduler-'+str(j)
         file = open(dir+'/scheduler'+str(i)+'-queue.txt', 'r')
         last_line = file.readlines()[-1]
+        print(j, last_line)
         if (int(last_line.split('\t')[3]) > 5000000):
             c_time.append(float(last_line.split('\t')[0]))
         else:

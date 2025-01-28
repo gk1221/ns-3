@@ -8,9 +8,9 @@ plt.rcParams["font.serif"] = "Times New Roman"
 topDir = '../results-wns3/'
 
 def help(i):
-    file = open(topDir+'schedulerU-0116-2-29'+'/scheduler'+str(i)+'-queue.txt', 'r')
+    file = open(topDir+'schedulerU-0126-87'+'/scheduler'+str(i)+'-queue.txt', 'r')
     finish_time = float(file.readlines()[-1].split('\t')[0])
-    file = open(topDir+'schedulerU-0116-2-29'+'/scheduler'+str(i)+'-rx-0116-2.txt', 'r')
+    file = open(topDir+'schedulerU-0126-87'+'/scheduler'+str(i)+'-rx-0126.txt', 'r')
     lines = file.readlines()
     goodput = []
     c_time = []
@@ -59,6 +59,7 @@ plt.legend(loc=0, numpoints=1)
 leg = plt.gca().get_legend()
 ltext = leg.get_texts()
 plt.setp(ltext, fontsize=20, fontweight='bold')
-
-plt.savefig('../results-wns3/ins_throughput_scheduler_unstable-0116.png', format='png')
+route = '../results-wns3/ins_throughput_scheduler_unstable-0126.png'
+plt.savefig(route, format='png')
+print(f"save in {route}")
 plt.close()

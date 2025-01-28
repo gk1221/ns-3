@@ -7,9 +7,9 @@ plt.rcParams["font.serif"] = "Times New Roman"
 topDir = '../results-wns3/'
 
 def help(i):
-    file = open(topDir+'scheduler-0116-2-13'+'/scheduler'+str(i)+'-queue.txt', 'r')
+    file = open(topDir+'scheduler-0126-88'+'/scheduler'+str(i)+'-queue.txt', 'r')
     finish_time = float(file.readlines()[-1].split('\t')[0])
-    file = open(topDir+'scheduler-0116-2-13'+'/scheduler'+str(i)+'-rx-0116-2.txt', 'r')
+    file = open(topDir+'scheduler-0126-88'+'/scheduler'+str(i)+'-rx-0126.txt', 'r')
     lines = file.readlines()
     goodput = []
     c_time = []
@@ -31,7 +31,6 @@ def help(i):
 
 rr = help(0)  
 minrtt = help(1)
-print(minrtt)
 blest = help(2)  
 ecf = help(3)
 peek = help(4)
@@ -50,12 +49,13 @@ plt.xticks(fontsize=20, fontweight='bold')
 plt.yticks(fontsize=20, fontweight='bold')
 plt.ylabel("Instantaneous Throughput (Mbps)", fontsize=20, fontweight='bold')
 plt.xlabel("Time (s)", fontsize=20, fontweight='bold')
-plt.ylim(2, 8)
+plt.ylim(2, 12)
 
 plt.legend(loc=0, numpoints=1)
 leg = plt.gca().get_legend()
 ltext = leg.get_texts()
 plt.setp(ltext, fontsize=20, fontweight='bold') 
-
-plt.savefig('../results-wns3/ins_throughput_scheduler-0116-2.png', format='png') 
+route = '../results-wns3/ins_throughput_scheduler-0126.png'
+plt.savefig(route, format='png') 
+print(f'save in {route}')
 plt.close()

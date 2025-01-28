@@ -60,27 +60,27 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
 
         // 檢查是否來自目標節點 4-5 或 6-7 的流量
         //Flow ID=1,3 ==> 4->5的流量
-        if (stats->first == 1 || stats->first == 3){
+        // if (stats->first == 1 || stats->first == 3){
         {
-            // *stream->GetStream () 
-            // << "FlowId: " << stats->first  
-            // << "\tSource: " << t.sourceAddress 
-            // << "\tDestination: " << t.destinationAddress 
-            // << "\tTime: " << Simulator::Now().GetSeconds()
-            // << "\tRxBytes: " << stats->second.rxBytes
-            // << "\tRxPackets: " << stats->second.rxPackets 
-            // << "\tLastDelay(ms): " << stats->second.lastDelay.GetMilliSeconds()
-            // << "\tThroughput(Mbps): " 
-            // << stats->second.rxBytes * 8 / 1024 / 1024 / (stats->second.timeLastRxPacket.GetSeconds() - stats->second.timeFirstRxPacket.GetSeconds())
-            // << std::endl;
-            *stream->GetStream () << stats->first  << "\t" << Simulator::Now().GetSeconds()
-            << "\t" << stats->second.rxBytes << "\t" << stats->second.rxPackets << "\t"
-            << stats->second.lastDelay.GetMilliSeconds() << "\t" 
-            << stats->second.rxBytes*8/1024/1024/(stats->second.timeLastRxPacket.GetSeconds()-stats->second.timeFirstRxPacket.GetSeconds())
+            *stream->GetStream () 
+            << "FlowId: " << stats->first  
+            << "\tSource: " << t.sourceAddress 
+            << "\tDestination: " << t.destinationAddress 
+            << "\tTime: " << Simulator::Now().GetSeconds()
+            << "\tRxBytes: " << stats->second.rxBytes
+            << "\tRxPackets: " << stats->second.rxPackets 
+            << "\tLastDelay(ms): " << stats->second.lastDelay.GetMilliSeconds()
+            << "\tThroughput(Mbps): " 
+            << stats->second.rxBytes * 8 / 1024 / 1024 / (stats->second.timeLastRxPacket.GetSeconds() - stats->second.timeFirstRxPacket.GetSeconds())
             << std::endl;
+            // *stream->GetStream () << stats->first  << "\t" << Simulator::Now().GetSeconds()
+            // << "\t" << stats->second.rxBytes << "\t" << stats->second.rxPackets << "\t"
+            // << stats->second.lastDelay.GetMilliSeconds() << "\t" 
+            // << stats->second.rxBytes*8/1024/1024/(stats->second.timeLastRxPacket.GetSeconds()-stats->second.timeFirstRxPacket.GetSeconds())
+            // << std::endl;
    
         }
-        }
+        // }
     }
     Simulator::Schedule(Seconds(0.05), &ThroughputMonitor2, fmhelper, flowMon, stream);
 }
@@ -177,19 +177,19 @@ main (int argc, char *argv[])
 
     Ptr<UniformRandomVariable> rateVal0 = CreateObject<UniformRandomVariable> ();
     rateVal0->SetAttribute ("Min", DoubleValue (rate0a));
-    rateVal0->SetAttribute ("Max", DoubleValue (rate0a));
+    rateVal0->SetAttribute ("Max", DoubleValue (rate0b));
 
     Ptr<UniformRandomVariable> rateVal1 = CreateObject<UniformRandomVariable> ();
     rateVal1->SetAttribute ("Min", DoubleValue (rate1a));
-    rateVal1->SetAttribute ("Max", DoubleValue (rate1a));
+    rateVal1->SetAttribute ("Max", DoubleValue (rate1b));
 
     Ptr<UniformRandomVariable> delayVal0 = CreateObject<UniformRandomVariable> ();
     delayVal0->SetAttribute ("Min", DoubleValue (delay0a));
-    delayVal0->SetAttribute ("Max", DoubleValue (delay0a));
+    delayVal0->SetAttribute ("Max", DoubleValue (delay0b));
 
     Ptr<UniformRandomVariable> delayVal1 = CreateObject<UniformRandomVariable> ();
     delayVal1->SetAttribute ("Min", DoubleValue (delay1a));
-    delayVal1->SetAttribute ("Max", DoubleValue (delay1a));
+    delayVal1->SetAttribute ("Max", DoubleValue (delay1b));
 
 
     int simulationEndTime = 30;

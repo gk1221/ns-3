@@ -57,8 +57,21 @@ void ThroughputMonitor (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, P
     Ptr<Ipv4FlowClassifier> classing = DynamicCast<Ipv4FlowClassifier> (fmhelper->GetClassifier());
     for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator stats = flowStats.begin (); stats != flowStats.end (); ++stats)
     {
-        if (stats->first == 1 || stats->first == 3){
-            *stream->GetStream () << stats->first  << "\t" << Simulator::Now().GetSeconds()/*->second.timeLastRxPacket.GetSeconds()*/ << "\t" << stats->second.rxBytes << "\t" << stats->second.rxPackets << "\t" << stats->second.lastDelay.GetMilliSeconds() << "\t" << stats->second.rxBytes*8/1024/1024/(stats->second.timeLastRxPacket.GetSeconds()-stats->second.timeFirstRxPacket.GetSeconds())  << std::endl;
+        Ipv4FlowClassifier::FiveTuple t = classing->FindFlow(stats->first);
+        // if (stats->first == 1 || stats->first == 3)
+        {
+            *stream->GetStream () 
+            << "FlowId: " << stats->first  
+            << "\tSource: " << t.sourceAddress 
+            << "\tDestination: " << t.destinationAddress 
+            << "\tTime: " << Simulator::Now().GetSeconds()
+            << "\tRxBytes: " << stats->second.rxBytes
+            << "\tRxPackets: " << stats->second.rxPackets 
+            << "\tLastDelay(ms): " << stats->second.lastDelay.GetMilliSeconds()
+            << "\tThroughput(Mbps): " 
+            << stats->second.rxBytes * 8 / 1024 / 1024 / (stats->second.timeLastRxPacket.GetSeconds() - stats->second.timeFirstRxPacket.GetSeconds())
+            << std::endl;
+            // *stream->GetStream () << stats->first  << "\t" << Simulator::Now().GetSeconds()/*->second.timeLastRxPacket.GetSeconds()*/ << "\t" << stats->second.rxBytes << "\t" << stats->second.rxPackets << "\t" << stats->second.lastDelay.GetMilliSeconds() << "\t" << stats->second.rxBytes*8/1024/1024/(stats->second.timeLastRxPacket.GetSeconds()-stats->second.timeFirstRxPacket.GetSeconds())  << std::endl;
         }
     }
     Simulator::Schedule(Seconds(0.05),&ThroughputMonitor, fmhelper, flowMon, stream);
@@ -451,7 +464,8 @@ main (int argc, char *argv[])
     for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator i = stats.begin (); i != stats.end (); ++i)
     {
         Ipv4FlowClassifier::FiveTuple t = classifier->FindFlow (i->first);
-        if (i->first == 1 || i->first == 3){
+        // if (i->first == 1 || i->first == 3)
+        {
 
         NS_LOG_INFO("Flow " << i->first  << " (" << t.sourceAddress << " -> " << t.destinationAddress << ")"
         << "\n Last rx Seconds: " << i->second.timeLastRxPacket.GetSeconds()

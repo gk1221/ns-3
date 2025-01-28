@@ -11,19 +11,18 @@ topDir = '../results-wns3/'
 schedulerTypes = [0,1,2,3,4]
 comTime = []
 
-for j in range(11,21):
-    if (j==97 or j==188):
-        continue
+for j in range(1,200):
+    # if (j==48 or j==186 or j==195):
+    #     continue
     c_time = []
     for i in schedulerTypes:
-        dir = topDir+'schedulerU-0116-2-'+str(j)
+        dir = topDir+'schedulerU-0126-'+str(j)
         file = open(dir+'/scheduler'+str(i)+'-queue.txt', 'r')
         last_line = file.readlines()[-1]
-        print(last_line)
-        if (int(last_line.split('\t')[3]) > 5000000):
-            c_time.append(float(last_line.split('\t')[0]))
-        else:
-            c_time.append(0)
+        
+        
+        c_time.append(float(last_line.split('\t')[0]))
+        
     comTime.append(c_time)
 
 dataTotal = pd.DataFrame (comTime, columns = ['RR', 'MRTT', 'BLEST', 'ECF', 'PEEK'])
@@ -97,7 +96,8 @@ plt.yticks(fontsize=14, fontweight='bold')
 plt.ylabel("Completion Time (Seconds)", fontsize=20, fontweight='bold')
 
 plt.xlim(-1, len(ticks))
-plt.ylim(4, 12.5)
-
-plt.savefig('../results-wns3/comTime_scheduler_unstable-0116.png', format='png')
+plt.ylim(3, 10)
+target = '../results-wns3/comTime_scheduler_unstable-0126.png'
+plt.savefig(target, format='png')
+print(f"save in {target}")
 plt.close()

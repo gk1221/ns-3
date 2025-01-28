@@ -78,13 +78,9 @@ main (int argc, char *argv[])
 
     double rate0a = 5.0;
     double rate1a = 10.0;
-    double delay0a = 50.0;
-    double delay1a = 10.0;
-    double rate0b = 5.0;
-    double rate1b = 10.0;
-    double delay0b = 50.0;
-    double delay1b = 10.0;    
-
+    double delay0a = 10.0;
+    double delay1a = 50.0;
+    
     int bVar = 2;
     int bLambda = 100;
     int mrate = 52428800;
@@ -103,10 +99,6 @@ main (int argc, char *argv[])
     cmd.AddValue ("Rate1a", "e.g. 50Mbps", rate1a);
     cmd.AddValue ("Delay0a", "e.g. 80ms", delay0a);
     cmd.AddValue ("Delay1a", "e.g. 20ms", delay1a);
-    cmd.AddValue ("Rate0b", "e.g. 5Mbps", rate0b);
-    cmd.AddValue ("Rate1b", "e.g. 50Mbps", rate1b);
-    cmd.AddValue ("Delay0b", "e.g. 80ms", delay0b);
-    cmd.AddValue ("Delay1b", "e.g. 20ms", delay1b);
     cmd.AddValue ("Size", "e.g. 80", myRandomNo);
     cmd.AddValue ("Seed", "e.g. 80", seed);
     cmd.AddValue ("LossRate", "e.g. 0.0001", lossrate);
@@ -153,12 +145,12 @@ main (int argc, char *argv[])
     "ErrorRate", DoubleValue (stod(lossrate)));
 
     Ptr<UniformRandomVariable> rateVal0 = CreateObject<UniformRandomVariable> ();
-    rateVal0->SetAttribute ("Min", DoubleValue (rate0b));
-    rateVal0->SetAttribute ("Max", DoubleValue (rate0b));
+    rateVal0->SetAttribute ("Min", DoubleValue (rate0a));
+    rateVal0->SetAttribute ("Max", DoubleValue (rate0a));
 
     Ptr<UniformRandomVariable> rateVal1 = CreateObject<UniformRandomVariable> ();
-    rateVal1->SetAttribute ("Min", DoubleValue (rate1b));
-    rateVal1->SetAttribute ("Max", DoubleValue (rate1b));
+    rateVal1->SetAttribute ("Min", DoubleValue (rate1a));
+    rateVal1->SetAttribute ("Max", DoubleValue (rate1a));
 
     Ptr<UniformRandomVariable> delayVal0 = CreateObject<UniformRandomVariable> ();
     delayVal0->SetAttribute ("Min", DoubleValue (delay0a));
