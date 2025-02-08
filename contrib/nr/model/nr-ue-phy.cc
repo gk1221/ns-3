@@ -1445,6 +1445,7 @@ NrUePhy::DoSetInitialBandwidth()
     // divided by 100*1000 because the parameter should be in 100KHz
     uint16_t initialBandwidthIn100KHz = ceil(initialBandwidthHz / (100 * 1000));
     // account for overhead that will be reduced when determining real BW
+    std::cout<<"!!!!GetRbOverhead="<<GetRbOverhead()<<", initialBandwidthIn100KHz="<<initialBandwidthIn100KHz;
     uint16_t initialBandwidthWithOverhead = initialBandwidthIn100KHz / (1 - GetRbOverhead());
 
     NS_ABORT_MSG_IF(initialBandwidthWithOverhead == 0,

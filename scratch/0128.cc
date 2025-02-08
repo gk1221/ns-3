@@ -62,7 +62,7 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
 
         // 檢查是否來自目標節點 4-5 或 6-7 的流量
         //Flow ID=1,3 ==> 4->5的流量
-        if (stats->first == 1 || stats->first == 3){
+        if (stats->first == 1 || stats->first == 3)
         {
             // *stream->GetStream () 
             // << "FlowId: " << stats->first  
@@ -82,7 +82,8 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
             << std::endl;
    
         }
-        }
+        
+        
     }
     Simulator::Schedule(Seconds(0.05), &ThroughputMonitor2, fmhelper, flowMon, stream);
 }
@@ -172,6 +173,9 @@ main (int argc, char *argv[])
     Config::SetDefault ("ns3::MpQuicScheduler::MabRate", UintegerValue(mrate)); 
     Config::SetDefault ("ns3::MpQuicScheduler::Select", UintegerValue(mselect)); 
 
+    Config::SetDefault("ns3::LteEnbNetDevice::DlBandwidth", UintegerValue(50)); // 下行 10MHz
+    Config::SetDefault("ns3::LteEnbNetDevice::UlBandwidth", UintegerValue(50)); // 上行 10MHz
+
     
     Ptr<RateErrorModel> em = CreateObjectWithAttributes<RateErrorModel> (
     "RanVar", StringValue ("ns3::UniformRandomVariable[Min=0.0|Max=1.0]"),
@@ -239,8 +243,6 @@ main (int argc, char *argv[])
     p2p.SetChannelAttribute ("Delay", StringValue (std::to_string(delayVal0->GetValue())+"ms"));
     NetDeviceContainer d1d8 = p2p.Install (n1n8);
     d1d8.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (em));
-    cout<<std::to_string(delayVal0->GetValue())+"ms"<<endl;
-    cout<<std::to_string(delayVal1->GetValue())+"ms"<<endl;
     p2p.SetDeviceAttribute ("DataRate", StringValue (std::to_string(rateVal1->GetValue())+"Mbps"));
     p2p.SetChannelAttribute ("Delay", StringValue (std::to_string(delayVal1->GetValue())+"ms"));
     NetDeviceContainer d6d9 = p2p.Install (n6n9);
@@ -334,13 +336,19 @@ main (int argc, char *argv[])
 
     // lteHelper setting 
     Ptr<LteHelper> lteHelper = CreateObject<LteHelper> ();
+    
+
     NetDeviceContainer enbDevs = lteHelper->InstallEnbDevice (enbNodes);
     NetDeviceContainer ueDevs = lteHelper->InstallUeDevice (ueNodes);
     NS_ASSERT_MSG (enbDevs.GetN() > 0, "eNodeB devices not installed correctly!");
     NS_ASSERT_MSG (ueDevs.GetN() > 0, "UE devices not installed correctly!");
 
-    // Ptr<PointToPointEpcHelper> epcHelper = CreateObject<PointToPointEpcHelper>();
-    // lteHelper->SetEpcHelper(epcHelper);
+
+
+    // Ptr<Node> pgw = epcHelper->GetPgwNode();
+    // p2p.SetDeviceAttribute ("DataRate", StringValue (std::to_string(rateVal1->GetValue())+"Mbps"));
+    // p2p.SetChannelAttribute ("Delay", StringValue (std::to_string(delayVal1->GetValue())+"ms"));
+    // d6d9 = p2p.Install(pgw);
 
     NS_LOG_INFO("pair to enode and UE");
     lteHelper->Attach (ueDevs.Get (0), enbDevs.Get (0)); // 節點 6 連接到 eNodeB
@@ -406,7 +414,7 @@ main (int argc, char *argv[])
 
     AsciiTraceHelper asciiTraceHelper;
     std::ostringstream fileName;
-    fileName <<  "./scheduler" << schedulerType << "-rx-0126" << ".txt";
+    fileName <<  "./scheduler" << schedulerType << "-rx-0128" << ".txt";
     Ptr<OutputStreamWrapper> stream = asciiTraceHelper.CreateFileStream (fileName.str ());
   
 
@@ -425,10 +433,10 @@ main (int argc, char *argv[])
     Simulator::Stop (Seconds(simulationEndTime));
     NS_LOG_INFO("\n\n#################### STARTING RUN ####################\n\n");
     Simulator::Run ();
+    //show lte downlink bandwidth
     Ptr<LteEnbNetDevice> enb = enbDevs.Get(0)->GetObject<LteEnbNetDevice>();
     std::cout << "LTE eNB Downlink Bandwidth: " << enb->GetDlBandwidth() << std::endl;
 
-    Ptr<Ipv4> ipv4_n6 = c.Get(6)->GetObject<Ipv4> ();
 
     // std::cout << "Node 6 IP Addresses: " << std::endl;
     // for (uint32_t i = 0; i < ipv4_n6->GetNInterfaces(); i++) {

@@ -83,8 +83,8 @@ int main(int argc, char *argv[])
     LogComponentEnableAll (LOG_PREFIX_TIME);
     LogComponentEnableAll (LOG_PREFIX_FUNC);
     LogComponentEnableAll (LOG_PREFIX_NODE);
-    LogComponentEnable ("QuicEchoClientApplication", log_precision);
-    LogComponentEnable ("QuicSocketBase", log_precision);
+    //LogComponentEnable ("QuicEchoClientApplication", log_precision);
+    //LogComponentEnable ("QuicSocketBase", log_precision);
       //LogComponentEnable ("QuicEchoClientApplication", LOG_LEVEL_ALL);
 
     CommandLine cmd;

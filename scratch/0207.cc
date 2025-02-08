@@ -45,12 +45,22 @@
 #include "ns3/flow-monitor-module.h"
 #include "ns3/gnuplot.h"
 #include "ns3/mobility-module.h"
-#include "ns3/lte-module.h"
+#include "ns3/nr-module.h"
+#include "ns3/antenna-module.h"
+#include "ns3/mobility-module.h"
 
 using namespace ns3;
 
 NS_LOG_COMPONENT_DEFINE("wns3-mpquic-two-path");
 
+    void SetPosition(Ptr<Node> node, double x, double y, double z) {
+        Ptr<MobilityModel> mobility = node->GetObject<MobilityModel>();
+        if (!mobility) {
+            mobility = CreateObject<ConstantPositionMobilityModel>();
+            node->AggregateObject(mobility);
+        }
+        mobility->SetPosition(Vector(x, y, z));
+    };
 
 void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, Ptr<OutputStreamWrapper> stream)
 {
@@ -62,7 +72,7 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
 
         // 檢查是否來自目標節點 4-5 或 6-7 的流量
         //Flow ID=1,3 ==> 4->5的流量
-        if (stats->first == 1 || stats->first == 3){
+        if (stats->first == 5 || stats->first == 7)
         {
             // *stream->GetStream () 
             // << "FlowId: " << stats->first  
@@ -82,7 +92,8 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
             << std::endl;
    
         }
-        }
+        
+        
     }
     Simulator::Schedule(Seconds(0.05), &ThroughputMonitor2, fmhelper, flowMon, stream);
 }
@@ -148,6 +159,9 @@ main (int argc, char *argv[])
     LogComponentEnableAll (LOG_PREFIX_NODE);
     LogComponentEnable ("wns3-mpquic-two-path", log_precision);
 
+    
+    
+
     RngSeedManager::SetSeed (seed);  
 
     if (ccType == QuicSocketBase::OLIA){
@@ -171,6 +185,9 @@ main (int argc, char *argv[])
     Config::SetDefault ("ns3::MpQuicScheduler::BlestLambda", UintegerValue(bLambda));     
     Config::SetDefault ("ns3::MpQuicScheduler::MabRate", UintegerValue(mrate)); 
     Config::SetDefault ("ns3::MpQuicScheduler::Select", UintegerValue(mselect)); 
+
+    Config::SetDefault("ns3::LteEnbNetDevice::DlBandwidth", UintegerValue(50)); // 下行 10MHz
+    Config::SetDefault("ns3::LteEnbNetDevice::UlBandwidth", UintegerValue(50)); // 上行 10MHz
 
     
     Ptr<RateErrorModel> em = CreateObjectWithAttributes<RateErrorModel> (
@@ -239,8 +256,6 @@ main (int argc, char *argv[])
     p2p.SetChannelAttribute ("Delay", StringValue (std::to_string(delayVal0->GetValue())+"ms"));
     NetDeviceContainer d1d8 = p2p.Install (n1n8);
     d1d8.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (em));
-    cout<<std::to_string(delayVal0->GetValue())+"ms"<<endl;
-    cout<<std::to_string(delayVal1->GetValue())+"ms"<<endl;
     p2p.SetDeviceAttribute ("DataRate", StringValue (std::to_string(rateVal1->GetValue())+"Mbps"));
     p2p.SetChannelAttribute ("Delay", StringValue (std::to_string(delayVal1->GetValue())+"ms"));
     NetDeviceContainer d6d9 = p2p.Install (n6n9);
@@ -317,8 +332,9 @@ main (int argc, char *argv[])
     NS_LOG_INFO ("Create All node's routing table");
     Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
-    // ---------------設定 LTE 節點與裝置---------------
-    NS_LOG_INFO ("start setting LTE");
+    // ---------------設定 nr 節點與裝置---------------
+
+    NS_LOG_INFO ("start setting NR");
     NodeContainer enbNodes;
     enbNodes.Create(1); // eNodeB 節點
 
@@ -326,34 +342,206 @@ main (int argc, char *argv[])
     ueNodes.Add (c.Get (6)); // 節點 6 作為 UE
     ueNodes.Add (c.Get (9)); // 節點 9 作為 UE
 
-    // 配置移動模型
-    MobilityHelper mobility;
-    mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
-    mobility.Install (enbNodes);
-    mobility.Install (ueNodes);
+    uint16_t gNbNum = 1;
+    uint16_t ueNumPergNb = 2;
 
-    // lteHelper setting 
-    Ptr<LteHelper> lteHelper = CreateObject<LteHelper> ();
-    NetDeviceContainer enbDevs = lteHelper->InstallEnbDevice (enbNodes);
-    NetDeviceContainer ueDevs = lteHelper->InstallUeDevice (ueNodes);
-    NS_ASSERT_MSG (enbDevs.GetN() > 0, "eNodeB devices not installed correctly!");
-    NS_ASSERT_MSG (ueDevs.GetN() > 0, "UE devices not installed correctly!");
 
-    // Ptr<PointToPointEpcHelper> epcHelper = CreateObject<PointToPointEpcHelper>();
-    // lteHelper->SetEpcHelper(epcHelper);
+    // Simulation parameters. Please don't use double to indicate seconds; use
+    // ns-3 Time values which use integers to avoid portability issues.
+    Time simTime = MilliSeconds(1000);
+    Time udpAppStartTime = MilliSeconds(400);
 
-    NS_LOG_INFO("pair to enode and UE");
-    lteHelper->Attach (ueDevs.Get (0), enbDevs.Get (0)); // 節點 6 連接到 eNodeB
-    lteHelper->Attach (ueDevs.Get (1), enbDevs.Get (0)); // 節點 9 連接到 eNodeB
-
-    // for (uint32_t i = 0; i < ueNodes.GetN(); i++) {
-    //     lteHelper->Attach(ueDevs.Get(i), enbDevs.Get(0));
-    //     // Ptr<Ipv4StaticRouting> ueStaticRouting =
-    //     //     ipv4RoutingHelper.GetStaticRouting(ueNodes.Get(i)->GetObject<Ipv4>());
-    //     // ueStaticRouting->SetDefaultRoute(epcHelper->GetUeDefaultGatewayAddress(), 1);
-    // }
+    // NR parameters (Reference: 3GPP TR 38.901 V17.0.0 (Release 17)
+    // Table 7.8-1 for the power and BW).
+    // In this example the BW has been split into two BWPs
+    // We will take the input from the command line, and then we
+    // will pass them inside the NR module.
+    uint16_t numerologyBwp1 = 4;
+    double centralFrequencyBand1 = 28e9;
+    double bandwidthBand1 = 50e6;
+    uint16_t numerologyBwp2 = 2;
     
-    //=============== LTE SETTING DONE ======================
+    
+    double totalTxPower = 35;
+
+    NS_ABORT_IF(centralFrequencyBand1 < 0.5e9 && centralFrequencyBand1 > 100e9);
+
+    //-----------------------------
+
+    cout<<"now here1";
+
+    // 配置 eNB 和 UE 的靜態位置
+    MobilityHelper mobility;
+    mobility.SetMobilityModel("ns3::ConstantPositionMobilityModel");
+    mobility.Install(enbNodes);  // eNB 由 GridScenario 控制
+    mobility.Install(ueNodes);   // UE 需要手動配置
+
+    // 設定 UE 節點位置（避免和 eNB 重疊）
+    SetPosition(ueNodes.Get(0), 100.0, 100.0, 0.0);
+    SetPosition(ueNodes.Get(1), 200.0, 150.0, 0.0);
+
+
+
+
+    //-----------------------------
+    
+    Config::SetDefault("ns3::LteRlcUm::MaxTxBufferSize", UintegerValue(999999999));
+
+    int64_t randomStream = 1;
+ 
+    Ptr<NrPointToPointEpcHelper> epcHelper = CreateObject<NrPointToPointEpcHelper>();
+    Ptr<IdealBeamformingHelper> idealBeamformingHelper = CreateObject<IdealBeamformingHelper>();
+    Ptr<NrHelper> nrHelper = CreateObject<NrHelper>();
+
+    // Put the pointers inside nrHelper
+    nrHelper->SetBeamformingHelper(idealBeamformingHelper);
+    nrHelper->SetEpcHelper(epcHelper);
+
+    BandwidthPartInfoPtrVector allBwps;
+    CcBwpCreator ccBwpCreator;
+    const uint8_t numCcPerBand = 1; // in this example, both bands have a single CC
+
+    // Create the configuration for the CcBwpHelper. SimpleOperationBandConf creates
+    // a single BWP per CC
+    CcBwpCreator::SimpleOperationBandConf bandConf1(centralFrequencyBand1,
+                                                    bandwidthBand1,
+                                                    numCcPerBand,
+                                                    BandwidthPartInfo::UMi_StreetCanyon);
+
+
+    // By using the configuration created, it is time to make the operation bands
+    OperationBandInfo band1 = ccBwpCreator.CreateOperationBandContiguousCc(bandConf1);
+
+
+    /*
+     * The configured spectrum division is:
+     * ------------Band1--------------|--------------Band2-----------------
+     * ------------CC1----------------|--------------CC2-------------------
+     * ------------BWP1---------------|--------------BWP2------------------
+     */
+
+    /*
+     * Attributes of ThreeGppChannelModel still cannot be set in our way.
+     * TODO: Coordinate with Tommaso
+     */
+    Config::SetDefault("ns3::ThreeGppChannelModel::UpdatePeriod", TimeValue(MilliSeconds(0)));
+    nrHelper->SetChannelConditionModelAttribute("UpdatePeriod", TimeValue(MilliSeconds(0)));
+    nrHelper->SetPathlossAttribute("ShadowingEnabled", BooleanValue(false));
+
+    /*
+     * Initialize channel and pathloss, plus other things inside band1. If needed,
+     * the band configuration can be done manually, but we leave it for more
+     * sophisticated examples. For the moment, this method will take care
+     * of all the spectrum initialization needs.
+     */
+    nrHelper->InitializeOperationBand(&band1);
+
+    /*
+     * Start to account for the bandwidth used by the example, as well as
+     * the total power that has to be divided among the BWPs.
+     */
+    double x = pow(10, totalTxPower / 10);
+    double totalBandwidth = bandwidthBand1;
+
+    /*
+     * if not single band simulation, initialize and setup power in the second band
+     */
+
+    allBwps = CcBwpCreator::GetAllBwps({band1});
+
+    // Packet::EnableChecking();
+    // Packet::EnablePrinting();
+
+    /*
+     *  Case (i): Attributes valid for all the nodes
+     */
+    // Beamforming method
+    idealBeamformingHelper->SetAttribute("BeamformingMethod",
+                                         TypeIdValue(DirectPathBeamforming::GetTypeId()));
+
+    // Core latency
+    epcHelper->SetAttribute("S1uLinkDelay", TimeValue(MilliSeconds(0)));
+
+    // Antennas for all the UEs
+    nrHelper->SetUeAntennaAttribute("NumRows", UintegerValue(2));
+    nrHelper->SetUeAntennaAttribute("NumColumns", UintegerValue(4));
+    nrHelper->SetUeAntennaAttribute("AntennaElement",
+                                    PointerValue(CreateObject<IsotropicAntennaModel>()));
+
+    // Antennas for all the gNbs
+    nrHelper->SetGnbAntennaAttribute("NumRows", UintegerValue(4));
+    nrHelper->SetGnbAntennaAttribute("NumColumns", UintegerValue(8));
+    nrHelper->SetGnbAntennaAttribute("AntennaElement",
+                                     PointerValue(CreateObject<IsotropicAntennaModel>()));
+
+    uint32_t bwpIdForLowLat = 0;
+    uint32_t bwpIdForVoice = 0;
+
+
+    // gNb routing between Bearer and bandwidh part
+    nrHelper->SetGnbBwpManagerAlgorithmAttribute("NGBR_LOW_LAT_EMBB",
+                                                 UintegerValue(bwpIdForLowLat));
+    nrHelper->SetGnbBwpManagerAlgorithmAttribute("GBR_CONV_VOICE", UintegerValue(bwpIdForVoice));
+
+    // Ue routing between Bearer and bandwidth part
+    nrHelper->SetUeBwpManagerAlgorithmAttribute("NGBR_LOW_LAT_EMBB", UintegerValue(bwpIdForLowLat));
+    nrHelper->SetUeBwpManagerAlgorithmAttribute("GBR_CONV_VOICE", UintegerValue(bwpIdForVoice));
+
+    /*
+     * We miss many other parameters. By default, not configuring them is equivalent
+     * to use the default values. Please, have a look at the documentation to see
+     * what are the default values for all the attributes you are not seeing here.
+     */
+
+    /*
+     * Case (ii): Attributes valid for a subset of the nodes
+     */
+
+    // NOT PRESENT IN THIS SIMPLE EXAMPLE
+
+    /*
+     * We have configured the attributes we needed. Now, install and get the pointers
+     * to the NetDevices, which contains all the NR stack:
+     */
+
+    NetDeviceContainer enbNetDev =
+        nrHelper->InstallGnbDevice(enbNodes, allBwps);
+    NetDeviceContainer ueNetDev = nrHelper->InstallUeDevice(ueNodes, allBwps);
+
+
+    randomStream += nrHelper->AssignStreams(enbNetDev, randomStream);
+    randomStream += nrHelper->AssignStreams(ueNetDev, randomStream);
+
+    /*
+     * Case (iii): Go node for node and change the attributes we have to setup
+     * per-node.
+     */
+
+    // Get the first netdevice (enbNetDev.Get (0)) and the first bandwidth part (0)
+    // and set the attribute.
+    nrHelper->GetGnbPhy(enbNetDev.Get(0), 0)
+        ->SetAttribute("Numerology", UintegerValue(numerologyBwp1));
+    nrHelper->GetGnbPhy(enbNetDev.Get(0), 0)
+        ->SetAttribute("TxPower", DoubleValue(10 * log10((bandwidthBand1 / totalBandwidth) * x)));
+
+    // When all the configuration is done, explicitly call UpdateConfig ()
+
+    for (auto it = enbNetDev.Begin(); it != enbNetDev.End(); ++it)
+    {
+        DynamicCast<NrGnbNetDevice>(*it)->UpdateConfig();
+    }
+
+    for (auto it = ueNetDev.Begin(); it != ueNetDev.End(); ++it)
+    {
+        DynamicCast<NrUeNetDevice>(*it)->UpdateConfig();
+    }
+
+
+
+    // attach UEs to the closest eNB
+    nrHelper->AttachToClosestEnb(ueNetDev, enbNetDev);
+
+    //=============== NR SETTING DONE ======================
 
     // UE's IP
     std::cout << "UE 6 IP Address: " << i6i9.GetAddress(0) << std::endl;
@@ -406,7 +594,7 @@ main (int argc, char *argv[])
 
     AsciiTraceHelper asciiTraceHelper;
     std::ostringstream fileName;
-    fileName <<  "./scheduler" << schedulerType << "-rx-0126" << ".txt";
+    fileName <<  "./scheduler" << schedulerType << "-rx-0207" << ".txt";
     Ptr<OutputStreamWrapper> stream = asciiTraceHelper.CreateFileStream (fileName.str ());
   
 
@@ -425,10 +613,6 @@ main (int argc, char *argv[])
     Simulator::Stop (Seconds(simulationEndTime));
     NS_LOG_INFO("\n\n#################### STARTING RUN ####################\n\n");
     Simulator::Run ();
-    Ptr<LteEnbNetDevice> enb = enbDevs.Get(0)->GetObject<LteEnbNetDevice>();
-    std::cout << "LTE eNB Downlink Bandwidth: " << enb->GetDlBandwidth() << std::endl;
-
-    Ptr<Ipv4> ipv4_n6 = c.Get(6)->GetObject<Ipv4> ();
 
     // std::cout << "Node 6 IP Addresses: " << std::endl;
     // for (uint32_t i = 0; i < ipv4_n6->GetNInterfaces(); i++) {
@@ -446,7 +630,7 @@ main (int argc, char *argv[])
     for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator i = stats.begin (); i != stats.end (); ++i)
     {
         Ipv4FlowClassifier::FiveTuple t = classifier->FindFlow (i->first);
-        // if (i->first == 5 || i->first == 7)
+         if (i->first == 5 || i->first == 7)
         {
 
         NS_LOG_INFO("Flow " << i->first  << " (" << t.sourceAddress << " -> " << t.destinationAddress << ")"

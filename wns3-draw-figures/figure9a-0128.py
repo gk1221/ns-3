@@ -12,19 +12,17 @@ schedulerTypes = [0,1,2,3,4]
 
 comTime = []
 
-for j in range(1,100):
-    if (j==97 or j==188):
+for j in range(1,200):
+    if (j==160):
         continue
     c_time = []
     for i in schedulerTypes:
-        dir = topDir+'scheduler-'+str(j)
+        dir = topDir+'scheduler-0128-'+str(j)
         file = open(dir+'/scheduler'+str(i)+'-queue.txt', 'r')
-        last_line = file.readlines()[-1]
+        last_line = file.readlines()[-4]
         print(j, last_line)
-        if (int(last_line.split('\t')[3]) > 5000000):
-            c_time.append(float(last_line.split('\t')[0]))
-        else:
-            c_time.append(0)
+        c_time.append(float(last_line.split('\t')[0]))
+
     comTime.append(c_time)
 
 dataTotal = pd.DataFrame (comTime, columns = ['RR', 'MRTT', 'BLEST', 'ECF', 'PEEK'])
@@ -94,8 +92,8 @@ plt.yticks(fontsize=14, fontweight='bold')
 plt.ylabel("Complete Time (seconds)", fontsize=20, fontweight='bold')
 
 plt.xlim(-1, len(ticks))
-plt.ylim(7, 18)
-route = '../results-wns3/comTime_scheduler.png'
+
+route = '../results-wns3/comTime_scheduler-0128.png'
 plt.savefig(route, format='png')
 print(f'save in {route}')
 plt.close()
