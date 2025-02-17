@@ -1,37 +1,3 @@
-/* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
-/*
- * Copyright (c) 2019 SIGNET Lab, Department of Information Engineering, University of Padova
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation;
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- * 
- * n0                     n2
- *   \        TCP        /
- *    n1 -------------- n8
- *   /         P0        \
- * n4                     n5
- *   \         P1        /
- *    n6 -------------- n9
- *   /        TCP        \
- * n3                     n7
- *
- * 
- * Authors: Alvise De Biasio <alvise.debiasio@gmail.com>
- *          Federico Chiariotti <whatever@blbl.it>
- *          Michele Polese <michele.polese@gmail.com>
- *          Davide Marcato <davidemarcato@outlook.com>
- *          Shengjie Shu <shengjies@uvic.ca>
- */
 
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
@@ -45,22 +11,15 @@
 #include "ns3/flow-monitor-module.h"
 #include "ns3/gnuplot.h"
 #include "ns3/mobility-module.h"
+#include "ns3/lte-module.h"
 #include "ns3/nr-module.h"
 #include "ns3/antenna-module.h"
-#include "ns3/mobility-module.h"
+
 
 using namespace ns3;
 
 NS_LOG_COMPONENT_DEFINE("wns3-mpquic-two-path");
 
-    void SetPosition(Ptr<Node> node, double x, double y, double z) {
-        Ptr<MobilityModel> mobility = node->GetObject<MobilityModel>();
-        if (!mobility) {
-            mobility = CreateObject<ConstantPositionMobilityModel>();
-            node->AggregateObject(mobility);
-        }
-        mobility->SetPosition(Vector(x, y, z));
-    };
 
 void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, Ptr<OutputStreamWrapper> stream)
 {
@@ -72,7 +31,7 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
 
         // 檢查是否來自目標節點 4-5 或 6-7 的流量
         //Flow ID=1,3 ==> 4->5的流量
-        if (stats->first == 5 || stats->first == 7)
+        if (stats->first == 5 || stats->first == 7){
         {
             // *stream->GetStream () 
             // << "FlowId: " << stats->first  
@@ -92,10 +51,9 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
             << std::endl;
    
         }
-        
-        
+        }
     }
-    Simulator::Schedule(Seconds(0.1), &ThroughputMonitor2, fmhelper, flowMon, stream);
+    Simulator::Schedule(Seconds(0.05), &ThroughputMonitor2, fmhelper, flowMon, stream);
 }
 
 void
@@ -103,6 +61,15 @@ ModifyLinkRate(NetDeviceContainer *ptp, DataRate lr, Time delay) {
     StaticCast<PointToPointNetDevice>(ptp->Get(0))->SetDataRate(lr);
     StaticCast<PointToPointChannel>(StaticCast<PointToPointNetDevice>(ptp->Get(0))->GetChannel())->SetAttribute("Delay", TimeValue(delay));
 }
+
+void SetPosition(Ptr<Node> node, double x, double y, double z) {
+    Ptr<MobilityModel> mobility = node->GetObject<MobilityModel>();
+    if (!mobility) {
+        mobility = CreateObject<ConstantPositionMobilityModel>();
+        node->AggregateObject(mobility);
+    }
+    mobility->SetPosition(Vector(x, y, z));
+};
 
 int
 main (int argc, char *argv[])
@@ -159,9 +126,6 @@ main (int argc, char *argv[])
     LogComponentEnableAll (LOG_PREFIX_NODE);
     LogComponentEnable ("wns3-mpquic-two-path", log_precision);
 
-    
-    
-
     RngSeedManager::SetSeed (seed);  
 
     if (ccType == QuicSocketBase::OLIA){
@@ -185,9 +149,6 @@ main (int argc, char *argv[])
     Config::SetDefault ("ns3::MpQuicScheduler::BlestLambda", UintegerValue(bLambda));     
     Config::SetDefault ("ns3::MpQuicScheduler::MabRate", UintegerValue(mrate)); 
     Config::SetDefault ("ns3::MpQuicScheduler::Select", UintegerValue(mselect)); 
-
-    Config::SetDefault("ns3::LteEnbNetDevice::DlBandwidth", UintegerValue(50)); // 下行 10MHz
-    Config::SetDefault("ns3::LteEnbNetDevice::UlBandwidth", UintegerValue(50)); // 上行 10MHz
 
     
     Ptr<RateErrorModel> em = CreateObjectWithAttributes<RateErrorModel> (
@@ -256,6 +217,8 @@ main (int argc, char *argv[])
     p2p.SetChannelAttribute ("Delay", StringValue (std::to_string(delayVal0->GetValue())+"ms"));
     NetDeviceContainer d1d8 = p2p.Install (n1n8);
     d1d8.Get (1)->SetAttribute ("ReceiveErrorModel", PointerValue (em));
+    cout<<std::to_string(delayVal0->GetValue())+"ms"<<endl;
+    cout<<std::to_string(delayVal1->GetValue())+"ms"<<endl;
     p2p.SetDeviceAttribute ("DataRate", StringValue (std::to_string(rateVal1->GetValue())+"Mbps"));
     p2p.SetChannelAttribute ("Delay", StringValue (std::to_string(delayVal1->GetValue())+"ms"));
     NetDeviceContainer d6d9 = p2p.Install (n6n9);
@@ -311,7 +274,6 @@ main (int argc, char *argv[])
     Ptr<Ipv4StaticRouting> staticRouting_n4 = ipv4RoutingHelper.GetStaticRouting (ipv4_n4); 
     staticRouting_n4->AddHostRouteTo (Ipv4Address ("10.1.5.2"), Ipv4Address ("10.1.9.2") ,1); 
     staticRouting_n4->AddHostRouteTo (Ipv4Address ("10.1.7.2"), Ipv4Address ("10.1.10.2") ,2); 
-
     Ptr<Ipv4> ipv4_n5 = c.Get(5)->GetObject<Ipv4> ();
     Ptr<Ipv4StaticRouting> staticRouting_n5 = ipv4RoutingHelper.GetStaticRouting (ipv4_n5); 
     staticRouting_n5->AddHostRouteTo (Ipv4Address ("10.1.4.1"), Ipv4Address ("10.1.9.1") ,1); 
@@ -320,10 +282,16 @@ main (int argc, char *argv[])
     Ptr<Ipv4> ipv4_n0 = c.Get(0)->GetObject<Ipv4> ();
     Ptr<Ipv4StaticRouting> staticRouting_n0 = ipv4RoutingHelper.GetStaticRouting (ipv4_n0); 
     staticRouting_n0->AddHostRouteTo (Ipv4Address ("10.1.2.2"), Ipv4Address ("10.1.9.2") ,1); 
+    Ptr<Ipv4> ipv4_n2 = c.Get(2)->GetObject<Ipv4> ();
+    Ptr<Ipv4StaticRouting> staticRouting_n2 = ipv4RoutingHelper.GetStaticRouting (ipv4_n2); 
+    staticRouting_n2->AddHostRouteTo (Ipv4Address ("10.1.1.1"), Ipv4Address ("10.1.9.1") ,1); 
 
     Ptr<Ipv4> ipv4_n3 = c.Get(3)->GetObject<Ipv4> ();
     Ptr<Ipv4StaticRouting> staticRouting_n3 = ipv4RoutingHelper.GetStaticRouting (ipv4_n3); 
     staticRouting_n3->AddHostRouteTo (Ipv4Address ("10.1.8.2"), Ipv4Address ("10.1.10.2") ,1); 
+    Ptr<Ipv4> ipv4_n7 = c.Get(7)->GetObject<Ipv4> ();
+    Ptr<Ipv4StaticRouting> staticRouting_n7 = ipv4RoutingHelper.GetStaticRouting (ipv4_n7); 
+    staticRouting_n7->AddHostRouteTo (Ipv4Address ("10.1.3.1"), Ipv4Address ("10.1.10.1") ,1); 
 
 
 
@@ -331,6 +299,7 @@ main (int argc, char *argv[])
     // tables in the nodes.
     NS_LOG_INFO ("Create All node's routing table");
     Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
+
 
     // ---------------設定 nr 節點與裝置---------------
 
@@ -543,9 +512,41 @@ main (int argc, char *argv[])
 
     //=============== NR SETTING DONE ======================
 
+
+    // ---------------設定 LTE 節點與裝置---------------
+    NS_LOG_INFO ("start setting LTE");
+    NodeContainer enbNodes2;
+    enbNodes2.Create(1); // eNodeB 節點
+
+    NodeContainer ueNodes2;
+    ueNodes2.Add (c.Get (1)); // 節點 1 作為 UE
+    ueNodes2.Add (c.Get (8)); // 節點 8 作為 UE
+
+    // 配置移動模型
+    MobilityHelper mobility2;
+    mobility2.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
+    mobility2.Install (enbNodes2);
+    mobility2.Install (ueNodes2);
+
+    // lteHelper setting 
+    Ptr<LteHelper> lteHelper = CreateObject<LteHelper> ();
+    NetDeviceContainer enbDevs2 = lteHelper->InstallEnbDevice (enbNodes2);
+    NetDeviceContainer ueDevs2 = lteHelper->InstallUeDevice (ueNodes2);
+    NS_ASSERT_MSG (enbDevs2.GetN() > 0, "eNodeB devices not installed correctly!");
+    NS_ASSERT_MSG (ueDevs2.GetN() > 0, "UE devices not installed correctly!");
+
+    // Ptr<PointToPointEpcHelper> epcHelper = CreateObject<PointToPointEpcHelper>();
+    // lteHelper->SetEpcHelper(epcHelper);
+
+    NS_LOG_INFO("pair to enode and UE");
+    lteHelper->Attach (ueDevs2.Get (0), enbDevs2.Get (0)); // 節點 6 連接到 eNodeB
+    lteHelper->Attach (ueDevs2.Get (1), enbDevs2.Get (0)); // 節點 9 連接到 eNodeB
+    
+    //=============== LTE SETTING DONE ======================
+
     // UE's IP
-    std::cout << "UE 6 IP Address: " << i6i9.GetAddress(0) << std::endl;
-    std::cout << "UE 9 IP Address: " << i6i9.GetAddress(1) << std::endl;
+    std::cout << "UE 1 IP Address: " << i1i8.GetAddress(0) << std::endl;
+    std::cout << "UE 8 IP Address: " << i1i8.GetAddress(1) << std::endl;
      // 設置應用程序 (n4 -> n5)
     uint16_t port3 = 11; // 通訊埠
     MpquicBulkSendHelper sender3("ns3::QuicSocketFactory", InetSocketAddress(i8i5.GetAddress (1), port3));
@@ -594,7 +595,7 @@ main (int argc, char *argv[])
 
     AsciiTraceHelper asciiTraceHelper;
     std::ostringstream fileName;
-    fileName <<  "./scheduler" << schedulerType << "-rx-0207" << ".txt";
+    fileName <<  "./scheduler" << schedulerType << "-rx-ltenr" << ".txt";
     Ptr<OutputStreamWrapper> stream = asciiTraceHelper.CreateFileStream (fileName.str ());
   
 
@@ -613,6 +614,9 @@ main (int argc, char *argv[])
     Simulator::Stop (Seconds(simulationEndTime));
     NS_LOG_INFO("\n\n#################### STARTING RUN ####################\n\n");
     Simulator::Run ();
+    Ptr<LteEnbNetDevice> enb = enbDevs2.Get(0)->GetObject<LteEnbNetDevice>();
+
+    Ptr<Ipv4> ipv4_n6 = c.Get(6)->GetObject<Ipv4> ();
 
     // std::cout << "Node 6 IP Addresses: " << std::endl;
     // for (uint32_t i = 0; i < ipv4_n6->GetNInterfaces(); i++) {
@@ -630,7 +634,7 @@ main (int argc, char *argv[])
     for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator i = stats.begin (); i != stats.end (); ++i)
     {
         Ipv4FlowClassifier::FiveTuple t = classifier->FindFlow (i->first);
-         if (i->first == 5 || i->first == 7)
+        if (i->first == 5 || i->first == 7)
         {
 
         NS_LOG_INFO("Flow " << i->first  << " (" << t.sourceAddress << " -> " << t.destinationAddress << ")"

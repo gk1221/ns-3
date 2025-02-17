@@ -36,48 +36,25 @@ for j in range(1,50):
     thp3 = float(last_line.split('\t')[0])
     c_time.append(thp3)
     
-
-    
-    # 0116-3
-    dir = 'two-0116-3-'+str(j)
+    dir = 'two-ltenr-'+str(j)
     file = open(topDir+dir+'/scheduler0-queue.txt', 'r')
     lines = file.readlines()
     last_line = lines[-1] 
-    thp5 = float(last_line.split('\t')[0])
-    c_time.append(thp5)
-    
-    # 0128
-    dir = 'two-0128-'+str(j)
-    file = open(topDir+dir+'/scheduler0-queue.txt', 'r')
-    lines = file.readlines()
-    last_line = lines[-2] 
-    thp8 = float(last_line.split('\t')[0])
-    c_time.append(thp8)
-    
-    # 0209
-    dir = 'two-0209-'+str(j)
-    file = open(topDir+dir+'/scheduler0-queue.txt', 'r')
-    lines = file.readlines()
-    last_line = lines[-2] 
-    thp9 = float(last_line.split('\t')[0])
-    c_time.append(thp9)
+    print(j , last_line)
+    thp3 = float(last_line.split('\t')[0])
+    c_time.append(thp3)
     
     comTime.append(c_time)
 
-dataTotal = pd.DataFrame (comTime, columns = ['one', 'two', 'four',  '0116-3', '0128', '0209'])
+dataTotal = pd.DataFrame (comTime, columns = ['one', 'two', 'four', 'lte-nr'])
 
-print(dataTotal)
+
 
 ct0 = [dataTotal['one']]
 ct1 = [dataTotal['two']]
 ct2 = [dataTotal['four']]
-#ct3 = [dataTotal['0103']]
-#ct4 = [dataTotal['0116-2']]
-ct5 = [dataTotal['0116-3']]
-ct7 = [dataTotal['0128']]
-ct8 = [dataTotal['0209']]
-
-ticks = ['one', 'two', 'four',   '0116-3', '0128', '0209']
+ct3 = [dataTotal['lte-nr']]
+ticks = ['one', 'two', 'four', 'lte-nr']
 
 bar_width = 0.9
 
@@ -95,23 +72,10 @@ for box in ct_plot1['boxes']:
     box.set(hatch = 'x', fill=False) 
 ct_plot2 = plt.boxplot(ct2,positions=np.array(np.arange(len(ct2)))+bar_width*2+0.1*2,widths=bar_width, patch_artist=True, boxprops=boxprops, whiskerprops=whiskerprops, capprops=capprops, medianprops = medianprops)
 for box in ct_plot2['boxes']:
-    box.set(hatch = '\\', fill=False) 
-# ct_plot3 = plt.boxplot(ct3,positions=np.array(np.arange(len(ct3)))+bar_width*3+0.1*3,widths=bar_width, patch_artist=True, boxprops=boxprops, whiskerprops=whiskerprops, capprops=capprops, medianprops = medianprops)
-# for box in ct_plot3['boxes']:
-#     box.set(hatch = '\\', fill=False)
-#ct_plot4 = plt.boxplot(ct4,positions=np.array(np.arange(len(ct4)))+bar_width*4+0.1*4,widths=bar_width, patch_artist=True, boxprops=boxprops, whiskerprops=whiskerprops, capprops=capprops, medianprops = medianprops)
-#for box in ct_plot4['boxes']:
-#    box.set(hatch = '\\', fill=False) 
-ct_plot5 = plt.boxplot(ct5,positions=np.array(np.arange(len(ct5)))+bar_width*3+0.1*3,widths=bar_width, patch_artist=True, boxprops=boxprops, whiskerprops=whiskerprops, capprops=capprops, medianprops = medianprops)
-for box in ct_plot5['boxes']:
     box.set(hatch = '\\', fill=False)
-
-ct_plot7 = plt.boxplot(ct7,positions=np.array(np.arange(len(ct7)))+bar_width*4+0.1*4,widths=bar_width, patch_artist=True, boxprops=boxprops, whiskerprops=whiskerprops, capprops=capprops, medianprops = medianprops)
-for box in ct_plot7['boxes']:
-    box.set(hatch = 'X', fill=False)
-ct_plot8 = plt.boxplot(ct8,positions=np.array(np.arange(len(ct8)))+bar_width*5+0.1*5,widths=bar_width, patch_artist=True, boxprops=boxprops, whiskerprops=whiskerprops, capprops=capprops, medianprops = medianprops)
-for box in ct_plot8['boxes']:
-    box.set(hatch = 'O', fill=False)
+ct_plot3 = plt.boxplot(ct3,positions=np.array(np.arange(len(ct3)))+bar_width*3+0.1*3,widths=bar_width, patch_artist=True, boxprops=boxprops, whiskerprops=whiskerprops, capprops=capprops, medianprops = medianprops)
+for box in ct_plot3['boxes']:
+    box.set(hatch = 'O', fill=False) 
  
 
 
@@ -126,21 +90,16 @@ def define_box_properties(plot_name, color_code, label):
 define_box_properties(ct_plot0, 'green', 'one')
 define_box_properties(ct_plot1, 'red', 'two')
 define_box_properties(ct_plot2, 'blue', 'four')
-# define_box_properties(ct_plot3, 'c', '0103')
-#define_box_properties(ct_plot4, 'black', '0116-2')
-define_box_properties(ct_plot5, '#44dd22', '0116-3')
+define_box_properties(ct_plot3, 'orange', 'lte-nr')
 
-define_box_properties(ct_plot7, '#d233c2', '0128')
-define_box_properties(ct_plot8, 'black', '0209')
-
-ticks = ['one', 'two', 'four',   '0116-3', '0128', '0209']
-plt.xticks([0,1,2, 3,4, 5], ticks)
+ticks = ['one', 'two', 'four', 'lte-nr']
+plt.xticks([0,1,2,3], ticks)
 plt.xticks(fontsize=24, fontweight='bold')
 plt.yticks(fontsize=24, fontweight='bold')
 plt.ylabel("Completion Time (Seconds)", fontsize=28, fontweight='bold')
 plt.xlabel("Path(s)", fontsize=28, fontweight='bold')
 plt.xlim(-1, len(ticks))
-route = '../results-wns3/scalable_comtime_0209.png'
-plt.savefig(route, format='png')
-print(f"save in {route}")
+path = "../results-wns3/scalable_comtime-lte_nr.png"
+plt.savefig(path, format='png')
+print(f"save in {path}")
 plt.close()

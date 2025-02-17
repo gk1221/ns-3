@@ -72,7 +72,7 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
 
         // 檢查是否來自目標節點 4-5 或 6-7 的流量
         //Flow ID=1,3 ==> 4->5的流量
-        if (stats->first == 5 || stats->first == 7)
+        if (stats->first == 11 || stats->first == 7)
         {
             // *stream->GetStream () 
             // << "FlowId: " << stats->first  
@@ -95,7 +95,7 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
         
         
     }
-    Simulator::Schedule(Seconds(0.1), &ThroughputMonitor2, fmhelper, flowMon, stream);
+    Simulator::Schedule(Seconds(0.01), &ThroughputMonitor2, fmhelper, flowMon, stream);
 }
 
 void
@@ -158,9 +158,7 @@ main (int argc, char *argv[])
     LogComponentEnableAll (LOG_PREFIX_FUNC);
     LogComponentEnableAll (LOG_PREFIX_NODE);
     LogComponentEnable ("wns3-mpquic-two-path", log_precision);
-
-    
-    
+    // LogComponentEnable ("NrHelper", log_precision);
 
     RngSeedManager::SetSeed (seed);  
 
@@ -342,9 +340,6 @@ main (int argc, char *argv[])
     ueNodes.Add (c.Get (6)); // 節點 6 作為 UE
     ueNodes.Add (c.Get (9)); // 節點 9 作為 UE
 
-    uint16_t gNbNum = 1;
-    uint16_t ueNumPergNb = 2;
-
 
     // Simulation parameters. Please don't use double to indicate seconds; use
     // ns-3 Time values which use integers to avoid portability issues.
@@ -359,7 +354,7 @@ main (int argc, char *argv[])
     uint16_t numerologyBwp1 = 4;
     double centralFrequencyBand1 = 28e9;
     double bandwidthBand1 = 50e6;
-    uint16_t numerologyBwp2 = 2;
+
     
     
     double totalTxPower = 35;
@@ -462,6 +457,7 @@ main (int argc, char *argv[])
     // Core latency
     epcHelper->SetAttribute("S1uLinkDelay", TimeValue(MilliSeconds(0)));
 
+
     // Antennas for all the UEs
     nrHelper->SetUeAntennaAttribute("NumRows", UintegerValue(2));
     nrHelper->SetUeAntennaAttribute("NumColumns", UintegerValue(4));
@@ -506,11 +502,11 @@ main (int argc, char *argv[])
 
     NetDeviceContainer enbNetDev =
         nrHelper->InstallGnbDevice(enbNodes, allBwps);
-    NetDeviceContainer ueNetDev = nrHelper->InstallUeDevice(ueNodes, allBwps);
 
+    NetDeviceContainer nrDevices = nrHelper->InstallUeDevice(ueNodes, allBwps); // 建立 NR-5G 設備
 
     randomStream += nrHelper->AssignStreams(enbNetDev, randomStream);
-    randomStream += nrHelper->AssignStreams(ueNetDev, randomStream);
+    randomStream += nrHelper->AssignStreams(nrDevices, randomStream);
 
     /*
      * Case (iii): Go node for node and change the attributes we have to setup
@@ -531,32 +527,101 @@ main (int argc, char *argv[])
         DynamicCast<NrGnbNetDevice>(*it)->UpdateConfig();
     }
 
-    for (auto it = ueNetDev.Begin(); it != ueNetDev.End(); ++it)
+    for (auto it = nrDevices.Begin(); it != nrDevices.End(); ++it)
     {
         DynamicCast<NrUeNetDevice>(*it)->UpdateConfig();
     }
 
+    OnOffHelper onOff("ns3::UdpSocketFactory", Address(InetSocketAddress(Ipv4Address("10.1.10.2"), 5001)));
+    onOff.SetAttribute("DataRate", DataRateValue(DataRate("1Gbps")));
+    onOff.SetAttribute("PacketSize", UintegerValue(1024));
+
+    ApplicationContainer clientApps = onOff.Install(c.Get(6)); // 讓 UE6 直接發送數據
+    clientApps.Start(Seconds(0.4));
+    clientApps.Stop(Seconds(simulationEndTime));
+
+    // 讓 UE9 接收封包
+    UdpServerHelper server(5001);
+    ApplicationContainer serverApps = server.Install(c.Get(9));
+    serverApps.Start(Seconds(0.4));
+    serverApps.Stop(Seconds(simulationEndTime));
+
 
 
     // attach UEs to the closest eNB
-    nrHelper->AttachToClosestEnb(ueNetDev, enbNetDev);
+    nrHelper->AttachToClosestEnb(nrDevices, enbNetDev);
+    std::cout << "\nn6n9 節點數量: " << nrDevices.GetN() << std::endl;
+    NS_ASSERT_MSG (nrDevices.GetN() > 0, "d6d9 未正確初始化！");
+    for (auto it = nrDevices.Begin(); it != nrDevices.End(); ++it)
+    {
+        std::cout << "d6d9 設備類型: " << (*it)->GetInstanceTypeId() << std::endl;
+    }
+
+    Ipv4StaticRoutingHelper ipv4Routing;
+    Ptr<Ipv4StaticRouting> ue6Routing = ipv4Routing.GetStaticRouting(c.Get(6)->GetObject<Ipv4>());
+    Ptr<Ipv4StaticRouting> ue9Routing = ipv4Routing.GetStaticRouting(c.Get(9)->GetObject<Ipv4>());
+
+
+ue6Routing->AddHostRouteTo(Ipv4Address("10.1.10.2"), 2); // 介面 2 是 NR-5G
+ue9Routing->AddHostRouteTo(Ipv4Address("10.1.10.1"), 1); // 介面 2 是 NR-5G
+
+
+
+std::cout << "UE 6 NR-5G IP: " << ueNodes.Get(0)->GetObject<Ipv4>()->GetAddress(2, 0).GetLocal() << std::endl;
+std::cout << "UE 9 NR-5G IP: " << ueNodes.Get(1)->GetObject<Ipv4>()->GetAddress(1, 0).GetLocal() << std::endl;
+
+
+    std::cout << "UE6 Route to UE9: " << ue6Routing->GetRoute(0) << std::endl;
+    std::cout << "UE9 Route to UE6: " << ue9Routing->GetRoute(0) << std::endl;
+
+    Ptr<Node> node = c.Get(6); // 以 n6 為例
+Ptr<Ipv4> ipv41 = node->GetObject<Ipv4>();
+std::cout << "節點 6 的所有網路介面：" << std::endl;
+for (uint32_t i = 0; i < ipv41->GetNInterfaces(); i++) {
+    std::cout << "介面 " << i << " -> IP: ";
+    for (uint32_t j = 0; j < ipv41->GetNAddresses(i); j++) {
+        std::cout << ipv41->GetAddress(i, j).GetLocal() << " ";
+    }
+    std::cout << std::endl;
+}
+
+Ptr<Node> node9 = c.Get(9); // 以 n6 為例
+Ptr<Ipv4> ipv49 = node9->GetObject<Ipv4>();
+std::cout << "節點 9 的所有網路介面：" << std::endl;
+
+for (uint32_t i = 0; i < ipv49->GetNInterfaces(); i++) {
+    std::cout << "介面 " << i << " -> IP: ";
+    for (uint32_t j = 0; j < ipv49->GetNAddresses(i); j++) {
+        std::cout << ipv49->GetAddress(i, j).GetLocal() << " ";
+    }
+    std::cout << std::endl;
+}
+
+Ptr<Node> ue6 = c.Get(6);
+uint32_t ue6Index = ueNodes.GetN(); // 預設找不到
+
+Ipv4AddressHelper ueIp;
+ueIp.SetBase("10.1.11.0", "255.255.255.0");
+ueIp.Assign(nrDevices);
+
+    
 
     //=============== NR SETTING DONE ======================
 
     // UE's IP
-    std::cout << "UE 6 IP Address: " << i6i9.GetAddress(0) << std::endl;
+    std::cout << "\nUE 6 IP Address: " << i6i9.GetAddress(0) << std::endl;
     std::cout << "UE 9 IP Address: " << i6i9.GetAddress(1) << std::endl;
      // 設置應用程序 (n4 -> n5)
     uint16_t port3 = 11; // 通訊埠
     MpquicBulkSendHelper sender3("ns3::QuicSocketFactory", InetSocketAddress(i8i5.GetAddress (1), port3));
     sender3.SetAttribute("MaxBytes", UintegerValue(maxBytes)); // 10 MB
     ApplicationContainer appSender3 = sender3.Install(c.Get(4));
-    appSender3.Start(Seconds(start_time));
+    appSender3.Start(Seconds(0));
     appSender3.Stop(Seconds(simulationEndTime));
 
     PacketSinkHelper receiver3("ns3::QuicSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port3));
     ApplicationContainer appReceiver3 = receiver3.Install(c.Get(5));
-    appReceiver3.Start(Seconds(0.0));
+    appReceiver3.Start(Seconds(start_time));
     appReceiver3.Stop(Seconds(simulationEndTime));
         
     // 設置應用程序 (n0 -> n2)
@@ -564,26 +629,26 @@ main (int argc, char *argv[])
     MpquicBulkSendHelper sender1("ns3::QuicSocketFactory", InetSocketAddress(i8i2.GetAddress (1), port1));
     sender1.SetAttribute("MaxBytes", UintegerValue(maxBytes/2)); // 5 MB
     ApplicationContainer appSender1 = sender1.Install(c.Get(0));
-    appSender1.Start(Seconds(2.0));
-    appSender1.Stop(Seconds(20.0));
+    appSender1.Start(Seconds(0));
+    appSender1.Stop(Seconds(simulationEndTime));
 
     PacketSinkHelper receiver1("ns3::QuicSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port1));
     ApplicationContainer appReceiver1 = receiver1.Install(c.Get(2));
-    appReceiver1.Start(Seconds(1.0));
-    appReceiver1.Stop(Seconds(20.0));
+    appReceiver1.Start(Seconds(start_time));
+    appReceiver1.Stop(Seconds(simulationEndTime));
 
     // 設置應用程序 (n3 -> n7)
     uint16_t port2 = 10; // 通訊埠
     MpquicBulkSendHelper sender2("ns3::QuicSocketFactory", InetSocketAddress(i9i7.GetAddress (1), port2));
     sender2.SetAttribute("MaxBytes", UintegerValue(maxBytes/2)); // 10 MB
     ApplicationContainer appSender2 = sender2.Install(c.Get(3));
-    appSender2.Start(Seconds(2));
-    appSender2.Stop(Seconds(25.0));
+    appSender2.Start(Seconds(0));
+    appSender2.Stop(Seconds(simulationEndTime));
 
     PacketSinkHelper receiver2("ns3::QuicSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port2));
     ApplicationContainer appReceiver2 = receiver2.Install(c.Get(7));
-    appReceiver2.Start(Seconds(1.0));
-    appReceiver2.Stop(Seconds(25.0));
+    appReceiver2.Start(Seconds(start_time));
+    appReceiver2.Stop(Seconds(simulationEndTime));
 
    
 
@@ -594,17 +659,16 @@ main (int argc, char *argv[])
 
     AsciiTraceHelper asciiTraceHelper;
     std::ostringstream fileName;
-    fileName <<  "./scheduler" << schedulerType << "-rx-0207" << ".txt";
+    fileName <<  "./scheduler" << schedulerType << "-rx-0209" << ".txt";
     Ptr<OutputStreamWrapper> stream = asciiTraceHelper.CreateFileStream (fileName.str ());
   
 
     FlowMonitorHelper flowmon;
     Ptr<FlowMonitor> monitor = flowmon.InstallAll ();
-    // ThroughputMonitor(&flowmon, monitor, stream); 
     ThroughputMonitor2(&flowmon, monitor, stream);
     
 
-    for (double i = 1; i < simulationEndTime; i = i+0.1){
+    for (double i = 2; i < simulationEndTime; i = i+0.1){
         Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d1d8, DataRate(std::to_string(rateVal0->GetValue())+"Mbps"),  Time::FromInteger(delayVal0->GetValue(), Time::MS));
         Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d6d9, DataRate(std::to_string(rateVal1->GetValue())+"Mbps"),Time::FromInteger(delayVal1->GetValue(), Time::MS));
     }
@@ -612,17 +676,8 @@ main (int argc, char *argv[])
 
     Simulator::Stop (Seconds(simulationEndTime));
     NS_LOG_INFO("\n\n#################### STARTING RUN ####################\n\n");
-    Simulator::Run ();
-
-    // std::cout << "Node 6 IP Addresses: " << std::endl;
-    // for (uint32_t i = 0; i < ipv4_n6->GetNInterfaces(); i++) {
-    //     for (uint32_t j = 0; j < ipv4_n6->GetNAddresses(i); j++) {
-    //         std::cout << "  Interface " << i << ": " 
-    //                 << ipv4_n6->GetAddress(i, j).GetLocal() << std::endl;
-    //     }
-    // }
-        
-
+    Simulator::Run();
+    NS_LOG_INFO("\n\n#################### STARTING Finish ####################\n\n");
     monitor->CheckForLostPackets ();
     Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowmon.GetClassifier ());
     FlowMonitor::FlowStatsContainer stats = monitor->GetFlowStats ();
@@ -630,7 +685,7 @@ main (int argc, char *argv[])
     for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator i = stats.begin (); i != stats.end (); ++i)
     {
         Ipv4FlowClassifier::FiveTuple t = classifier->FindFlow (i->first);
-         if (i->first == 5 || i->first == 7)
+        //  if (i->first == 11 || i->first == 7)
         {
 
         NS_LOG_INFO("Flow " << i->first  << " (" << t.sourceAddress << " -> " << t.destinationAddress << ")"
@@ -647,6 +702,7 @@ main (int argc, char *argv[])
                 "\npath 1: rate " << rate1a << ", delay " << delay1a );
 
     Simulator::Destroy ();
+
 
     return 0;
 }

@@ -1060,6 +1060,7 @@ NrHelper::AttachToClosestEnb(NetDeviceContainer ueDevices, NetDeviceContainer en
 
     for (NetDeviceContainer::Iterator i = ueDevices.Begin(); i != ueDevices.End(); i++)
     {
+        NS_LOG_FUNCTION(*i);
         AttachToClosestEnb(*i, enbDevices);
     }
 }

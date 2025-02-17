@@ -297,7 +297,6 @@ main (int argc, char *argv[])
     Ptr<Ipv4StaticRouting> staticRouting_n4 = ipv4RoutingHelper.GetStaticRouting (ipv4_n4); 
     staticRouting_n4->AddHostRouteTo (Ipv4Address ("10.1.5.2"), Ipv4Address ("10.1.9.2") ,1); 
     staticRouting_n4->AddHostRouteTo (Ipv4Address ("10.1.7.2"), Ipv4Address ("10.1.10.2") ,2); 
-
     Ptr<Ipv4> ipv4_n5 = c.Get(5)->GetObject<Ipv4> ();
     Ptr<Ipv4StaticRouting> staticRouting_n5 = ipv4RoutingHelper.GetStaticRouting (ipv4_n5); 
     staticRouting_n5->AddHostRouteTo (Ipv4Address ("10.1.4.1"), Ipv4Address ("10.1.9.1") ,1); 
@@ -306,10 +305,16 @@ main (int argc, char *argv[])
     Ptr<Ipv4> ipv4_n0 = c.Get(0)->GetObject<Ipv4> ();
     Ptr<Ipv4StaticRouting> staticRouting_n0 = ipv4RoutingHelper.GetStaticRouting (ipv4_n0); 
     staticRouting_n0->AddHostRouteTo (Ipv4Address ("10.1.2.2"), Ipv4Address ("10.1.9.2") ,1); 
+    Ptr<Ipv4> ipv4_n2 = c.Get(2)->GetObject<Ipv4> ();
+    Ptr<Ipv4StaticRouting> staticRouting_n2 = ipv4RoutingHelper.GetStaticRouting (ipv4_n2); 
+    staticRouting_n2->AddHostRouteTo (Ipv4Address ("10.1.1.1"), Ipv4Address ("10.1.9.1") ,1); 
 
     Ptr<Ipv4> ipv4_n3 = c.Get(3)->GetObject<Ipv4> ();
     Ptr<Ipv4StaticRouting> staticRouting_n3 = ipv4RoutingHelper.GetStaticRouting (ipv4_n3); 
     staticRouting_n3->AddHostRouteTo (Ipv4Address ("10.1.8.2"), Ipv4Address ("10.1.10.2") ,1); 
+    Ptr<Ipv4> ipv4_n7 = c.Get(7)->GetObject<Ipv4> ();
+    Ptr<Ipv4StaticRouting> staticRouting_n7 = ipv4RoutingHelper.GetStaticRouting (ipv4_n7); 
+    staticRouting_n7->AddHostRouteTo (Ipv4Address ("10.1.3.1"), Ipv4Address ("10.1.10.1") ,1); 
 
 
 
