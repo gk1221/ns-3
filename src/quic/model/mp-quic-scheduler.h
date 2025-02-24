@@ -40,8 +40,17 @@ public:
       MIN_RTT,
       BLEST,
       ECF,
-      PEEKABOO
+      PEEKABOO,
+      MPEEKABOO
     } SchedulerType_t;
+  
+
+  struct PathStats {
+    double bandwidth;
+    double rtt;
+    double lossRate;
+    uint32_t timesUsed;
+  };
   
   /**
    * Get the type ID.
@@ -59,9 +68,11 @@ public:
   void UpdateReward (uint32_t oldValue, uint32_t newValue);
   void SetNumOfLostPackets(uint16_t lost);
   void UpdateRewardMab(uint8_t pathId, uint32_t lostOut, uint32_t inflight, uint32_t round);
-  uint32_t GetCurrentRound();
 
   void PeekabooReward(uint8_t pathId, Time lastActTime);
+  std::vector<double> MPeekaboo();
+  void UpdatePathStats(uint32_t pathId, double bandwidth, double rtt, double lossRate);
+  double ComputeReward(double bandwidth, double rtt, double lossRate);
 
 private:
   Ptr<QuicSocketBase> m_socket;
@@ -70,6 +81,8 @@ private:
   
   std::vector <Ptr<MpQuicSubFlow>> m_subflows;
   SchedulerType_t m_schedulerType;
+
+  std::vector<PathStats> m_paths;
 
 
   std::vector<double> RoundRobin();

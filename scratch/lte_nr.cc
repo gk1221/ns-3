@@ -31,6 +31,9 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
 
         // 檢查是否來自目標節點 4-5 或 6-7 的流量
         //Flow ID=1,3 ==> 4->5的流量
+if (t.sourcePort == 49153) {
+    NS_LOG_INFO("Flow " << stats->first << " is using QUIC with source port 49153");
+}
         if (stats->first == 5 || stats->first == 7){
         {
             // *stream->GetStream () 
@@ -566,12 +569,15 @@ main (int argc, char *argv[])
     sender1.SetAttribute("MaxBytes", UintegerValue(maxBytes/2)); // 5 MB
     ApplicationContainer appSender1 = sender1.Install(c.Get(0));
     appSender1.Start(Seconds(2.0));
-    appSender1.Stop(Seconds(20.0));
+    appSender1.Stop(Seconds(simulationEndTime));
+    
 
     PacketSinkHelper receiver1("ns3::QuicSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port1));
     ApplicationContainer appReceiver1 = receiver1.Install(c.Get(2));
     appReceiver1.Start(Seconds(1.0));
-    appReceiver1.Stop(Seconds(20.0));
+    appReceiver1.Stop(Seconds(simulationEndTime));
+
+    NS_LOG_INFO("Sender1 is sending to " << i8i2.GetAddress (1));
 
     // 設置應用程序 (n3 -> n7)
     uint16_t port2 = 10; // 通訊埠
@@ -579,16 +585,19 @@ main (int argc, char *argv[])
     sender2.SetAttribute("MaxBytes", UintegerValue(maxBytes/2)); // 10 MB
     ApplicationContainer appSender2 = sender2.Install(c.Get(3));
     appSender2.Start(Seconds(2));
-    appSender2.Stop(Seconds(25.0));
+    appSender2.Stop(Seconds(simulationEndTime));
 
     PacketSinkHelper receiver2("ns3::QuicSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port2));
     ApplicationContainer appReceiver2 = receiver2.Install(c.Get(7));
     appReceiver2.Start(Seconds(1.0));
-    appReceiver2.Stop(Seconds(25.0));
+    appReceiver2.Stop(Seconds(simulationEndTime));
 
    
-
-
+Ptr<Node> sender1Node = c.Get(0);  // sender1 的節點
+for (uint32_t i = 0; i < sender1Node->GetNDevices(); i++) {
+    Ptr<NetDevice> device = sender1Node->GetDevice(i);
+    NS_LOG_INFO("Sender1 has NetDevice ID=" << device->GetIfIndex());
+}
 
     std::ostringstream file;
     file<<"./scheduler" << schedulerType;
@@ -634,7 +643,7 @@ main (int argc, char *argv[])
     for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator i = stats.begin (); i != stats.end (); ++i)
     {
         Ipv4FlowClassifier::FiveTuple t = classifier->FindFlow (i->first);
-        if (i->first == 5 || i->first == 7)
+        // if (i->first == 5 || i->first == 7)
         {
 
         NS_LOG_INFO("Flow " << i->first  << " (" << t.sourceAddress << " -> " << t.destinationAddress << ")"
@@ -646,7 +655,7 @@ main (int argc, char *argv[])
         
     }
 
-    NS_LOG_INFO("\nfile size: "<<maxBytes<< "Bytes, scheduler type " <<schedulerType<<
+    NS_LOG_INFO("\nfile size: "<<maxBytes<< " Bytes, scheduler type: " <<schedulerType<<
                 "\npath 0: rate "<< rate0a <<", delay "<< delay0a << 
                 "\npath 1: rate " << rate1a << ", delay " << delay1a );
 

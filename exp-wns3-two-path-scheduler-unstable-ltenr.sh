@@ -20,7 +20,7 @@ SEED=$1
 
 mkdir -p ${DIR}
 
-for i in {0..4}
+for i in 5
 do
     LOG="$i"
     LOG1="scheduler${LOG}-queue.txt"

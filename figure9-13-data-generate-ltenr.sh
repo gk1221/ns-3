@@ -1,7 +1,7 @@
 ## generate data for figure 9 - 13
 echo "...generating data for figure 9-13"
 
-for i in 42
+for i in {39..50}
 do
     echo "Doing in ${i}"
 

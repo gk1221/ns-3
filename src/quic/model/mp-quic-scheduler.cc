@@ -138,6 +138,10 @@ MpQuicScheduler::GetNextPathIdToUse()
       tosend = Peekaboo();
       break;
 
+    case MPEEKABOO:
+      tosend = MPeekaboo();
+      break;
+
     default:
       tosend = RoundRobin();
       break;
@@ -443,6 +447,42 @@ MpQuicScheduler::PeekabooReward(uint8_t pathId, Time lastActTime)
   
 }
 
+std::vector<double> MpQuicScheduler::MPeekaboo () {
+  NS_LOG_INFO ("Executing M-Peekaboo Scheduler");
+  
+  std::vector<double> rewards(m_paths.size(), 0.0);
+
+  for (size_t i = 0; i < m_paths.size(); ++i) {
+    double reward = ComputeReward(m_paths[i].bandwidth, m_paths[i].rtt, m_paths[i].lossRate);
+    reward += sqrt(log(m_paths[i].timesUsed + 1) / (m_paths[i].timesUsed + 1)); // UCB Formula
+    rewards[i] = reward;
+  }
+
+  // Normalize reward values for better stability
+  double maxReward = *std::max_element(rewards.begin(), rewards.end());
+  if (maxReward > 0) {
+    for (auto &r : rewards) {
+      r /= maxReward;
+    }
+  }
+
+  return rewards;
+}
+
+void MpQuicScheduler::UpdatePathStats (uint32_t pathId, double bandwidth, double rtt, double lossRate) {
+  if (pathId < m_paths.size()) {
+    m_paths[pathId].bandwidth = bandwidth;
+    m_paths[pathId].rtt = rtt;
+    m_paths[pathId].lossRate = lossRate;
+    m_paths[pathId].timesUsed += 1;
+  }
+}
+
+// Peekaboo-inspired reward function
+double MpQuicScheduler::ComputeReward (double bandwidth, double rtt, double lossRate) {
+  const double alpha = 0.6, beta = 0.3, gamma = 0.1; // Adjusted for 5G dynamics
+  return (alpha * bandwidth) - (beta * rtt) - (gamma * lossRate);
+}
 
 void
 MpQuicScheduler::SetNumOfLostPackets(uint16_t lost){

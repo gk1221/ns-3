@@ -6,10 +6,10 @@ plt.rcParams["font.serif"] = "Times New Roman"
 
 topDir = '../results-wns3/'
 
-def help(i):
-    file = open(topDir+'scheduler-ltenr-35'+'/scheduler'+str(i)+'-queue.txt', 'r')
+def help(i):#29 49 6 
+    file = open(topDir+'scheduler-ltenr-6'+'/scheduler'+str(i)+'-queue.txt', 'r')
     finish_time = float(file.readlines()[-1].split('\t')[0])
-    file = open(topDir+'scheduler-ltenr-35'+'/scheduler'+str(i)+'-rx-ltenr.txt', 'r')
+    file = open(topDir+'scheduler-ltenr-6'+'/scheduler'+str(i)+'-rx-ltenr.txt', 'r')
     lines = file.readlines()
     goodput = []
     c_time = []
@@ -31,19 +31,22 @@ def help(i):
 
 rr = help(0)  
 minrtt = help(1)
-blest = help(2)  
+blest = help(2)
 ecf = help(3)
 peek = help(4)
+m_peek = help(5)
+print(m_peek)
 
 plt.figure(figsize=(8, 6))
 plt.grid(linestyle="--")
 ax = plt.gca()
 
 plt.plot(rr['Time'], rr['goodput'], color="green", label="RR", linewidth=4)
-plt.plot(minrtt['Time'], minrtt['goodput'], color="red", label="MRTT", linewidth=4)
+plt.plot(minrtt['Time'], minrtt['goodput'], color="red", label="MRTT", linewidth=6)
 plt.plot(blest['Time'], blest['goodput'], color="blue", label="BLEST", linewidth=4)
 plt.plot(ecf['Time'], ecf['goodput'], color="c", label="ECF", linewidth=4)
 plt.plot(peek['Time'], peek['goodput'], color="orange", label="Peekaboo", linewidth=4)
+plt.plot(m_peek['Time'], m_peek['goodput'], color="yellow", label="m-PK", linewidth=4)
 
 plt.xticks(fontsize=20, fontweight='bold')
 plt.yticks(fontsize=20, fontweight='bold')
