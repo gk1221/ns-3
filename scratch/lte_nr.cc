@@ -31,15 +31,15 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
 
         // 檢查是否來自目標節點 4-5 或 6-7 的流量
         //Flow ID=1,3 ==> 4->5的流量
-if (t.sourcePort == 49153) {
-    NS_LOG_INFO("Flow " << stats->first << " is using QUIC with source port 49153");
-}
-        if (stats->first == 5 || stats->first == 7){
+
+        if (stats->first == 5 || stats->first == 7)
         {
             // *stream->GetStream () 
             // << "FlowId: " << stats->first  
-            // << "\tSource: " << t.sourceAddress 
-            // << "\tDestination: " << t.destinationAddress 
+            // << "\tSource IP: " << t.sourceAddress 
+            // << "\tSource Port: " << t.sourcePort
+            // << "\tDestination IP: " << t.destinationAddress 
+            // << "\ttDestination Port: " << t.destinationPort
             // << "\tTime: " << Simulator::Now().GetSeconds()
             // << "\tRxBytes: " << stats->second.rxBytes
             // << "\tRxPackets: " << stats->second.rxPackets 
@@ -54,7 +54,7 @@ if (t.sourcePort == 49153) {
             << std::endl;
    
         }
-        }
+        
     }
     Simulator::Schedule(Seconds(0.05), &ThroughputMonitor2, fmhelper, flowMon, stream);
 }
@@ -175,7 +175,7 @@ main (int argc, char *argv[])
     delayVal1->SetAttribute ("Max", DoubleValue (delay1b));
 
 
-    int simulationEndTime = 30;
+    int simulationEndTime = 25;
     int start_time = 1;
 
     uint32_t maxBytes = stoi(myRandomNo);
@@ -623,9 +623,9 @@ for (uint32_t i = 0; i < sender1Node->GetNDevices(); i++) {
     Simulator::Stop (Seconds(simulationEndTime));
     NS_LOG_INFO("\n\n#################### STARTING RUN ####################\n\n");
     Simulator::Run ();
-    Ptr<LteEnbNetDevice> enb = enbDevs2.Get(0)->GetObject<LteEnbNetDevice>();
+    // Ptr<LteEnbNetDevice> enb = enbDevs2.Get(0)->GetObject<LteEnbNetDevice>();
 
-    Ptr<Ipv4> ipv4_n6 = c.Get(6)->GetObject<Ipv4> ();
+    // Ptr<Ipv4> ipv4_n6 = c.Get(6)->GetObject<Ipv4> ();
 
     // std::cout << "Node 6 IP Addresses: " << std::endl;
     // for (uint32_t i = 0; i < ipv4_n6->GetNInterfaces(); i++) {

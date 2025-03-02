@@ -91,6 +91,7 @@ def helpltenr(num,i):
     c_time = []
     for line in lines:
         temp = line.split('\t')
+        print(temp)
         if (temp[0] == '5' and c_time == []):
             c_time.append(float(temp[1]))
             c_time.append(float(temp[5]))
@@ -105,11 +106,11 @@ def helpltenr(num,i):
     return dataTotal
 
 ## take seed=39 as the example figure
-j = 38
+j = 39
 one = helpone(j,0)
 two = helptwo(j,0)
 four = helpfour(j,0)  
-ltenr = helpltenr(j,0)  
+ltenr = helpltenr(j,0)
 
 plt.figure(figsize=(10, 8))
 plt.grid(linestyle="--")  

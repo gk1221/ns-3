@@ -7,10 +7,10 @@ plt.rcParams["font.serif"] = "Times New Roman"
 
 topDir = '../results-wns3/'
 
-def help(i):#19 #25
-    file = open(topDir+'schedulerU-ltenr-25'+'/scheduler'+str(i)+'-queue.txt', 'r')
+def help(i):#34
+    file = open(topDir+'schedulerU-ltenr-34'+'/scheduler'+str(i)+'-queue.txt', 'r')
     finish_time = float(file.readlines()[-1].split('\t')[0])
-    file = open(topDir+'schedulerU-ltenr-25'+'/scheduler'+str(i)+'-rx-ltenr.txt', 'r')
+    file = open(topDir+'schedulerU-ltenr-34'+'/scheduler'+str(i)+'-rx-ltenr.txt', 'r')
     lines = file.readlines()
     goodput = []
     c_time = []

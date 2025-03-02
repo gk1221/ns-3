@@ -99,7 +99,7 @@ plt.yticks(fontsize=24, fontweight='bold')
 plt.ylabel("Completion Time (Seconds)", fontsize=28, fontweight='bold')
 plt.xlabel("Path(s)", fontsize=28, fontweight='bold')
 plt.xlim(-1, len(ticks))
-path = "../results-wns3/scalable_comtime-lte_nr.png"
+path = "../results-wns3/scalable_comtime-lte_nr2.png"
 plt.savefig(path, format='png')
 print(f"save in {path}")
 plt.close()

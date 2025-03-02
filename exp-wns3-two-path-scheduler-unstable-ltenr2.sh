@@ -2,20 +2,20 @@
 #!/bin/bash
 
 ## unstable
-FOLD="schedulerU-ltenr-$1"
+FOLD="schedulerU-ltenr2-$1"
 DIR="results-wns3/$FOLD/"
-RATE0a="10.0"
-RATE0b="11.0"
+RATE0a="5.0"
+RATE0b="5.75"
 RATE1a="10.0"
-RATE1b="11.0"
-DELAY0a="5.0"
-DELAY0b="6.0"
-DELAY1a="5.0"
-DELAY1b="6.0"
-LOSS="0.00005"  ## when loss rate is large, some transmission might not be complete.
+RATE1b="11.5"
+DELAY0a="10.0"
+DELAY0b="10.8"
+DELAY1a="50.0"
+DELAY1b="54.0"
+LOSS="0.000001"
 BLambda="200"
 BVar="0"
-Size=5242880
+Size=5242800
 SEED=$1
 
 mkdir -p ${DIR}
