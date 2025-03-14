@@ -55,11 +55,36 @@ void ThroughputMonitor (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, P
     Ptr<Ipv4FlowClassifier> classing = DynamicCast<Ipv4FlowClassifier> (fmhelper->GetClassifier());
     for (std::map<FlowId, FlowMonitor::FlowStats>::const_iterator stats = flowStats.begin (); stats != flowStats.end (); ++stats)
     {
-        if (stats->first == 1 || stats->first == 3){
-            *stream->GetStream () << stats->first  << "\t" << Simulator::Now().GetSeconds()/*->second.timeLastRxPacket.GetSeconds()*/ << "\t" << stats->second.rxBytes << "\t" << stats->second.rxPackets << "\t" << stats->second.lastDelay.GetMilliSeconds() << "\t" << stats->second.rxBytes*8/1024/1024/(stats->second.timeLastRxPacket.GetSeconds()-stats->second.timeFirstRxPacket.GetSeconds())  << std::endl;
+        Ipv4FlowClassifier::FiveTuple t = classing->FindFlow(stats->first);
+
+        // 檢查是否來自目標節點 4-5 或 6-7 的流量
+        //Flow ID=1,3 ==> 4->5的流量
+
+        // if (stats->first == 5 || stats->first == 7)
+        {
+            *stream->GetStream () 
+            << "FlowId: " << stats->first  
+            << "\tSource IP: " << t.sourceAddress 
+            << "\tSource Port: " << t.sourcePort
+            << "\tDestination IP: " << t.destinationAddress 
+            << "\ttDestination Port: " << t.destinationPort
+            << "\tTime: " << Simulator::Now().GetSeconds()
+            << "\tRxBytes: " << stats->second.rxBytes
+            << "\tRxPackets: " << stats->second.rxPackets 
+            << "\tLastDelay(ms): " << stats->second.lastDelay.GetMilliSeconds()
+            << "\tThroughput(Mbps): " 
+            << stats->second.rxBytes * 8 / 1024 / 1024 / (stats->second.timeLastRxPacket.GetSeconds() - stats->second.timeFirstRxPacket.GetSeconds())
+            << std::endl;
+            // *stream->GetStream () << stats->first  << "\t" << Simulator::Now().GetSeconds()
+            // << "\t" << stats->second.rxBytes << "\t" << stats->second.rxPackets << "\t"
+            // << stats->second.lastDelay.GetMilliSeconds() << "\t" 
+            // << stats->second.rxBytes*8/1024/1024/(stats->second.timeLastRxPacket.GetSeconds()-stats->second.timeFirstRxPacket.GetSeconds())
+            // << std::endl;
+   
         }
+        
     }
-    Simulator::Schedule(Seconds(0.05),&ThroughputMonitor, fmhelper, flowMon, stream);
+    Simulator::Schedule(Seconds(0.05), &ThroughputMonitor, fmhelper, flowMon, stream);
 }
 
 void

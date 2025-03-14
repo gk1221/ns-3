@@ -12,14 +12,15 @@ schedulerTypes = [0,1,2,3,4]
 
 comTime = []
 
-for j in range(1,50):
+for j in range(1,51):
     if (j==97 or j==188):
         continue
     c_time = []
     for i in schedulerTypes:
-        dir = topDir+'scheduler-ltenr-'+str(j)
+        dir = topDir+'scheduler-ltenr4-'+str(j)
         file = open(dir+'/scheduler'+str(i)+'-queue.txt', 'r')
         last_line = file.readlines()[-1]
+        print(last_line)
         if (int(last_line.split('\t')[3]) > 0):
             c_time.append(float(last_line.split('\t')[0]))
         else:
@@ -33,26 +34,27 @@ toDrop = dataTotal.loc[dataTotal["BLEST"] == 0.0].index.tolist()
 dataTotal = dataTotal.drop(toDrop)
 toDrop = dataTotal.loc[dataTotal["RR"] == 0.0].index.tolist()
 dataTotal = dataTotal.drop(toDrop)
+#dataTotal["RR"] = dataTotal["RR"].apply(lambda x: x - 0.8)
 toDrop =dataTotal.loc[dataTotal["MRTT"] == 0.0].index.tolist()
 dataTotal = dataTotal.drop(toDrop)
 toDrop =dataTotal.loc[dataTotal["ECF"] == 0.0].index.tolist()
 dataTotal = dataTotal.drop(toDrop)
 toDrop =dataTotal.loc[dataTotal["PEEK"] == 0.0].index.tolist()
 dataTotal = dataTotal.drop(toDrop)
-# 去除 RR 大於 10 的數據
-toDrop = dataTotal.loc[dataTotal["RR"] > 10.0].index.tolist()
-dataTotal = dataTotal.drop(toDrop)
+#dataTotal["PEEK"] = dataTotal["PEEK"].apply(lambda x: x - 0.2)
 
+print(dataTotal)
 # 將 PEEK 中大於 2 的值減去 0.15
-dataTotal.loc[dataTotal['PEEK'] > 2.17, 'PEEK'] = dataTotal.loc[dataTotal['PEEK'] > 2, 'PEEK'] - 0.17
+# dataTotal.loc[dataTotal['PEEK'] > 2.17, 'PEEK'] = dataTotal.loc[dataTotal['PEEK'] > 2, 'PEEK'] - 0.17
 
 
 ct0 = [dataTotal['RR']]
-print(ct0)
 ct1 = [dataTotal['MRTT']]
 ct2 = [dataTotal['BLEST']]
 ct3 = [dataTotal['ECF']]
 ct4 = [dataTotal['PEEK']]
+
+print(ct0)
 # 将 dataTotal 保存为 CSV 文件
 dataTotal.to_csv('../completion_time_data.csv', index=False)
 
@@ -110,8 +112,8 @@ plt.yticks(fontsize=14, fontweight='bold')
 plt.ylabel("Complete Time (seconds)", fontsize=20, fontweight='bold')
 
 plt.xlim(-1, len(ticks))
-plt.ylim(1.5, 11)
-route = '../results-wns3/comTime_scheduler-ltenr2.png'
+plt.ylim(1, 13)
+route = '../results-wns3/comTime_scheduler-ltenr5.png'
 plt.savefig(route, format='png')
 print(f'save in {route}')
 plt.close()

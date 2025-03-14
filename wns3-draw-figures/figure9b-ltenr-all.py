@@ -17,7 +17,7 @@ def read_throughput_data(folder, scheduler_id):
         with open(file_path, 'r') as file:
             finish_time = float(file.readlines()[-1].split('\t')[0])
 
-        file_path = f"{topDir}{folder}/scheduler{scheduler_id}-rx-ltenr.txt"
+        file_path = f"{topDir}{folder}/scheduler{scheduler_id}-rx-ltenr-tcp.txt"
         with open(file_path, 'r') as file:
             lines = file.readlines()
         
@@ -50,10 +50,11 @@ fig.suptitle("Instantaneous Throughput for Different Schedulers", fontsize=20, f
 colors = ["green", "red", "blue", "c", "orange"]
 scheduler_labels = ["RR", "MRTT", "BLEST", "ECF", "Peekaboo"]
 
-# 迭代 scheduler-ltenr-1 ~ scheduler-ltenr-10
-for idx in range(41, 51):  # 17 
-    folder_name = f"scheduler-ltenr-{idx}"
-    row, col = divmod(idx - 41, 2)  # 計算子圖位置
+#34
+index =3
+for idx in range(index*10+1, (index+1)*10+1):  # 17 
+    folder_name = f"fair-001-ltenr-tcp-{idx}"
+    row, col = divmod(idx - (index*10+1), 2)  # 計算子圖位置
     ax = axes[row, col]
     
     # 讀取 0~4 排程器數據
@@ -72,9 +73,7 @@ for idx in range(41, 51):  # 17
 plt.tight_layout(rect=[0, 0, 1, 0.96])  
 
 # 儲存圖表
-output_path = f"ins_throughput_all_schedulers.png"
+output_path = f"fair-001-throughput-all-schedulers.png"
 plt.savefig(output_path, format='png')
 print(f"✅ Save in {output_path}")
 
-# 顯示圖表
-plt.show()

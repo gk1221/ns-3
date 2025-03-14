@@ -7,17 +7,17 @@ RATE0a="5.0"
 RATE0b="5.75"
 RATE1a="10.0"
 RATE1b="11.5"
-DELAY0a="50.0"
-DELAY0b="54.0"
-DELAY1a="10.0"
-DELAY1b="10.8"
-LOSS="0.000008"  ## when loss rate is large, some transmission might not be complete.
+DELAY0a="10.0"
+DELAY0b="10.8"
+DELAY1a="50.0"
+DELAY1b="54.0"
+LOSS="0.0005"  ## when loss rate is large, some transmission might not be complete.
 BLambda="200"
 BVar="0"
 Size=5242800
 SEED=$1
 
-mkdir ${DIR}
+mkdir -p ${DIR}
 
 for i in {0..4}
 do

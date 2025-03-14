@@ -1,7 +1,6 @@
 
 #!/bin/bash
 
-## unstable
 FOLD="schedulerU-ltenr2-$1"
 DIR="results-wns3/$FOLD/"
 RATE0a="5.0"

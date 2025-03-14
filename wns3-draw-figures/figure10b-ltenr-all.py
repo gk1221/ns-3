@@ -50,10 +50,10 @@ fig.suptitle("Instantaneous Throughput for Different Schedulers", fontsize=20, f
 colors = ["green", "red", "blue", "c", "orange"]
 scheduler_labels = ["RR", "MRTT", "BLEST", "ECF", "Peekaboo"]
 
-# 迭代 scheduler-ltenr-1 ~ scheduler-ltenr-10
-index = 0
+# 30 44
+index = 4
 for idx in range(index*10+1, (index+1)*10+1):  # 17 
-    folder_name = f"schedulerU-ltenr-{idx}"
+    folder_name = f"schedulerU-ltenr2-{idx}"
     row, col = divmod(idx - (index*10+1), 2)  # 計算子圖位置
     ax = axes[row, col]
     

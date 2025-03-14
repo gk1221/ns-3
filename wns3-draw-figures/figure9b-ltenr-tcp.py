@@ -7,9 +7,9 @@ plt.rcParams["font.serif"] = "Times New Roman"
 topDir = '../results-wns3/'
 
 def help(i,j):#29 49 6 
-    file = open(topDir+f'scheduler-ltenr3-{j}'+'/scheduler'+str(i)+'-queue.txt', 'r')
+    file = open(topDir+f'fair-001-ltenr-tcp-{j}'+'/scheduler'+str(i)+'-queue.txt', 'r')
     finish_time = float(file.readlines()[-1].split('\t')[0])
-    file = open(topDir+f'scheduler-ltenr3-{j}'+'/scheduler'+str(i)+'-rx-ltenr.txt', 'r')
+    file = open(topDir+f'fair-001-ltenr-tcp-{j}'+'/scheduler'+str(i)+'-rx-ltenr-tcp.txt', 'r')
     lines = file.readlines()
     goodput = []
     c_time = []
@@ -29,11 +29,11 @@ def help(i,j):#29 49 6
     return dataTotal
 
 
-rr = help(0,33)  
-minrtt = help(1,32)
-blest = help(2,31)
-ecf = help(3,31)
-peek = help(4,25)
+rr = help(0,29)  
+minrtt = help(1,23)
+blest = help(2,33)
+ecf = help(3,44)
+peek = help(4,31)
 # m_peek = help(5)
 # print(m_peek)
 
@@ -58,7 +58,7 @@ plt.legend(loc=0, numpoints=1)
 leg = plt.gca().get_legend()
 ltext = leg.get_texts()
 plt.setp(ltext, fontsize=20, fontweight='bold') 
-path = '../results-wns3/ins_throughput_scheduler-ltenr2.png'
+path = '../results-wns3/fair-001-ltent-tcp-throughput-scheduler.png'
 plt.savefig(path, format='png') 
 print(f"save in {path}")
 plt.close()

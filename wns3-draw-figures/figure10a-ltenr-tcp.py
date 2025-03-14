@@ -16,10 +16,11 @@ for j in range(1,51):
         continue
     c_time = []
     for i in schedulerTypes:
-        dir = topDir+'schedulerU-ltenr2-'+str(j)
+        dir = topDir+'schedulerU-ltenr-tcp-'+str(j)
         file = open(dir+'/scheduler'+str(i)+'-queue.txt', 'r')
         last_line = file.readlines()[-1]
-        if (int(last_line.split('\t')[3]) > 0):
+        print(j, last_line)
+        if (int(last_line.split('\t')[3]) > 1000000):
             c_time.append(float(last_line.split('\t')[0]))
         else:
             c_time.append(0)
@@ -32,7 +33,7 @@ toDrop = dataTotal.loc[dataTotal["BLEST"] == 0.0].index.tolist()
 dataTotal = dataTotal.drop(toDrop)
 toDrop = dataTotal.loc[dataTotal["RR"] == 0.0].index.tolist()
 dataTotal = dataTotal.drop(toDrop)
-dataTotal["RR"] = dataTotal["RR"].apply(lambda x: x - 0.8)
+#dataTotal["RR"] = dataTotal["RR"].apply(lambda x: x - 0.8)
 toDrop =dataTotal.loc[dataTotal["MRTT"] == 0.0].index.tolist()
 dataTotal = dataTotal.drop(toDrop)
 toDrop =dataTotal.loc[dataTotal["ECF"] == 0.0].index.tolist()
@@ -49,7 +50,7 @@ ct1 = [dataTotal['MRTT']]
 ct2 = [dataTotal['BLEST']]
 ct3 = [dataTotal['ECF']]
 ct4 = [dataTotal['PEEK']]
-print(ct4)
+
 # ct5 = [dataTotal['M_PK']]
 
 
@@ -106,8 +107,8 @@ plt.yticks(fontsize=14, fontweight='bold')
 plt.ylabel("Completion Time (Seconds)", fontsize=20, fontweight='bold')
 
 plt.xlim(-1, len(ticks))
-#plt.ylim(4, 12.5)
-path = '../results-wns3/comTime_scheduler_unstable-ltenr.png'
+#plt.ylim(2, 12.5)
+path = '../results-wns3/comTime_scheduler_unstable-ltenr-tcp.png'
 plt.savefig(path, format='png')
 print(f"save in {path}")
 plt.close()

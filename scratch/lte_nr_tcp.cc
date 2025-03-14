@@ -32,7 +32,6 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
         // 檢查是否來自目標節點 4-5 或 6-7 的流量
         //Flow ID=1,3 ==> 4->5的流量
 
-        if (stats->first == 5 || stats->first == 7)
         {
             // *stream->GetStream () 
             // << "FlowId: " << stats->first  
@@ -175,7 +174,7 @@ main (int argc, char *argv[])
     delayVal1->SetAttribute ("Max", DoubleValue (delay1b));
 
 
-    int simulationEndTime = 25;
+    int simulationEndTime = 30;
     int start_time = 1;
 
     uint32_t maxBytes = stoi(myRandomNo);
@@ -439,7 +438,7 @@ main (int argc, char *argv[])
     // UE's IP
     std::cout << "UE 1 IP Address: " << i1i8.GetAddress(0) << std::endl;
     std::cout << "UE 8 IP Address: " << i1i8.GetAddress(1) << std::endl;
-     // 設置應用程序 (n4 -> n5)
+     // 設置"主要"應用程序 (n4 -> n5) 
     uint16_t port3 = 11; // 通訊埠
     MpquicBulkSendHelper sender3("ns3::QuicSocketFactory", InetSocketAddress(i8i5.GetAddress (1), port3));
     sender3.SetAttribute("MaxBytes", UintegerValue(maxBytes)); // 10 MB
@@ -454,14 +453,14 @@ main (int argc, char *argv[])
         
     // 設置應用程序 (n0 -> n2)
     uint16_t port1 = 9; // 通訊埠
-    MpquicBulkSendHelper sender1("ns3::QuicSocketFactory", InetSocketAddress(i8i2.GetAddress (1), port1));
+    BulkSendHelper sender1("ns3::TcpSocketFactory", InetSocketAddress(i8i2.GetAddress (1), port1));
     sender1.SetAttribute("MaxBytes", UintegerValue(maxBytes/2)); // 5 MB
     ApplicationContainer appSender1 = sender1.Install(c.Get(0));
     appSender1.Start(Seconds(2.0));
     appSender1.Stop(Seconds(simulationEndTime));
     
 
-    PacketSinkHelper receiver1("ns3::QuicSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port1));
+    PacketSinkHelper receiver1("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port1));
     ApplicationContainer appReceiver1 = receiver1.Install(c.Get(2));
     appReceiver1.Start(Seconds(1.0));
     appReceiver1.Stop(Seconds(simulationEndTime));
@@ -470,30 +469,30 @@ main (int argc, char *argv[])
 
     // 設置應用程序 (n3 -> n7)
     uint16_t port2 = 10; // 通訊埠
-    MpquicBulkSendHelper sender2("ns3::QuicSocketFactory", InetSocketAddress(i9i7.GetAddress (1), port2));
+    BulkSendHelper sender2("ns3::TcpSocketFactory", InetSocketAddress(i9i7.GetAddress (1), port2));
     sender2.SetAttribute("MaxBytes", UintegerValue(maxBytes/2)); // 10 MB
     ApplicationContainer appSender2 = sender2.Install(c.Get(3));
     appSender2.Start(Seconds(2));
     appSender2.Stop(Seconds(simulationEndTime));
 
-    PacketSinkHelper receiver2("ns3::QuicSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port2));
+    PacketSinkHelper receiver2("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port2));
     ApplicationContainer appReceiver2 = receiver2.Install(c.Get(7));
     appReceiver2.Start(Seconds(1.0));
     appReceiver2.Stop(Seconds(simulationEndTime));
 
    
-Ptr<Node> sender1Node = c.Get(0);  // sender1 的節點
-for (uint32_t i = 0; i < sender1Node->GetNDevices(); i++) {
-    Ptr<NetDevice> device = sender1Node->GetDevice(i);
-    NS_LOG_INFO("Sender1 has NetDevice ID=" << device->GetIfIndex());
-}
+    Ptr<Node> sender1Node = c.Get(0);  // sender1 的節點
+    for (uint32_t i = 0; i < sender1Node->GetNDevices(); i++) {
+        Ptr<NetDevice> device = sender1Node->GetDevice(i);
+        NS_LOG_INFO("Sender1 has NetDevice ID=" << device->GetIfIndex());
+    }
 
     std::ostringstream file;
     file<<"./scheduler" << schedulerType;
 
     AsciiTraceHelper asciiTraceHelper;
     std::ostringstream fileName;
-    fileName <<  "./scheduler" << schedulerType << "-rx-ltenr" << ".txt";
+    fileName <<  "./scheduler" << schedulerType << "-rx-ltenr-tcp" << ".txt";
     Ptr<OutputStreamWrapper> stream = asciiTraceHelper.CreateFileStream (fileName.str ());
   
 
@@ -502,11 +501,10 @@ for (uint32_t i = 0; i < sender1Node->GetNDevices(); i++) {
     // ThroughputMonitor(&flowmon, monitor, stream); 
     ThroughputMonitor2(&flowmon, monitor, stream);
     
-
-    // for (double i = 1; i < simulationEndTime; i = i+0.1){
-    //     Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d1d8, DataRate(std::to_string(rateVal0->GetValue())+"Mbps"),  Time::FromInteger(delayVal0->GetValue(), Time::MS));
-    //     Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d6d9, DataRate(std::to_string(rateVal1->GetValue())+"Mbps"),Time::FromInteger(delayVal1->GetValue(), Time::MS));
-    // }
+    for (double i = 1; i < simulationEndTime; i = i+0.1){
+        Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d1d8, DataRate(std::to_string(rateVal0->GetValue())+"Mbps"),  Time::FromInteger(delayVal0->GetValue(), Time::MS));
+        Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d6d9, DataRate(std::to_string(rateVal1->GetValue())+"Mbps"),Time::FromInteger(delayVal1->GetValue(), Time::MS));
+    }
 
 
     Simulator::Stop (Seconds(simulationEndTime));

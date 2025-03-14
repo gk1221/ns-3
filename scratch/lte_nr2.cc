@@ -32,37 +32,31 @@ void ThroughputMonitor2 (FlowMonitorHelper *fmhelper, Ptr<FlowMonitor> flowMon, 
         // 檢查是否來自目標節點 4-5 或 6-7 的流量
         //Flow ID=1,3 ==> 4->5的流量
 
-        if (stats->first == 5 || stats->first == 7)
+        // if (stats->first == 5 || stats->first == 7)
         {
-            // *stream->GetStream () 
-            // << "FlowId: " << stats->first  
-            // << "\tSource IP: " << t.sourceAddress 
-            // << "\tSource Port: " << t.sourcePort
-            // << "\tDestination IP: " << t.destinationAddress 
-            // << "\ttDestination Port: " << t.destinationPort
-            // << "\tTime: " << Simulator::Now().GetSeconds()
-            // << "\tRxBytes: " << stats->second.rxBytes
-            // << "\tRxPackets: " << stats->second.rxPackets 
-            // << "\tLastDelay(ms): " << stats->second.lastDelay.GetMilliSeconds()
-            // << "\tThroughput(Mbps): " 
-            // << stats->second.rxBytes * 8 / 1024 / 1024 / (stats->second.timeLastRxPacket.GetSeconds() - stats->second.timeFirstRxPacket.GetSeconds())
-            // << std::endl;
-            *stream->GetStream () << stats->first  << "\t" << Simulator::Now().GetSeconds()
-            << "\t" << stats->second.rxBytes << "\t" << stats->second.rxPackets << "\t"
-            << stats->second.lastDelay.GetMilliSeconds() << "\t" 
-            << stats->second.rxBytes*8/1024/1024/(stats->second.timeLastRxPacket.GetSeconds()-stats->second.timeFirstRxPacket.GetSeconds())
+            *stream->GetStream () 
+            << "FlowId: " << stats->first  
+            << "\tSource IP: " << t.sourceAddress 
+            << "\tSource Port: " << t.sourcePort
+            << "\tDestination IP: " << t.destinationAddress 
+            << "\ttDestination Port: " << t.destinationPort
+            << "\tTime: " << Simulator::Now().GetSeconds()
+            << "\tRxBytes: " << stats->second.rxBytes
+            << "\tRxPackets: " << stats->second.rxPackets 
+            << "\tLastDelay(ms): " << stats->second.lastDelay.GetMilliSeconds()
+            << "\tThroughput(Mbps): " 
+            << stats->second.rxBytes * 8 / 1024 / 1024 / (stats->second.timeLastRxPacket.GetSeconds() - stats->second.timeFirstRxPacket.GetSeconds())
             << std::endl;
+            // *stream->GetStream () << stats->first  << "\t" << Simulator::Now().GetSeconds()
+            // << "\t" << stats->second.rxBytes << "\t" << stats->second.rxPackets << "\t"
+            // << stats->second.lastDelay.GetMilliSeconds() << "\t" 
+            // << stats->second.rxBytes*8/1024/1024/(stats->second.timeLastRxPacket.GetSeconds()-stats->second.timeFirstRxPacket.GetSeconds())
+            // << std::endl;
    
         }
         
     }
     Simulator::Schedule(Seconds(0.05), &ThroughputMonitor2, fmhelper, flowMon, stream);
-}
-
-void
-ModifyLinkRate(NetDeviceContainer *ptp, DataRate lr, Time delay) {
-    StaticCast<PointToPointNetDevice>(ptp->Get(0))->SetDataRate(lr);
-    StaticCast<PointToPointChannel>(StaticCast<PointToPointNetDevice>(ptp->Get(0))->GetChannel())->SetAttribute("Delay", TimeValue(delay));
 }
 
 void SetPosition(Ptr<Node> node, double x, double y, double z) {
@@ -184,8 +178,11 @@ main (int argc, char *argv[])
     NodeContainer c;
     c.Create (10);
     NodeContainer n0n1 = NodeContainer (c.Get (0), c.Get (1));
+    NodeContainer n00n11 = NodeContainer (c.Get (10), c.Get (1));
     NodeContainer n1n8 = NodeContainer (c.Get (1), c.Get (8));
     NodeContainer n8n2 = NodeContainer (c.Get (8), c.Get (2));
+    NodeContainer n88n22 = NodeContainer (c.Get (8), c.Get (11));
+
     
     NodeContainer n3n6 = NodeContainer (c.Get (3), c.Get (6));
     NodeContainer n6n9 = NodeContainer (c.Get (6), c.Get (9));
@@ -231,10 +228,12 @@ main (int argc, char *argv[])
     p2p.SetChannelAttribute ("Delay", StringValue ("0ms"));
     NetDeviceContainer d4d1 = p2p.Install (n4n1);
     NetDeviceContainer d0d1 = p2p.Install (n0n1);
+    NetDeviceContainer d00d11 = p2p.Install (n00n11);
     NetDeviceContainer d8d5 = p2p.Install (n8n5);
     NetDeviceContainer d4d6 = p2p.Install (n4n6);
     NetDeviceContainer d9d5 = p2p.Install (n9n5);
     NetDeviceContainer d8d2 = p2p.Install (n8n2);
+    NetDeviceContainer d88d22 = p2p.Install (n88n22);
     NetDeviceContainer d3d6 = p2p.Install (n3n6);
     NetDeviceContainer d9d7 = p2p.Install (n9n7);
     
@@ -262,8 +261,14 @@ main (int argc, char *argv[])
     ipv4.SetBase ("10.1.1.0", "255.255.255.0");
     Ipv4InterfaceContainer i0i1 = ipv4.Assign (d0d1);
 
+    ipv4.SetBase ("10.1.11.0", "255.255.255.0");
+    Ipv4InterfaceContainer i00i11 = ipv4.Assign (d00d11);
+
     ipv4.SetBase ("10.1.2.0", "255.255.255.0");
     Ipv4InterfaceContainer i8i2 = ipv4.Assign (d8d2);
+
+    ipv4.SetBase ("10.1.12.0", "255.255.255.0");
+    Ipv4InterfaceContainer i88i22 = ipv4.Assign (d88d22);
     
     ipv4.SetBase ("10.1.3.0", "255.255.255.0");
     Ipv4InterfaceContainer i3i6 = ipv4.Assign (d3d6);
@@ -271,37 +276,6 @@ main (int argc, char *argv[])
     ipv4.SetBase ("10.1.8.0", "255.255.255.0");
     Ipv4InterfaceContainer i9i7 = ipv4.Assign (d9d7);
 
-
-    Ptr<Ipv4> ipv4_n4 = c.Get(4)->GetObject<Ipv4> ();
-    Ipv4StaticRoutingHelper ipv4RoutingHelper; 
-    Ptr<Ipv4StaticRouting> staticRouting_n4 = ipv4RoutingHelper.GetStaticRouting (ipv4_n4); 
-    staticRouting_n4->AddHostRouteTo (Ipv4Address ("10.1.5.2"), Ipv4Address ("10.1.9.2") ,1); 
-    staticRouting_n4->AddHostRouteTo (Ipv4Address ("10.1.7.2"), Ipv4Address ("10.1.10.2") ,2); 
-    Ptr<Ipv4> ipv4_n5 = c.Get(5)->GetObject<Ipv4> ();
-    Ptr<Ipv4StaticRouting> staticRouting_n5 = ipv4RoutingHelper.GetStaticRouting (ipv4_n5); 
-    staticRouting_n5->AddHostRouteTo (Ipv4Address ("10.1.4.1"), Ipv4Address ("10.1.9.1") ,1); 
-    staticRouting_n5->AddHostRouteTo (Ipv4Address ("10.1.6.1"), Ipv4Address ("10.1.10.1") ,2);
-
-    Ptr<Ipv4> ipv4_n0 = c.Get(0)->GetObject<Ipv4> ();
-    Ptr<Ipv4StaticRouting> staticRouting_n0 = ipv4RoutingHelper.GetStaticRouting (ipv4_n0); 
-    staticRouting_n0->AddHostRouteTo (Ipv4Address ("10.1.2.2"), Ipv4Address ("10.1.9.2") ,1); 
-    Ptr<Ipv4> ipv4_n2 = c.Get(2)->GetObject<Ipv4> ();
-    Ptr<Ipv4StaticRouting> staticRouting_n2 = ipv4RoutingHelper.GetStaticRouting (ipv4_n2); 
-    staticRouting_n2->AddHostRouteTo (Ipv4Address ("10.1.1.1"), Ipv4Address ("10.1.9.1") ,1); 
-
-    Ptr<Ipv4> ipv4_n3 = c.Get(3)->GetObject<Ipv4> ();
-    Ptr<Ipv4StaticRouting> staticRouting_n3 = ipv4RoutingHelper.GetStaticRouting (ipv4_n3); 
-    staticRouting_n3->AddHostRouteTo (Ipv4Address ("10.1.8.2"), Ipv4Address ("10.1.10.2") ,1); 
-    Ptr<Ipv4> ipv4_n7 = c.Get(7)->GetObject<Ipv4> ();
-    Ptr<Ipv4StaticRouting> staticRouting_n7 = ipv4RoutingHelper.GetStaticRouting (ipv4_n7); 
-    staticRouting_n7->AddHostRouteTo (Ipv4Address ("10.1.3.1"), Ipv4Address ("10.1.10.1") ,1); 
-
-
-
-    // Create router nodes, initialize routing database and set up the routing
-    // tables in the nodes.
-    NS_LOG_INFO ("Create All node's routing table");
-    Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 
 
     // ---------------設定 nr 節點與裝置---------------
@@ -328,7 +302,7 @@ main (int argc, char *argv[])
     mobility.Install(ueNodes);   // UE 需要手動配置
     // 設定 UE 節點位置（避免和 eNB 重疊）
     SetPosition(ueNodes.Get(0), 100.0, 100.0, 0.0);
-    SetPosition(ueNodes.Get(1), 200.0, 150.0, 0.0);
+    SetPosition(ueNodes.Get(1), 110.0, 110.0, 0.0);
     
     Config::SetDefault("ns3::LteRlcUm::MaxTxBufferSize", UintegerValue(999999999));
 
@@ -405,6 +379,7 @@ main (int argc, char *argv[])
     //=============== NR SETTING DONE ======================
 
 
+
     // ---------------設定 LTE 節點與裝置---------------
     NS_LOG_INFO ("start setting LTE");
     NodeContainer enbNodes2;
@@ -436,9 +411,45 @@ main (int argc, char *argv[])
     
     //=============== LTE SETTING DONE ======================
 
-    // UE's IP
-    std::cout << "UE 1 IP Address: " << i1i8.GetAddress(0) << std::endl;
-    std::cout << "UE 8 IP Address: " << i1i8.GetAddress(1) << std::endl;
+    
+    // Create router nodes, initialize routing database and set up the routing
+    // tables in the nodes.
+    NS_LOG_INFO ("Create All node's routing table");
+
+    Ptr<Ipv4> ipv4_n4 = c.Get(4)->GetObject<Ipv4> ();
+    Ipv4StaticRoutingHelper ipv4RoutingHelper; 
+    Ptr<Ipv4StaticRouting> staticRouting_n4 = ipv4RoutingHelper.GetStaticRouting (ipv4_n4); 
+    staticRouting_n4->AddHostRouteTo (Ipv4Address ("10.1.5.2"), Ipv4Address ("10.1.9.2") ,1); 
+    staticRouting_n4->AddHostRouteTo (Ipv4Address ("10.1.7.2"), Ipv4Address ("10.1.10.2") ,2); 
+    Ptr<Ipv4> ipv4_n5 = c.Get(5)->GetObject<Ipv4> ();
+    Ptr<Ipv4StaticRouting> staticRouting_n5 = ipv4RoutingHelper.GetStaticRouting (ipv4_n5); 
+    staticRouting_n5->AddHostRouteTo (Ipv4Address ("10.1.4.1"), Ipv4Address ("10.1.9.1") ,1); 
+    staticRouting_n5->AddHostRouteTo (Ipv4Address ("10.1.6.1"), Ipv4Address ("10.1.10.1") ,2);
+
+    Ptr<Ipv4> ipv4_n0 = c.Get(0)->GetObject<Ipv4> ();
+    Ptr<Ipv4StaticRouting> staticRouting_n0 = ipv4RoutingHelper.GetStaticRouting (ipv4_n0); 
+    staticRouting_n0->AddHostRouteTo (Ipv4Address ("10.1.2.2"), Ipv4Address ("10.1.9.2") ,1); 
+    Ptr<Ipv4> ipv4_n2 = c.Get(2)->GetObject<Ipv4> ();
+    Ptr<Ipv4StaticRouting> staticRouting_n2 = ipv4RoutingHelper.GetStaticRouting (ipv4_n2); 
+    staticRouting_n2->AddHostRouteTo (Ipv4Address ("10.1.1.1"), Ipv4Address ("10.1.9.1") ,1);
+    //n00、n22's router
+    Ptr<Ipv4> ipv4_n00 = c.Get(10)->GetObject<Ipv4> ();
+    Ptr<Ipv4StaticRouting> staticRouting_n00 = ipv4RoutingHelper.GetStaticRouting (ipv4_n00); 
+    staticRouting_n00->AddHostRouteTo (Ipv4Address ("10.1.12.2"), Ipv4Address ("10.1.9.2") ,1); 
+    Ptr<Ipv4> ipv4_n22 = c.Get(11)->GetObject<Ipv4> ();
+    Ptr<Ipv4StaticRouting> staticRouting_n22 = ipv4RoutingHelper.GetStaticRouting (ipv4_n22); 
+    staticRouting_n22->AddHostRouteTo (Ipv4Address ("10.1.11.1"), Ipv4Address ("10.1.9.1") ,1); 
+
+    Ptr<Ipv4> ipv4_n3 = c.Get(3)->GetObject<Ipv4> ();
+    Ptr<Ipv4StaticRouting> staticRouting_n3 = ipv4RoutingHelper.GetStaticRouting (ipv4_n3); 
+    staticRouting_n3->AddHostRouteTo (Ipv4Address ("10.1.8.2"), Ipv4Address ("10.1.10.2") ,1); 
+    Ptr<Ipv4> ipv4_n7 = c.Get(7)->GetObject<Ipv4> ();
+    Ptr<Ipv4StaticRouting> staticRouting_n7 = ipv4RoutingHelper.GetStaticRouting (ipv4_n7); 
+    staticRouting_n7->AddHostRouteTo (Ipv4Address ("10.1.3.1"), Ipv4Address ("10.1.10.1") ,1); 
+
+    Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
+
+
      // 設置應用程序 (n4 -> n5)
     uint16_t port3 = 11; // 通訊埠
     MpquicBulkSendHelper sender3("ns3::QuicSocketFactory", InetSocketAddress(i8i5.GetAddress (1), port3));
@@ -454,39 +465,51 @@ main (int argc, char *argv[])
         
     // 設置應用程序 (n0 -> n2)
     uint16_t port1 = 9; // 通訊埠
-    MpquicBulkSendHelper sender1("ns3::QuicSocketFactory", InetSocketAddress(i8i2.GetAddress (1), port1));
+    BulkSendHelper sender1("ns3::TcpSocketFactory", InetSocketAddress(i8i2.GetAddress (1), port1));
     sender1.SetAttribute("MaxBytes", UintegerValue(maxBytes/2)); // 5 MB
     ApplicationContainer appSender1 = sender1.Install(c.Get(0));
     appSender1.Start(Seconds(2.0));
     appSender1.Stop(Seconds(simulationEndTime));
-    
 
-    PacketSinkHelper receiver1("ns3::QuicSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port1));
+    PacketSinkHelper receiver1("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port1));
     ApplicationContainer appReceiver1 = receiver1.Install(c.Get(2));
     appReceiver1.Start(Seconds(1.0));
     appReceiver1.Stop(Seconds(simulationEndTime));
 
-    NS_LOG_INFO("Sender1 is sending to " << i8i2.GetAddress (1));
+    // 設置應用程序 (n00 -> n22)
+    uint16_t port11 = 13; // 通訊埠
+    BulkSendHelper sender11("ns3::TcpSocketFactory", InetSocketAddress(i88i22.GetAddress (1), port11));
+    sender11.SetAttribute("MaxBytes", UintegerValue(maxBytes/2)); // 5 MB
+    ApplicationContainer appSender11 = sender11.Install(c.Get(10));
+    appSender11.Start(Seconds(2.0));
+    appSender11.Stop(Seconds(simulationEndTime));
+
+    PacketSinkHelper receiver11("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port11));
+    ApplicationContainer appReceiver11 = receiver11.Install(c.Get(11));
+    appReceiver11.Start(Seconds(1.0));
+    appReceiver11.Stop(Seconds(simulationEndTime));
+
+
 
     // 設置應用程序 (n3 -> n7)
     uint16_t port2 = 10; // 通訊埠
-    MpquicBulkSendHelper sender2("ns3::QuicSocketFactory", InetSocketAddress(i9i7.GetAddress (1), port2));
+    BulkSendHelper sender2("ns3::TcpSocketFactory", InetSocketAddress(i9i7.GetAddress (1), port2));
     sender2.SetAttribute("MaxBytes", UintegerValue(maxBytes/2)); // 10 MB
     ApplicationContainer appSender2 = sender2.Install(c.Get(3));
     appSender2.Start(Seconds(2));
     appSender2.Stop(Seconds(simulationEndTime));
 
-    PacketSinkHelper receiver2("ns3::QuicSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port2));
+    PacketSinkHelper receiver2("ns3::TcpSocketFactory", InetSocketAddress(Ipv4Address::GetAny(), port2));
     ApplicationContainer appReceiver2 = receiver2.Install(c.Get(7));
     appReceiver2.Start(Seconds(1.0));
     appReceiver2.Stop(Seconds(simulationEndTime));
 
    
-Ptr<Node> sender1Node = c.Get(0);  // sender1 的節點
-for (uint32_t i = 0; i < sender1Node->GetNDevices(); i++) {
-    Ptr<NetDevice> device = sender1Node->GetDevice(i);
-    NS_LOG_INFO("Sender1 has NetDevice ID=" << device->GetIfIndex());
-}
+    Ptr<Node> sender1Node = c.Get(0);  // sender1 的節點
+    for (uint32_t i = 0; i < sender1Node->GetNDevices(); i++) {
+        Ptr<NetDevice> device = sender1Node->GetDevice(i);
+        NS_LOG_INFO("Sender1 has NetDevice ID=" << device->GetIfIndex());
+    }
 
     std::ostringstream file;
     file<<"./scheduler" << schedulerType;
@@ -501,29 +524,10 @@ for (uint32_t i = 0; i < sender1Node->GetNDevices(); i++) {
     Ptr<FlowMonitor> monitor = flowmon.InstallAll ();
     // ThroughputMonitor(&flowmon, monitor, stream); 
     ThroughputMonitor2(&flowmon, monitor, stream);
-    
-
-    // for (double i = 1; i < simulationEndTime; i = i+0.1){
-    //     Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d1d8, DataRate(std::to_string(rateVal0->GetValue())+"Mbps"),  Time::FromInteger(delayVal0->GetValue(), Time::MS));
-    //     Simulator::Schedule (Seconds (i), &ModifyLinkRate, &d6d9, DataRate(std::to_string(rateVal1->GetValue())+"Mbps"),Time::FromInteger(delayVal1->GetValue(), Time::MS));
-    // }
-
 
     Simulator::Stop (Seconds(simulationEndTime));
     NS_LOG_INFO("\n\n#################### STARTING RUN ####################\n\n");
     Simulator::Run ();
-    // Ptr<LteEnbNetDevice> enb = enbDevs2.Get(0)->GetObject<LteEnbNetDevice>();
-
-    // Ptr<Ipv4> ipv4_n6 = c.Get(6)->GetObject<Ipv4> ();
-
-    // std::cout << "Node 6 IP Addresses: " << std::endl;
-    // for (uint32_t i = 0; i < ipv4_n6->GetNInterfaces(); i++) {
-    //     for (uint32_t j = 0; j < ipv4_n6->GetNAddresses(i); j++) {
-    //         std::cout << "  Interface " << i << ": " 
-    //                 << ipv4_n6->GetAddress(i, j).GetLocal() << std::endl;
-    //     }
-    // }
-        
 
     monitor->CheckForLostPackets ();
     Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowmon.GetClassifier ());

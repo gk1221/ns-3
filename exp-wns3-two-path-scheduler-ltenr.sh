@@ -1,7 +1,7 @@
 
 #!/bin/bash
 
-FOLD="scheduler-ltenr-$1"
+FOLD="scheduler-ltenr4-$1"
 DIR="results-wns3/$FOLD/"
 RATE0a="10.0"
 RATE0b="11.0"
@@ -14,7 +14,7 @@ DELAY1b="6.0"
 LOSS="0.00001"  ## when loss rate is large, some transmission might not be complete.
 BLambda="200"
 BVar="0"
-Size=5242880
+Size=10485760
 SEED=$1
 
 mkdir -p ${DIR}
