@@ -51,7 +51,7 @@ public:
     double lossRate;
     uint32_t timesUsed;
   };
-  
+  SchedulerType_t GetSchedulerType() const { return m_schedulerType; }
   /**
    * Get the type ID.
    * \brief Get the type ID.
@@ -70,9 +70,10 @@ public:
   void UpdateRewardMab(uint8_t pathId, uint32_t lostOut, uint32_t inflight, uint32_t round);
 
   void PeekabooReward(uint8_t pathId, Time lastActTime);
-  std::vector<double> MPeekaboo();
+  void MPeekabooReward(uint8_t pathId, Time lastActTime);
   void UpdatePathStats(uint32_t pathId, double bandwidth, double rtt, double lossRate);
   double ComputeReward(double bandwidth, double rtt, double lossRate);
+  double ComputeMPeekabooReward(double bandwidth, double rtt, double lossRate);
 
 private:
   Ptr<QuicSocketBase> m_socket;
@@ -91,6 +92,7 @@ private:
   std::vector<double> MabDelay();
   std::vector<double> Blest();
   std::vector<double> Ecf();
+  std::vector<double> MPeekaboo();
 
   uint32_t m_rate;
   uint16_t m_lostPackets;

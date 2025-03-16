@@ -127,6 +127,10 @@ main (int argc, char *argv[])
     LogComponentEnableAll (LOG_PREFIX_FUNC);
     LogComponentEnableAll (LOG_PREFIX_NODE);
     LogComponentEnable ("wns3-mpquic-two-path", log_precision);
+    LogComponentEnable ("MpQuicScheduler", log_precision);
+    LogComponentEnable ("QuicSocketBase", log_precision);
+
+
 
     RngSeedManager::SetSeed (seed);  
 
@@ -465,7 +469,7 @@ main (int argc, char *argv[])
     appReceiver1.Start(Seconds(1.0));
     appReceiver1.Stop(Seconds(simulationEndTime));
 
-    NS_LOG_INFO("Sender1 is sending to " << i8i2.GetAddress (1));
+    //NS_LOG_INFO("Sender1 is sending to " << i8i2.GetAddress (1));
 
     // 設置應用程序 (n3 -> n7)
     uint16_t port2 = 10; // 通訊埠
@@ -481,11 +485,11 @@ main (int argc, char *argv[])
     appReceiver2.Stop(Seconds(simulationEndTime));
 
    
-    Ptr<Node> sender1Node = c.Get(0);  // sender1 的節點
-    for (uint32_t i = 0; i < sender1Node->GetNDevices(); i++) {
-        Ptr<NetDevice> device = sender1Node->GetDevice(i);
-        NS_LOG_INFO("Sender1 has NetDevice ID=" << device->GetIfIndex());
-    }
+    // Ptr<Node> sender1Node = c.Get(0);  // sender1 的節點
+    // for (uint32_t i = 0; i < sender1Node->GetNDevices(); i++) {
+    //     Ptr<NetDevice> device = sender1Node->GetDevice(i);
+    //     NS_LOG_INFO("Sender1 has NetDevice ID=" << device->GetIfIndex());
+    // }
 
     std::ostringstream file;
     file<<"./scheduler" << schedulerType;

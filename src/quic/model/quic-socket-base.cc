@@ -2434,7 +2434,10 @@ QuicSocketBase::OnReceivedAckFrame (QuicSubheader &sub)
                 }
             }
         }
+        if(m_scheduler->GetSchedulerType()  == MpQuicScheduler::PEEKABOO)
           m_scheduler->PeekabooReward(pathId, lastAckTime);
+        else if (m_scheduler->GetSchedulerType()  == MpQuicScheduler::MPEEKABOO)
+          m_scheduler->MPeekabooReward(pathId, lastAckTime);
       lastAckTime = Now();
     }
   else

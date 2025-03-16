@@ -443,30 +443,77 @@ MpQuicScheduler::PeekabooReward(uint8_t pathId, Time lastActTime)
           g = 0.5 * g;
         }
     }
-  
-  
+    double totalSentPackets = m_subflows[pathId]->m_tcb->m_tlpCount +
+                            m_subflows[pathId]->m_tcb->m_rtoCount +
+                            m_subflows[pathId]->m_tcb->m_handshakeCount;
+    double totalAckedPackets = m_subflows[pathId]->m_tcb->m_kMaxPacketsReceivedBeforeAckSend;
+    double bandwidth = m_subflows[pathId]->m_tcb->m_cWnd.Get() / rtt[pathId];
+    double lossRate = (totalSentPackets > 0) ? (1.0 - (totalAckedPackets / totalSentPackets)) : 0.0;
+    double reward = ComputeReward(bandwidth, rtt[pathId], lossRate);
+
+    NS_LOG_INFO("PeekabooReward - Path: " << (int)pathId
+                << " | Bandwidth: " << bandwidth
+                << " | RTT: " << rtt[pathId]
+                << " | Loss Rate: " << lossRate
+                << " | EPR: " << reward);
+}
+//reward calculte for mpookaboo
+void MpQuicScheduler::MPeekabooReward(uint8_t pathId, Time lastActTime) {
+  NS_LOG_FUNCTION(this);
+
+  // 取得 RTT，確保單位為毫秒
+  double rtt_ns = m_subflows[pathId]->m_tcb->m_lastRtt.Get().GetDouble();
+
+
+  if (rtt_ns == 0) rtt_ns = 1; // 避免 RTT 為零
+
+  // **計算封包遺失率 (LossRate)**
+  double totalSentPackets = m_subflows[pathId]->m_numPacketsReceivedSinceLastAckSent;
+  double totalAckedPackets = m_subflows[pathId]->m_lastMaxData;
+  double lossRate = (totalSentPackets > 0) ? (1.0 - (totalAckedPackets / totalSentPackets)) : 0.0;
+
+  // **計算吞吐量**
+  double throughput = m_subflows[pathId]->m_tcb->m_cWnd.Get() / rtt_ns;
+
+  // **計算獎勳**
+  double reward = ComputeMPeekabooReward(throughput, rtt_ns, lossRate);
+
+  // **將計算結果存入 peek_x[]**
+  peek_x[pathId * 3] = throughput;    // 存放吞吐量
+  peek_x[pathId * 3 + 1] = rtt_ns;   // 存放 RTT
+  peek_x[pathId * 3 + 2] = reward;    // 存放 EPR
+
+  // **輸出計算出的 EPR 值**
+  NS_LOG_INFO("MPeekabooReward - Path: " << (int)pathId
+                << " | Throughput: " << throughput
+                << " | RTT (ms): " << rtt_ns
+                << " | Loss Rate: " << lossRate
+                << " | EPR: " << reward);
 }
 
-std::vector<double> MpQuicScheduler::MPeekaboo () {
-  NS_LOG_INFO ("Executing M-Peekaboo Scheduler");
-  
-  std::vector<double> rewards(m_paths.size(), 0.0);
 
-  for (size_t i = 0; i < m_paths.size(); ++i) {
-    double reward = ComputeReward(m_paths[i].bandwidth, m_paths[i].rtt, m_paths[i].lossRate);
-    reward += sqrt(log(m_paths[i].timesUsed + 1) / (m_paths[i].timesUsed + 1)); // UCB Formula
-    rewards[i] = reward;
-  }
 
-  // Normalize reward values for better stability
-  double maxReward = *std::max_element(rewards.begin(), rewards.end());
-  if (maxReward > 0) {
-    for (auto &r : rewards) {
-      r /= maxReward;
+std::vector<double> MpQuicScheduler::MPeekaboo() {
+    NS_LOG_INFO("Executing M-Peekaboo Scheduler");
+
+    std::vector<double> rewards(m_paths.size(), 0.0);
+
+    for (size_t i = 0; i < m_paths.size(); ++i) {
+        // 獲取路徑的頻寬、RTT 和封包遺失率
+        double bandwidth = m_paths[i].bandwidth;
+        double rtt = m_paths[i].rtt;
+        double lossRate = m_paths[i].lossRate;
+
+        // 根據原始 Peekaboo 方法計算獎勵值
+        double reward = ComputeMPeekabooReward(bandwidth, rtt, lossRate);
+
+        // UCB (Upper Confidence Bound) 公式，避免過度使用單一路徑
+        reward += sqrt(log(m_paths[i].timesUsed + 1) / (m_paths[i].timesUsed + 1));
+
+        rewards[i] = reward;
     }
-  }
 
-  return rewards;
+    return rewards;
 }
 
 void MpQuicScheduler::UpdatePathStats (uint32_t pathId, double bandwidth, double rtt, double lossRate) {
@@ -478,9 +525,19 @@ void MpQuicScheduler::UpdatePathStats (uint32_t pathId, double bandwidth, double
   }
 }
 
-// Peekaboo-inspired reward function
+// 算reward而已 peekaboo不會真的考慮到這個
 double MpQuicScheduler::ComputeReward (double bandwidth, double rtt, double lossRate) {
   const double alpha = 0.6, beta = 0.3, gamma = 0.1; // Adjusted for 5G dynamics
+  return (alpha * bandwidth) - (beta * rtt) - (gamma * lossRate);
+}
+
+double MpQuicScheduler::ComputeMPeekabooReward(double bandwidth, double rtt, double lossRate) {
+  // M-Peekaboo 針對 5G 設定的獎勵計算
+  NS_LOG_INFO("COMPUTING reward :"<< bandwidth << ", rtt: "<<rtt<<", lossrate:"<<lossRate);
+  const double alpha = 0.6;  // 頻寬影響力（增加 5G 適應性）
+  const double beta = 0.25;  // RTT 影響力（比 Peekaboo 低，因為 5G 變化快）
+  const double gamma = 0.15; // 封包遺失率影響（封包遺失影響變大）
+
   return (alpha * bandwidth) - (beta * rtt) - (gamma * lossRate);
 }
 
