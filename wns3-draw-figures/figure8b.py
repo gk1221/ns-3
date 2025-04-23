@@ -7,7 +7,7 @@ plt.rcParams["font.serif"] = "Times New Roman"
 topDir = '../results-wns3/'
 
 i = 0
-dir = 'cwnd-1-1'
+dir = 'cwnd-4-1'
 file = open(topDir+dir+'/scheduler'+str(i)+'-cwnd-change-0.txt', 'r')
 lines = file.readlines()
 goodput = []
@@ -53,5 +53,5 @@ leg = plt.gca().get_legend()
 ltext = leg.get_texts()
 plt.setp(ltext, fontsize=20, fontweight='bold') 
 
-plt.savefig('../results-wns3/cwnd_OLIA.png', format='png')
+plt.savefig('../results-wns3/cwnd_OLIA4.png', format='png')
 plt.close()

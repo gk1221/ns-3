@@ -340,6 +340,9 @@ std::vector<double>
 MpQuicScheduler::Peekaboo()
 {
   NS_LOG_FUNCTION (this);
+    NS_LOG_INFO("m_subflows size: " << m_subflows.size());
+  NS_LOG_INFO("m_paths size before: " << m_paths.size());
+  
   uint8_t K = m_subflows.size();
   if(EPR.size() < K)
   {
@@ -461,32 +464,25 @@ MpQuicScheduler::PeekabooReward(uint8_t pathId, Time lastActTime)
 void MpQuicScheduler::MPeekabooReward(uint8_t pathId, Time lastActTime) {
   NS_LOG_FUNCTION(this);
 
-  // 取得 RTT，確保單位為毫秒
-  double rtt_ns = m_subflows[pathId]->m_tcb->m_lastRtt.Get().GetDouble();
-
-
-  if (rtt_ns == 0) rtt_ns = 1; // 避免 RTT 為零
 
   // **計算封包遺失率 (LossRate)**
-  double totalSentPackets = m_subflows[pathId]->m_numPacketsReceivedSinceLastAckSent;
+  double totalSentPackets = m_subflows[pathId]->m_tcb->m_tlpCount +
+                            m_subflows[pathId]->m_tcb->m_rtoCount +
+                            m_subflows[pathId]->m_tcb->m_handshakeCount;
   double totalAckedPackets = m_subflows[pathId]->m_lastMaxData;
+  double bandwidth = m_subflows[pathId]->m_tcb->m_cWnd.Get() / rtt[pathId];
   double lossRate = (totalSentPackets > 0) ? (1.0 - (totalAckedPackets / totalSentPackets)) : 0.0;
-
-  // **計算吞吐量**
-  double throughput = m_subflows[pathId]->m_tcb->m_cWnd.Get() / rtt_ns;
-
-  // **計算獎勳**
-  double reward = ComputeMPeekabooReward(throughput, rtt_ns, lossRate);
+  double reward = ComputeReward(bandwidth, rtt[pathId], lossRate);
 
   // **將計算結果存入 peek_x[]**
-  peek_x[pathId * 3] = throughput;    // 存放吞吐量
-  peek_x[pathId * 3 + 1] = rtt_ns;   // 存放 RTT
+  peek_x[pathId * 3] = bandwidth;    // 存放吞吐量
+  peek_x[pathId * 3 + 1] = rtt[pathId];   // 存放 RTT
   peek_x[pathId * 3 + 2] = reward;    // 存放 EPR
 
   // **輸出計算出的 EPR 值**
   NS_LOG_INFO("MPeekabooReward - Path: " << (int)pathId
-                << " | Throughput: " << throughput
-                << " | RTT (ms): " << rtt_ns
+                << " | Throughput: " << bandwidth
+                << " | RTT (ms): " << rtt[pathId]
                 << " | Loss Rate: " << lossRate
                 << " | EPR: " << reward);
 }
@@ -495,22 +491,33 @@ void MpQuicScheduler::MPeekabooReward(uint8_t pathId, Time lastActTime) {
 
 std::vector<double> MpQuicScheduler::MPeekaboo() {
     NS_LOG_INFO("Executing M-Peekaboo Scheduler");
+    NS_LOG_INFO("m_subflows size: " << m_subflows.size());
+    NS_LOG_INFO("m_paths size before: " << m_paths.size());
 
-    std::vector<double> rewards(m_paths.size(), 0.0);
+    std::vector<double> rewards(m_subflows.size(), 0.0);
 
-    for (size_t i = 0; i < m_paths.size(); ++i) {
-        // 獲取路徑的頻寬、RTT 和封包遺失率
-        double bandwidth = m_paths[i].bandwidth;
-        double rtt = m_paths[i].rtt;
-        double lossRate = m_paths[i].lossRate;
+    for (size_t i = 0; i < m_subflows.size(); ++i) {
+        // **直接從 `m_subflows` 取得頻寬、RTT 和封包遺失率**
+        double lastrtt = 1;
+        if(m_subflows[i]->m_tcb->m_lastRtt.Get().GetDouble()!=0){
+          lastrtt = m_subflows[i]->m_tcb->m_lastRtt.Get().GetDouble();
+        }
 
-        // 根據原始 Peekaboo 方法計算獎勵值
-        double reward = ComputeMPeekabooReward(bandwidth, rtt, lossRate);
+        double bandwidth = m_subflows[i]->m_tcb->m_cWnd.Get() / lastrtt;
+        //double rtt = m_subflows[i]->m_tcb->m_lastRtt.Get().GetDouble();
+          double totalSentPackets = m_subflows[i]->m_tcb->m_tlpCount +
+                            m_subflows[i]->m_tcb->m_rtoCount +
+                            m_subflows[i]->m_tcb->m_handshakeCount;
+        double totalAckedPackets = m_subflows[i]->m_tcb->m_kMaxPacketsReceivedBeforeAckSend;
+        double lossRate = (totalSentPackets > 0) ? (1.0 - (totalAckedPackets / totalSentPackets)) : 0.0;
+        // **計算獎勵**
+        double reward = ComputeMPeekabooReward(bandwidth, lastrtt, lossRate);
 
-        // UCB (Upper Confidence Bound) 公式，避免過度使用單一路徑
+        // **UCB (Upper Confidence Bound) 公式，避免過度使用單一路徑**
         reward += sqrt(log(m_paths[i].timesUsed + 1) / (m_paths[i].timesUsed + 1));
 
         rewards[i] = reward;
+        NS_LOG_INFO("rewards[" << i << "]:" << reward);
     }
 
     return rewards;

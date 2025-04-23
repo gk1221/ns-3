@@ -51,9 +51,9 @@ colors = ["green", "red", "blue", "c", "orange"]
 scheduler_labels = ["RR", "MRTT", "BLEST", "ECF", "Peekaboo"]
 
 #34
-index =3
+index = 7
 for idx in range(index*10+1, (index+1)*10+1):  # 17 
-    folder_name = f"fair-001-ltenr-tcp-{idx}"
+    folder_name = f"unfair-0008-tcp-all-flow-OLIA08a-{idx}"
     row, col = divmod(idx - (index*10+1), 2)  # 計算子圖位置
     ax = axes[row, col]
     
@@ -73,7 +73,7 @@ for idx in range(index*10+1, (index+1)*10+1):  # 17
 plt.tight_layout(rect=[0, 0, 1, 0.96])  
 
 # 儲存圖表
-output_path = f"fair-001-throughput-all-schedulers.png"
+output_path = f"unfair-0008-tcp-all-flow-OLIA08a-throughput-all-schedulers.png"
 plt.savefig(output_path, format='png')
 print(f"✅ Save in {output_path}")
 

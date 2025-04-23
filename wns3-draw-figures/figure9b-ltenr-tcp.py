@@ -7,9 +7,9 @@ plt.rcParams["font.serif"] = "Times New Roman"
 topDir = '../results-wns3/'
 
 def help(i,j):#29 49 6 
-    file = open(topDir+f'fair-001-ltenr-tcp-{j}'+'/scheduler'+str(i)+'-queue.txt', 'r')
+    file = open(topDir+f'unfair-0008-tcp-all-flow-OLIA05-{j}'+'/scheduler'+str(i)+'-queue.txt', 'r')
     finish_time = float(file.readlines()[-1].split('\t')[0])
-    file = open(topDir+f'fair-001-ltenr-tcp-{j}'+'/scheduler'+str(i)+'-rx-ltenr-tcp.txt', 'r')
+    file = open(topDir+f'unfair-0008-tcp-all-flow-OLIA05-{j}'+'/scheduler'+str(i)+'-rx-ltenr-tcp.txt', 'r')
     lines = file.readlines()
     goodput = []
     c_time = []
@@ -28,12 +28,18 @@ def help(i,j):#29 49 6
     dataTotal = pd.DataFrame (goodput, columns = ['Time', 'goodput', 'scheduler'])        
     return dataTotal
 
+#71 4 2 
+rr = help(0,86)  #66 86 12
+minrtt = help(1,15) #74 15
+blest = help(2,71) #70
+ecf = help(3,66) #66
+peek = help(4,14) #71
 
-rr = help(0,29)  
-minrtt = help(1,23)
-blest = help(2,33)
-ecf = help(3,44)
-peek = help(4,31)
+print("RR最大吞吐量:", rr['goodput'].max())
+print("MRTT最大吞吐量:", minrtt['goodput'].max()) 
+print("BLEST最大吞吐量:", blest['goodput'].max())
+print("ECF最大吞吐量:", ecf['goodput'].max())
+print("Peekaboo最大吞吐量:", peek['goodput'].max())
 # m_peek = help(5)
 # print(m_peek)
 
@@ -58,7 +64,8 @@ plt.legend(loc=0, numpoints=1)
 leg = plt.gca().get_legend()
 ltext = leg.get_texts()
 plt.setp(ltext, fontsize=20, fontweight='bold') 
-path = '../results-wns3/fair-001-ltent-tcp-throughput-scheduler.png'
+
+path = '../results-wns3/unfair-0008-tcp-all-flow-OLIA05-throughput-scheduler.png'
 plt.savefig(path, format='png') 
 print(f"save in {path}")
 plt.close()

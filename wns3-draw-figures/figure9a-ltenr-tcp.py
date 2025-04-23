@@ -11,7 +11,7 @@ topDir = '../results-wns3/'
 schedulerTypes = [0,1,2,3,4]
 
 comTime = []
-
+filename = 'unfair-0008-tcp-all-flow-OLIA05-'
 for j in range(1,101):
     if (j==97 or j==188):
         continue
@@ -19,10 +19,10 @@ for j in range(1,101):
 
     for i in schedulerTypes:
         try:
-            dir = topDir+'fair-001-ltenr-tcp-'+str(j)
+            dir = topDir+ filename +str(j)
             file = open(dir+'/scheduler'+str(i)+'-queue.txt', 'r')
-            last_line = file.readlines()[-1]
-            print(j, last_line)
+            last_line = file.readlines()[-5]
+            print(f"i={i}, lastline={last_line}")
             if (int(last_line.split('\t')[3]) > 2000000):
                 c_time.append(float(last_line.split('\t')[0]))
             else:
@@ -45,7 +45,7 @@ toDrop =dataTotal.loc[dataTotal["ECF"] == 0.0].index.tolist()
 dataTotal = dataTotal.drop(toDrop)
 toDrop =dataTotal.loc[dataTotal["PEEK"] == 0.0].index.tolist()
 dataTotal = dataTotal.drop(toDrop)
-#dataTotal["PEEK"] = dataTotal["PEEK"].apply(lambda x: x - 0.2)
+#dataTotal["PEEK"] = dataTotal["PEEK"].apply(lambda x: x + 1)
 
 
 # 將 PEEK 中大於 2 的值減去 0.15
@@ -54,6 +54,7 @@ dataTotal = dataTotal.drop(toDrop)
 
 ct0 = [dataTotal['RR']]
 ct1 = [dataTotal['MRTT']]
+print(dataTotal)
 ct2 = [dataTotal['BLEST']]
 ct3 = [dataTotal['ECF']]
 ct4 = [dataTotal['PEEK']]
@@ -90,6 +91,13 @@ for box in ct_plot4['boxes']:
 # for box in ct_plot5['boxes']:
 #     box.set(hatch = '*', fill=False) 
 
+# 計算並打印每個調度器的中位數
+print(f"各調度器的中位數{filename}:")
+print(f"RR 中位數: {np.median(ct0):.2f}")
+print(f"MRTT 中位數: {np.median(ct1):.2f}") 
+print(f"BLEST 中位數: {np.median(ct2):.2f}")
+print(f"ECF 中位數: {np.median(ct3):.2f}")
+print(f"PEEK 中位數: {np.median(ct4):.2f}")
 
 
 def define_box_properties(plot_name, color_code, label):
@@ -115,8 +123,9 @@ plt.yticks(fontsize=14, fontweight='bold')
 plt.ylabel("Complete Time (seconds)", fontsize=20, fontweight='bold')
 
 plt.xlim(-1, len(ticks))
-plt.ylim(1, 20)
-route = '../results-wns3/fair-001-ltenr-tcp.png'
+#plt.ylim(4, 12)
+plt.title(filename[:-1])
+route = f'../results-wns3/{filename}comtime.png'
 plt.savefig(route, format='png')
 print(f'save in {route}')
 plt.close()

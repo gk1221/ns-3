@@ -2,30 +2,31 @@
 #!/bin/bash
 
 ## unstable
-FOLD="fair-0008-tcp-all-flow-$1"
+FOLD="unfair-0008-tcp-all-flow-OLIA05-$1"
 DIR="results-wns3/$FOLD/"
 RATE0a="5.0"
 RATE0b="6.0"
-RATE1a="5.0"
-RATE1b="6.0"
-DELAY0a="10.0"
-DELAY0b="11.0"
+RATE1a="10.0"
+RATE1b="15.0"
+DELAY0a="5.0"
+DELAY0b="6.0"
 DELAY1a="10.0"
-DELAY1b="11.0"
-LOSS="0.00001"
+DELAY1b="15.0"
+LOSS="0.000008"
 BLambda="200"
 BVar="0"
 Size=5242800
+CcType=0
 SEED=$1
 
 mkdir -p ${DIR}
 
-for i in {0..4}
+for i in 4
 do
     LOG="$i"
     LOG1="scheduler${LOG}-queue.txt"
     LOG2="scheduler${LOG}-flowsum.txt"
-    ./ns3 run "scratch/lte_nr_tcp.cc --Seed=$SEED --Size=$Size --BVar=$BVar --BLambda=$BLambda --SchedulerType=${LOG} --Rate0a=${RATE0a} --Rate1a=${RATE1a} --Delay0a=${DELAY0a} --Delay1a=${DELAY1a} --Rate0b=${RATE0b} --Rate1b=${RATE1b} --Delay0b=${DELAY0b} --Delay1b=${DELAY1b} --LossRate=$LOSS" >$LOG1 2>$LOG2
+    ./ns3 run "scratch/lte_nr_tcp.cc --Seed=$SEED --Size=$Size --BVar=$BVar --CcType=$CcType --BLambda=$BLambda --SchedulerType=${LOG} --Rate0a=${RATE0a} --Rate1a=${RATE1a} --Delay0a=${DELAY0a} --Delay1a=${DELAY1a} --Rate0b=${RATE0b} --Rate1b=${RATE1b} --Delay0b=${DELAY0b} --Delay1b=${DELAY1b} --LossRate=$LOSS" >$LOG1 2>$LOG2
 
     FILE="scheduler${LOG}-rx-ltenr-tcp.txt"
     echo "copying ${DIR}${FILE}"
